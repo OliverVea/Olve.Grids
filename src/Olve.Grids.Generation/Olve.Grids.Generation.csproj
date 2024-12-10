@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference Include="..\Olve.Grids\Olve.Grids.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="DeBroglie" />
+        <PackageReference Include="SixLabors.ImageSharp" />
+    </ItemGroup>
+
+</Project>

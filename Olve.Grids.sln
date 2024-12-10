@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olve.Grids", "src\Olve.Grids\Olve.Grids.csproj", "{C5852073-3607-4133-82EB-2F255F8BE2A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DB78AA41-3A48-4BA0-812D-49371D958138}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repo", "repo", "{F2F8BC4F-E0F5-498D-B340-276EE7F4F1E7}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{336398BB-0198-4C90-90F8-3E4E5C62720D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\olve-operations_publish.yml = .github\workflows\olve-operations_publish.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BE6D0662-C36C-499F-A6AC-E277251F8146}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olve.Grids.Tests", "tests\Olve.Grids.Tests\Olve.Grids.Tests.csproj", "{C37DF73E-1A69-4C72-A769-5CC3D6F606BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olve.Grids.Generation", "src\Olve.Grids.Generation\Olve.Grids.Generation.csproj", "{4D5E2652-2413-4F60-9515-66777626F903}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olve.Grids.Generation.Sandbox", "tests\Olve.Grids.Generation.Sandbox\Olve.Grids.Generation.Sandbox.csproj", "{FE5B000F-18CD-4106-BD1E-FC0A76347CA7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5852073-3607-4133-82EB-2F255F8BE2A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5852073-3607-4133-82EB-2F255F8BE2A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5852073-3607-4133-82EB-2F255F8BE2A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5852073-3607-4133-82EB-2F255F8BE2A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C37DF73E-1A69-4C72-A769-5CC3D6F606BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C37DF73E-1A69-4C72-A769-5CC3D6F606BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C37DF73E-1A69-4C72-A769-5CC3D6F606BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C37DF73E-1A69-4C72-A769-5CC3D6F606BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D5E2652-2413-4F60-9515-66777626F903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D5E2652-2413-4F60-9515-66777626F903}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D5E2652-2413-4F60-9515-66777626F903}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D5E2652-2413-4F60-9515-66777626F903}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE5B000F-18CD-4106-BD1E-FC0A76347CA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE5B000F-18CD-4106-BD1E-FC0A76347CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE5B000F-18CD-4106-BD1E-FC0A76347CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE5B000F-18CD-4106-BD1E-FC0A76347CA7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C5852073-3607-4133-82EB-2F255F8BE2A5} = {DB78AA41-3A48-4BA0-812D-49371D958138}
+		{336398BB-0198-4C90-90F8-3E4E5C62720D} = {F2F8BC4F-E0F5-498D-B340-276EE7F4F1E7}
+		{C37DF73E-1A69-4C72-A769-5CC3D6F606BA} = {BE6D0662-C36C-499F-A6AC-E277251F8146}
+		{4D5E2652-2413-4F60-9515-66777626F903} = {DB78AA41-3A48-4BA0-812D-49371D958138}
+		{FE5B000F-18CD-4106-BD1E-FC0A76347CA7} = {BE6D0662-C36C-499F-A6AC-E277251F8146}
+	EndGlobalSection
+EndGlobal

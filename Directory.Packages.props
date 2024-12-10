@@ -1,0 +1,13 @@
+<Project>
+  <ItemGroup>
+    <!-- Olve.Grids -->
+    <PackageVersion Include="Olve.Utilities" Version="0.0.8" />
+    <PackageVersion Include="OneOf" Version="3.0.271" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.6" />
+    <PackageVersion Include="StrictId" Version="1.1.0" />
+    <!-- Olve.Grids.Generation -->
+    <PackageVersion Include="DeBroglie" Version="2.0.0" />
+    <!-- Olve.Grids.Tests -->
+    <PackageVersion Include="TUnit" Version="0.4.86" />
+  </ItemGroup>
+</Project>
