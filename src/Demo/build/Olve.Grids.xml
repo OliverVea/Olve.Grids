@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Olve.Grids</name>
+    </assembly>
+    <members>
+        <member name="M:Olve.Grids.Generation.BrushGrid.VerifyPosition(Olve.Utilities.IntegerMath2D.Position)">
+            <summary>
+            Verifies that the position is within the bounds of the grid.
+            </summary>
+            <param name="position">The position to verify.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the position is outside the bounds of the grid.</exception>
+        </member>
+        <member name="P:Olve.Grids.Generation.TileAtlas.FallbackTileIndex">
+            <summary>
+            The tile to use when contradictory Brush and Adjacency rules are found.
+            Defaults to the last tile in the atlas.
+            </summary>
+        </member>
+    </members>
+</doc>
