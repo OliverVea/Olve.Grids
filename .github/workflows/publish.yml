@@ -98,7 +98,7 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          echo "VERSION=${{ env.TAG#v }}" >> $env:GITHUB_ENV
+          echo "VERSION=${{ env.TAG }}" >> $env:GITHUB_ENV
 
       - name: Debug Environment
         run: Get-Content $env:GITHUB_ENV
