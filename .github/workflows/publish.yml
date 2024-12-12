@@ -104,7 +104,7 @@ jobs:
         run: Get-Content $env:GITHUB_ENV
 
       - name: Debug Version
-        run: echo "${{ env.VERSION }}" # This should correctly output the version
+        run: echo "${{ env.VERSION }}"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -120,9 +120,9 @@ jobs:
       - name: publish demo as executable
         run: dotnet publish --output ./build --no-restore --no-build -c Release -r win-x64 /p:PackageVersion=${{ env.VERSION }}
 
-      - uses: montudor/action-zip@v1
-        with:
-          args: zip -qq -r demo-${{ env.VERSION }}.zip build
+      - name: Zip Demo
+        run: |
+          Compress-Archive -Path build\* -DestinationPath demo-${{ env.VERSION }}.zip
 
       - name: upload demo
         if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
