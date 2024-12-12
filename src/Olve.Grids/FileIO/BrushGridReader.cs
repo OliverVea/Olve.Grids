@@ -1,14 +1,10 @@
 ﻿using Olve.Grids.Brushes;
-using Olve.Grids.Generation.Generation;
-using Olve.Grids.Generation.TileAtlas;
-using Olve.Utilities.Types;
+using Olve.Grids.Generation;
 
-namespace Olve.Grids.Generation.Sandbox;
+namespace Olve.Grids.FileIO;
 
 public static class BrushGridReader
 {
-    private const char Any = '?';
-    
     public static BrushGrid ReadBrushGridFromFile(this TileAtlasBuilder builder, string fileName)
     {
         var lines = File.ReadAllLines(fileName);
@@ -35,9 +31,9 @@ public static class BrushGridReader
         return grid;
     }
     
-    private static OneOf.OneOf<BrushId, Any> GetBrushId(this Dictionary<char, BrushId> brushLookup, char c)
+    private static OneOf<BrushId, Any> GetBrushId(this Dictionary<char, BrushId> brushLookup, char c)
     {
-        if (c == Any)
+        if (c == FileIOConstants.AnyBrushChar)
         {
             return new Any();
         }

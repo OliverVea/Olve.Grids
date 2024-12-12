@@ -1,7 +1,7 @@
 ﻿using DeBroglie.Topo;
 using Olve.Grids.Adjacencies;
 
-namespace Olve.Grids.Generation;
+namespace Olve.Grids.DeBroglie;
 
 public static class AdjacencyDirectionExtensions
 {

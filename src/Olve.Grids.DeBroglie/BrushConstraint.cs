@@ -1,19 +1,12 @@
 ﻿using DeBroglie;
 using DeBroglie.Constraints;
 using Olve.Grids.Brushes;
+using Olve.Grids.Generation;
 using Olve.Grids.Grids;
 
-namespace Olve.Grids.Generation.Generation;
+namespace Olve.Grids.DeBroglie;
 
-public class TileAtlasConstraintBuilder
-{
-    public IEnumerable<ITileConstraint> BuildConstraints(TileAtlas.TileAtlas tileAtlas, BrushGrid brushGrid)
-    {
-        yield return new BrushConstraint(tileAtlas, brushGrid);
-    }
-}
-
-public class BrushConstraint(TileAtlas.TileAtlas tileAtlas, BrushGrid brushGrid) : ITileConstraint
+public class BrushConstraint(TileAtlas tileAtlas, BrushGrid brushGrid) : ITileConstraint
 {
     private static readonly DeltaPosition UpperLeft = new(0, 0);
     private static readonly DeltaPosition UpperRight = new(1, 0);

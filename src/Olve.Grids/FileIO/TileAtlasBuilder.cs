@@ -1,7 +1,8 @@
 ﻿using Olve.Grids.Brushes;
+using Olve.Grids.Generation;
 using Olve.Grids.Grids;
 
-namespace Olve.Grids.Generation.TileAtlas;
+namespace Olve.Grids.FileIO;
 
 public class TileAtlasBuilder
 {

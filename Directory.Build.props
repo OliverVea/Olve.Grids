@@ -1,7 +1,6 @@
 <Project>
     <PropertyGroup>
         <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-        <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
         <ImplicitUsings>enable</ImplicitUsings>
         <IsAotCompatible>true</IsAotCompatible>
         <IsTrimmable>true</IsTrimmable>
@@ -9,9 +8,7 @@
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <Nullable>enable</Nullable>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
-        <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+        <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
         <TargetFramework>net9.0</TargetFramework>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
     </PropertyGroup>
 </Project>

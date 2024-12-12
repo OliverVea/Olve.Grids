@@ -1,15 +1,12 @@
 ﻿using System.Text;
 using Olve.Grids.Brushes;
-using Olve.Grids.Generation.TileAtlas;
 using Olve.Grids.Grids;
-using Olve.Utilities.Types;
 
-namespace Olve.Grids.Generation.Sandbox;
+namespace Olve.Grids.FileIO;
 
 public static class BrushLookupReader
 {
     private const char NewLine = '\n';
-    private const char Any = '?';
     
     public static TileAtlasBuilder ReadBrushLookupFromFile(this TileAtlasBuilder builder, string filePath)
     {
@@ -28,21 +25,21 @@ public static class BrushLookupReader
         
         if (lineCount % 2 != 0)
         {
-            throw new InvalidOperationException("Invalid brush lookup file.");
+            throw new InvalidOperationException("Invalid brush lookup file: line number must be even.");
         }
-        
-        var charCounts = lines.Select(x => x.Length);
+
+        var charCounts = lines.Select(x => x.Length).ToArray();
         
         if (charCounts.Distinct().Count() != 1)
         {
-            throw new InvalidOperationException("Invalid brush lookup file.");
+            throw new InvalidOperationException("Invalid brush lookup file: inconsistent line lengths.");
         }
         
         var charCount = charCounts.First();
         
         if (charCount % 2 != 0)
         {
-            throw new InvalidOperationException("Invalid brush lookup file.");
+            throw new InvalidOperationException("Invalid brush lookup file: line length must be even.");
         }
         
         var height = lineCount / 2;
@@ -50,7 +47,8 @@ public static class BrushLookupReader
         
         if (height != builder.Rows || width != builder.Columns)
         {
-            throw new InvalidOperationException("Brush lookup file does not match the tile atlas.");
+            throw new InvalidOperationException("Brush lookup file does not match the tile atlas. " +
+                                                $"Expected {builder.Rows}x{builder.Columns}, but got {height}x{width}.");
         }
 
         var brushLookup = new Dictionary<char, BrushId>();
@@ -80,9 +78,9 @@ public static class BrushLookupReader
         return builder;
     }
 
-    private static OneOf.OneOf<BrushId, Any> GetBrushId(char c, Dictionary<char, BrushId> brushLookup)
+    private static OneOf<BrushId, Any> GetBrushId(char c, Dictionary<char, BrushId> brushLookup)
     {
-        if (c == Any)
+        if (c == FileIOConstants.AnyBrushChar)
         {
             return new Any();
         }

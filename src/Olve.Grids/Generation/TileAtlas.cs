@@ -3,7 +3,7 @@ using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.Weights;
 
-namespace Olve.Grids.Generation.TileAtlas;
+namespace Olve.Grids.Generation;
 
 public class TileAtlas(string filePath, GridConfiguration gridConfiguration, BrushLookup brushLookup)
 {

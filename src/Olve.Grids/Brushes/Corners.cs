@@ -13,6 +13,12 @@ public static class Corners
             _ => throw new ArgumentOutOfRangeException(nameof(corner), corner, null)
         };
     }
-    
-    public static IEnumerable<Corner> All => Enum.GetValues<Corner>();
+
+    public static readonly IReadOnlyList<Corner> All =
+    [
+        Corner.UpperLeft,
+        Corner.UpperRight,
+        Corner.LowerLeft,
+        Corner.LowerRight
+    ];
 }

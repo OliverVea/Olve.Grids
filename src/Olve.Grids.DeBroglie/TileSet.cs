@@ -1,10 +1,9 @@
 ﻿using DeBroglie;
 using Olve.Grids.Grids;
 using Olve.Utilities.Collections;
-using OneOf;
 using OneOf.Types;
 
-namespace Olve.Grids.Generation;
+namespace Olve.Grids.DeBroglie;
 
 public class TileSet(IEnumerable<TileIndex> tileIndices)
 {

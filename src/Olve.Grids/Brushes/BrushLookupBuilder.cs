@@ -7,6 +7,8 @@ public class BrushLookupBuilder
 {
     private readonly Dictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush = new();
     
+    public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct(); 
+    
     public BrushLookupBuilder SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes)
     {
         foreach (var corner in Corners.All)

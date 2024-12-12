@@ -1,8 +1,0 @@
-﻿DD  DD  DD  LL  LL
-DL  LL  LD  LD  DL
-
-DL  LL  LD  LD  DL
-DL  LL  LD  LL  LL
-
-DL  LL  LD  DD  QQ
-DD  DD  DD  DD  QQ

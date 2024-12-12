@@ -1,6 +1,6 @@
 ﻿using DeBroglie;
 
-namespace Olve.Grids.Generation;
+namespace Olve.Grids.DeBroglie;
 
 public static class TilePropagatorExtensions
 {
@@ -8,7 +8,7 @@ public static class TilePropagatorExtensions
     {
         for (var i = 0; i < propagator.Topology.IndexCount; i++)
         {
-            propagator.Topology.GetCoord(i, out var x, out var y, out var z);
+            propagator.Topology.GetCoord(i, out var x, out var y, out _);
             
             var position = new Position(x, y);
 

@@ -7,7 +7,13 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Olve.Grids.Generation\Olve.Grids.Generation.csproj" />
+        <ProjectReference Include="..\..\src\Olve.Grids.DeBroglie\Olve.Grids.DeBroglie.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="SixLabors.ImageSharp" />
+        <PackageReference Include="Spectre.Console" />
+        <PackageReference Include="Spectre.Console.CLI" />
     </ItemGroup>
     
     <ItemGroup>
@@ -18,5 +24,9 @@
     
     <ItemGroup>
       <Content Include="bin\Debug\net9.0\output.png" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="data\" />
     </ItemGroup>
 </Project>

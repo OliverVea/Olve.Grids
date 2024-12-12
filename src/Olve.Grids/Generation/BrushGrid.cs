@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using Olve.Grids.Brushes;
-using Olve.Utilities.Types;
 
-namespace Olve.Grids.Generation.Generation;
+namespace Olve.Grids.Generation;
 
 public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
 {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Frozen;
-using Olve.Grids.Brushes;
+﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 
 namespace Olve.Grids.Adjacencies;
@@ -49,6 +48,14 @@ public static class Sides
             _ => throw new ArgumentOutOfRangeException(nameof(side), side, null)
         };
     }
+    
+    public static readonly IReadOnlyList<Side> All =
+    [
+        Side.Left,
+        Side.Right,
+        Side.Top,
+        Side.Bottom
+    ];
 }
 
 public class AdjacencyFromTileBrushEstimator
@@ -76,12 +83,12 @@ public class AdjacencyFromTileBrushEstimator
 
         foreach (var tileIndex in tileIndices)
         {
-            foreach (var side in Enum.GetValues<Side>())
+            foreach (var side in Sides.All)
             {
                 var (corner1, corner2) = Sides.GetCorners(side);
 
-                var brushes1 = lookup.GetValueOrDefault((tileIndex, corner1), new Any()).Match(x => [x], x => brushIds);
-                var brushes2 = lookup.GetValueOrDefault((tileIndex, corner2), new Any()).Match(x => [x], x => brushIds);
+                var brushes1 = lookup.GetValueOrDefault((tileIndex, corner1), new Any()).Match(x => [x], _ => brushIds);
+                var brushes2 = lookup.GetValueOrDefault((tileIndex, corner2), new Any()).Match(x => [x], _ => brushIds);
 
                 foreach (var brush1 in brushes1)
                 {
@@ -110,10 +117,7 @@ public class AdjacencyFromTileBrushEstimator
             {
                 foreach (var tileTo in otherTiles)
                 {
-                    var existingDirection = adjacencyLookup[tileFrom, tileTo];
-                    var newDirection = existingDirection | direction;
-                    
-                    adjacencyLookup[tileFrom, tileTo] = newDirection;
+                    adjacencyLookup.Add(tileFrom, tileTo, direction);
                 }
             }
         }

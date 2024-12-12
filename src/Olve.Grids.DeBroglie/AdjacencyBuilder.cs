@@ -1,10 +1,11 @@
 ﻿using DeBroglie.Models;
+using Olve.Grids.Generation;
 
-namespace Olve.Grids.Generation.Generation;
+namespace Olve.Grids.DeBroglie;
 
 public class TileAtlasAdjacencyBuilder
 {
-    public IReadOnlyCollection<AdjacentModel.Adjacency> BuildAdjacencies(TileAtlas.TileAtlas tileAtlas)
+    public IReadOnlyCollection<AdjacentModel.Adjacency> BuildAdjacencies(TileAtlas tileAtlas)
     {
         var adjacencies = new List<AdjacentModel.Adjacency>();
 
@@ -13,7 +14,7 @@ public class TileAtlasAdjacencyBuilder
             var neighbors = tileAtlas
                 .AdjacencyLookup
                 .GetNeighbors(tileIndex)
-                .Select(x => (tileIndex: x, direction: tileAtlas.AdjacencyLookup[tileIndex, x]))
+                .Select(x => (tileIndex: x, direction: tileAtlas.AdjacencyLookup.Get(tileIndex, x)))
                 .ToArray();
             
             if (neighbors.Length == 0)

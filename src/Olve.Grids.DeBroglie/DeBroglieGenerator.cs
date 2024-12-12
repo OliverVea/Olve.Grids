@@ -2,21 +2,13 @@
 using DeBroglie.Models;
 using DeBroglie.Topo;
 using Olve.Grids.Adjacencies;
-using Olve.Grids.Grids;
-using Olve.Utilities.Operations;
+using Olve.Grids.Generation;
 using Olve.Utilities.Types;
 using OneOf.Types;
 
-namespace Olve.Grids.Generation.Generation;
+namespace Olve.Grids.DeBroglie;
 
-public record GenerationRequest(TileAtlas.TileAtlas TileAtlas, BrushGrid BrushGrid)
-{
-    public Size OutputSize { get; } = new(BrushGrid.Size.Width - 1, BrushGrid.Size.Height - 1);
-}
-
-public record GenerationResult(GenerationRequest Request, TileIndex[,] Tiles, OneOf<Success, Waiting, Error> Status);
-
-public class GenerationOperation : IOperation<GenerationRequest, GenerationResult>
+public class DeBroglieGenerator : IGenerator
 {
     public GenerationResult Execute(GenerationRequest request)
     {
@@ -39,7 +31,7 @@ public class GenerationOperation : IOperation<GenerationRequest, GenerationResul
             model.SetFrequency(tileIndex.ToTile(), frequency);
         }
 
-        //AddFallbackTile(model, request.TileAtlas);
+        AddFallbackTile(model, request.TileAtlas);
         
         var topology = new GridTopology(request.OutputSize.Width, request.OutputSize.Height, false);
 
@@ -56,7 +48,7 @@ public class GenerationOperation : IOperation<GenerationRequest, GenerationResul
         var resolution = propagator.Run();
         var status = GetStatus(resolution);
 
-        var result = propagator.ToValueArray<int>().Map(x => new TileIndex(x)).ToArray2d();
+        var result = propagator.ToArray().Map(x => x.ToTileIndex()).ToArray2d();
 
         return new GenerationResult(request, result, status);
     }
@@ -72,7 +64,7 @@ public class GenerationOperation : IOperation<GenerationRequest, GenerationResul
         };
     }
     
-    private static void AddFallbackTile(AdjacentModel model, TileAtlas.TileAtlas tileAtlas)
+    private static void AddFallbackTile(AdjacentModel model, TileAtlas tileAtlas)
     {
         var fallbackTile = tileAtlas.FallbackTileIndex.ToTile();
     

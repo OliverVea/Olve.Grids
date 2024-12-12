@@ -14,7 +14,7 @@ public class AdjacencyLookupTests
         var (from, to) = GetTilePair();
         
         // Act
-        var result = lookup[from, to];
+        var result = lookup.Get(from, to);
         
         // Assert
         await Assert.That(result).IsEqualTo(AdjacencyDirection.None);
@@ -27,10 +27,10 @@ public class AdjacencyLookupTests
         // Arrange
         var lookup = new AdjacencyLookup();
         var (from, to) = GetTilePair();
-        lookup[from, to] = direction;
+        lookup.Set(from, to, direction);
 
         // Act
-        var result = lookup[from, to];
+        var result = lookup.Get(from, to);
         
         // Assert
         await Assert.That(result).IsEqualTo(direction);
@@ -43,10 +43,10 @@ public class AdjacencyLookupTests
         // Arrange
         var lookup = new AdjacencyLookup();
         var (from, to) = GetTilePair();
-        lookup[from, to] = direction;
+        lookup.Set(from, to, direction);
 
         // Act
-        var result = lookup[to, from];
+        var result = lookup.Get(to, from);
         
         // Assert
         await Assert.That(result).IsEqualTo(opposite);
@@ -58,14 +58,32 @@ public class AdjacencyLookupTests
         // Arrange
         var lookup = new AdjacencyLookup();
         var (from, to) = GetTilePair();
-        lookup[from, to] = AdjacencyDirection.Up;
-        lookup[from, to] = AdjacencyDirection.Down;
+        lookup.Set(from, to, AdjacencyDirection.Up);
+        lookup.Set(from, to, AdjacencyDirection.Down);
 
         // Act
-        var result = lookup[from, to];
+        var result = lookup.Get(from, to);
         
         // Assert
         await Assert.That(result).IsEqualTo(AdjacencyDirection.Down);
+    }
+    
+    [Test]
+    public async Task this_SetOnSameTile_DirectionAndOppositeIsWritten()
+    {
+        // Arrange
+        var lookup = new AdjacencyLookup();
+        var tile = new TileIndex(42);
+        var direction = AdjacencyDirection.Up;
+        var opposite = direction.Opposite();
+        
+        lookup.Set(tile, tile, direction);
+
+        // Act
+        var result = lookup.Get(tile, tile);
+        
+        // Assert
+        await Assert.That(result).IsEqualTo(direction | opposite);
     }
 
     
@@ -96,6 +114,4 @@ public class AdjacencyDirectionGenerator
     {
         return AllDirections.Select<AdjacencyDirection, Func<(AdjacencyDirection direction, AdjacencyDirection opposite)>>(direction => () => (direction, direction.Opposite()));
     }
-    
-    
 }
