@@ -13,7 +13,7 @@ A tile atlas is a `.png` file that contains all the tiles that can be used in th
 An example tile atlas is provided in the `Demo` directory. It has a tile size of 4x4 pixels, and contains 18 tiles:
 
 <div style="position: relative; width: 240px; height: 120px; display: inline-block;">
-    <img src="https://github.com/OliverVea/Olve.Grids/tree/master/src/Demo/assets/tile-atlas.png" width="240" height="120" style="image-rendering: pixelated; display: block;">
+    <img src="https://raw.githubusercontent.com/OliverVea/Olve.Grids/refs/heads/master/src/Demo/assets/tile-atlas.png" width="240" height="120" style="image-rendering: pixelated; display: block;">
     <div style="position: absolute; top: 0; left: 0; width: 240px; height: 120px; display: grid; grid-template-columns: repeat(6, 2fr); grid-template-rows: repeat(3, 2fr); pointer-events: none;">
         <div style="border: 1px solid rgba(255, 255, 255, 0.5);">0</div>
         <div style="border: 1px solid rgba(255, 255, 255, 0.5);">1</div>
@@ -106,4 +106,4 @@ This will generate an output based on the input brushes and the tile atlas.
 
 For example, the input brushes above will generate the following output:
 
-![Output](https://github.com/OliverVea/Olve.Grids/tree/master/src/Demo/assets/output.png)
+<img src="https://github.com/OliverVea/Olve.Grids/blob/master/src/Demo/assets/output.png?raw=true" width="240" height="220" style="image-rendering: pixelated; display: block;">

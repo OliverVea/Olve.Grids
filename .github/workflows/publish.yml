@@ -119,6 +119,9 @@ jobs:
 
       - name: publish demo as executable
         run: dotnet publish --output ./build --no-restore --no-build -c Release -r win-x64 /p:PackageVersion=${{ env.VERSION }}
+        
+      - name: list files
+        run: ls build
 
       - name: Zip Demo
         run: |
