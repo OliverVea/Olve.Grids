@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - "**"
+
 env:
   VERSION: 1.0.0
 
@@ -21,6 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set Version Variable
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
 
       - name: Debug Version
         run: echo "VERSION=$VERSION"
@@ -48,6 +55,12 @@ jobs:
       - test
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set Version Variable
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
         
       - name: Debug Version
         run: echo "VERSION=$VERSION"
@@ -79,6 +92,15 @@ jobs:
       - test
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set Version Variable
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+
+      - name: Debug Version
+        run: echo "VERSION=$VERSION"
         
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -87,12 +109,9 @@ jobs:
           
       - name: Restore dependencies
         run: dotnet restore
-
-      - name: Debug Version
-        run: echo "VERSION=$VERSION"
         
       - name: Build
-        run: dotnet build --no-restore -c Release /p:Version=$VERSION /p:DebugType=None /p:DebugSymbols=false
+        run: dotnet build --no-restore -c Release "/p:Version=$VERSION" /p:DebugType=None /p:DebugSymbols=false
         
       - name: publish demo as executable
         run: dotnet publish --output ./build --no-restore --no-build -c Release -r win-x64 /p:PackageVersion=$VERSION
