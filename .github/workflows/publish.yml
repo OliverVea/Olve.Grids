@@ -38,6 +38,9 @@ jobs:
   
   nuget:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/Olve.Grids
     needs: 
       - test
     steps:
@@ -61,7 +64,7 @@ jobs:
         run: dotnet build --no-restore -c Release /p:Version=$VERSION
         
       - name: pack nuget packages
-        run: dotnet pack ./src/Olve.Grids --output nupkgs --no-restore --no-build -c Release /p:PackageVersion=$VERSION
+        run: dotnet pack --output nupkgs --no-restore --no-build -c Release /p:PackageVersion=$VERSION
         
       - name: upload nuget package
         if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
@@ -69,6 +72,9 @@ jobs:
         
   publish:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ./src/Demo
     needs: 
       - test
     steps:
@@ -92,7 +98,7 @@ jobs:
         run: dotnet build --no-restore -c Release /p:Version=$VERSION /p:DebugType=None /p:DebugSymbols=false
         
       - name: publish demo as executable
-        run: dotnet publish ./src/Demo --output ./build --no-restore --no-build -c Release -r win-x64 /p:PackageVersion=$VERSION
+        run: dotnet publish --output ./build --no-restore --no-build -c Release -r win-x64 /p:PackageVersion=$VERSION
         
       - uses: montudor/action-zip@v1
         with:
