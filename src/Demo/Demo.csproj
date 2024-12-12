@@ -18,6 +18,7 @@
     
     <ItemGroup>
         <None Include="assets\**"
+              Exclude="**\output.png"
               CopyToOutputDirectory="PreserveNewest"
               Link="%(Filename)%(Extension)"
                 Visible="false" />
