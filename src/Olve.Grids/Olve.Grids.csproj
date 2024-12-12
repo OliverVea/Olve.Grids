@@ -1,4 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Title>Olve.Grids</Title>
+        <Authors>Oliver Vea</Authors>
+        <Description>Setting up a TileAtlas for generating tile-based art</Description>
+        <Copyright>Oliver Vea</Copyright>
+        <PackageProjectUrl>https://github.com/OliverVea/Olve.Grids/src/Olve.Grids</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/OliverVea/Olve.Grids</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <IsTrimmable>true</IsTrimmable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <NoWarn Label="">CS1591</NoWarn> <!-- Temporarily disable the requirement for XML documentation on public types and members -->
+    </PropertyGroup>
+    
     <ItemGroup>
         <PackageReference Include="Olve.Utilities" />
         <PackageReference Include="StrictId" />

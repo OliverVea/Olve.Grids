@@ -1,4 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Title>Olve.Grids.DeBroglie</Title>
+        <Authors>Oliver Vea</Authors>
+        <Description>Using DeBroglie to generate tile-based art</Description>
+        <Copyright>Oliver Vea</Copyright>
+        <PackageProjectUrl>https://github.com/OliverVea/Olve.Grids/src/Olve.Grids.DeBroglie</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/OliverVea/Olve.Grids</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <IsTrimmable>true</IsTrimmable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <NoWarn Label="">CS1591</NoWarn> <!-- Temporarily disable the requirement for XML documentation on public types and members -->
+    </PropertyGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\Olve.Grids\Olve.Grids.csproj" />
     </ItemGroup>

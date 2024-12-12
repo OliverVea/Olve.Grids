@@ -46,12 +46,12 @@ jobs:
       - name: Test
         run: dotnet test --no-build -c Release --verbosity normal
   
-  nuget:
+  nuget-grids:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./src/Olve.Grids
-    needs: 
+    needs:
       - test
     steps:
       - uses: actions/checkout@v3
@@ -61,24 +61,61 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
-        
+
       - name: Debug Version
         run: echo "VERSION=$VERSION"
-        
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 9.0.x
-          
+
       - name: Restore dependencies
         run: dotnet restore
-        
+
       - name: Build
         run: dotnet build --no-restore -c Release /p:Version=$VERSION
-        
+
       - name: pack nuget packages
         run: dotnet pack --output nupkgs --no-restore --no-build -c Release /p:PackageVersion=$VERSION
-        
+
+      - name: upload nuget package
+        if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
+        run: dotnet nuget push nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+  
+  nuget-grids-debroglie:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/Olve.Grids.DeBroglie
+    needs:
+      - test
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Version Variable
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+
+      - name: Debug Version
+        run: echo "VERSION=$VERSION"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release /p:Version=$VERSION
+
+      - name: pack nuget packages
+        run: dotnet pack --output nupkgs --no-restore --no-build -c Release /p:PackageVersion=$VERSION
+
       - name: upload nuget package
         if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
         run: dotnet nuget push nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
