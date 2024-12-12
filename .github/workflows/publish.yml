@@ -135,10 +135,9 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          VERSION=${{ env.TAG }}
-          VERSION=${VERSION:1}  # Remove the first character
+          $VERSION=${{ env.TAG }}.Substring(1)
           echo "VERSION=${VERSION}" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "Version set to: ${VERSION}"  # Echo the version at the end
+          echo "Version set to: ${VERSION}"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
