@@ -17,16 +17,24 @@
     </ItemGroup>
     
     <ItemGroup>
-      <None Update="data\*">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Content Include="bin\Debug\net9.0\output.png" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="data\" />
+        <None Include="assets\**"
+              CopyToOutputDirectory="PreserveNewest"
+              Link="%(Filename)%(Extension)"
+                Visible="false" />
+
+
+        <None Include="..\..\LICENSE"
+              CopyToOutputDirectory="PreserveNewest"
+              Link="LICENSE"
+              Visible="false" />
+        
+        <None Update="README.md">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        
+        <None Update="../../LICENSE">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        
     </ItemGroup>
 </Project>

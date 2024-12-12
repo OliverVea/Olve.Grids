@@ -17,21 +17,21 @@ public class RunCommand : Command<RunCommand.Settings>
     
     public class Settings : CommandSettings
     {
-        [Description("The tile atlas file. Defaults to 'data/tile-atlas.png'")]
+        [Description("The tile atlas file. Defaults to 'tile-atlas.png'")]
         [CommandOption("-a|--tile-atlas")]
-        public string TileAtlasFile { get; set; } = "data/tile-atlas.png";
+        public string TileAtlasFile { get; set; } = "tile-atlas.png";
         
         [Description("The tile size in pixels. Defaults to '4x4'")]
         [CommandOption("-s|--tile-size")]
         public string TileSize { get; set; } = "4x4";
         
-        [Description("The tile atlas brushes file containing brushes for each tile. Defaults to 'data/tile-atlas.brushes.txt'")]
+        [Description("The tile atlas brushes file containing brushes for each tile. Defaults to 'tile-atlas.brushes.txt'")]
         [CommandOption("-b|--tile-atlas-brushes")]
-        public string TileAtlasBrushesFile { get; set; } = "data/tile-atlas.brushes.txt";
+        public string TileAtlasBrushesFile { get; set; } = "tile-atlas.brushes.txt";
         
-        [Description("The input file containing brushes to generate. Defaults to 'data/input.brushes.txt'")]
+        [Description("The input file containing brushes to generate. Defaults to 'input.brushes.txt'")]
         [CommandOption("-i|--input")]
-        public string InputBrushesFile { get; set; } = "data/input.brushes.txt";
+        public string InputBrushesFile { get; set; } = "input.brushes.txt";
         
         [Description("The output file to generate. Defaults to 'output.png'")]
         [CommandOption("-o|--output")]
