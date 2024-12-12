@@ -21,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Debug Version
+        run: echo "VERSION=$VERSION"
         
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -45,6 +48,9 @@ jobs:
       - test
     steps:
       - uses: actions/checkout@v3
+        
+      - name: Debug Version
+        run: echo "VERSION=$VERSION"
         
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -81,6 +87,9 @@ jobs:
           
       - name: Restore dependencies
         run: dotnet restore
+
+      - name: Debug Version
+        run: echo "VERSION=$VERSION"
         
       - name: Build
         run: dotnet build --no-restore -c Release /p:Version=$VERSION /p:DebugType=None /p:DebugSymbols=false
