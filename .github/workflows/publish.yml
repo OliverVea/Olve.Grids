@@ -97,7 +97,7 @@ jobs:
         if: ${{ github.ref_type == 'tag' }}
         env:
           TAG: ${{ github.ref_name }}
-        run: echo echo "VERSION=${TAG#v}" | Out-File -FilePath $env:GITHUB_ENV -Append
+        run: echo "VERSION=${TAG#v}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Debug Version
         run: echo "VERSION=$VERSION"
