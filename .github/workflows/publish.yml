@@ -135,7 +135,7 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          $VERSION=${{ env.TAG }}.Substring(1)
+          $VERSION="${{ env.TAG }}".Substring(1)
           echo "VERSION=${VERSION}" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "Version set to: ${VERSION}"
 
