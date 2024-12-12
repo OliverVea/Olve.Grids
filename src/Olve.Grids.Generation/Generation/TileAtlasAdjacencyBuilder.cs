@@ -1,5 +1,4 @@
-﻿using DeBroglie;
-using DeBroglie.Models;
+﻿using DeBroglie.Models;
 
 namespace Olve.Grids.Generation.Generation;
 

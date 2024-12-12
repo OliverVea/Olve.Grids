@@ -18,6 +18,18 @@ public class AdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Adjacenc
         get => Lookup.GetValueOrDefault(a, EmptyLookup).GetValueOrDefault(b, AdjacencyDirection.None);
         set
         {
+            if (a == b)
+            {
+                if (!Lookup.ContainsKey(a))
+                {
+                    Lookup[a] = new Dictionary<TileIndex, AdjacencyDirection>();
+                }
+
+                Lookup[a][b] = value | value.Opposite();
+                
+                return;
+            }
+            
             if (!Lookup.ContainsKey(a))
             {
                 Lookup[a] = new Dictionary<TileIndex, AdjacencyDirection>();

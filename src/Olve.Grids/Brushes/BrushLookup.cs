@@ -1,21 +1,51 @@
-﻿using Olve.Grids.Grids;
-using Olve.Utilities.Collections;
+﻿using System.Collections;
+using System.Collections.Frozen;
+using Olve.Grids.Grids;
 using OneOf.Types;
 
 namespace Olve.Grids.Brushes;
 
-public class BrushLookup
+public class BrushLookup : IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)>
 {
-    private readonly IManyToManyLookup<TileIndex, BrushId> _lookup = new ManyToManyLookup<TileIndex, BrushId>();
+    private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
+    private readonly FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> _brushCornerToTiles;
     
-    public OneOf<IReadOnlySet<BrushId>, NotFound> GetBrushes(TileIndex tileIndex) => _lookup.Get(tileIndex);
-    public void SetBrushes(TileIndex tileIndex, ISet<BrushId> brushes) => _lookup.Set(tileIndex, brushes);
+    public FrozenSet<BrushId> AllBrushIds { get; }
     
-    public OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId) => _lookup.Get(brushId);
-    public void SetTiles(BrushId brushId, ISet<TileIndex> tiles) => _lookup.Set(brushId, tiles);
+    internal BrushLookup(
+        FrozenSet<BrushId> allBrushIds,
+        FrozenDictionary<(TileIndex, Corner), BrushId> tileCornerToBrush,
+        FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> brushCornerToTiles)
+    {
+        AllBrushIds = allBrushIds;
+        _tileCornerToBrush = tileCornerToBrush;
+        _brushCornerToTiles = brushCornerToTiles;
+    }
+    
+    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner)
+    {
+        return _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
+            ? brushId
+            : new NotFound();
+    }
+    
+    public OneOf<FrozenSet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner)
+    {
+        return _brushCornerToTiles.TryGetValue((brushId, corner), out var tiles)
+            ? tiles
+            : new NotFound();
+    }
 
-    public IEnumerable<KeyValuePair<TileIndex, BrushId>> Pairs => _lookup;
-    
-    public IEnumerable<TileIndex> TileIndices => _lookup.Lefts;
-    public IEnumerable<BrushId> BrushIds => _lookup.Rights;
+    public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()
+    {
+        foreach (var (tileCorner, brushId) in _tileCornerToBrush)
+        {
+            yield return (tileCorner.Item1, tileCorner.Item2, brushId);
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }

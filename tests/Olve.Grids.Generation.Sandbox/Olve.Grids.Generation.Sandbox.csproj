@@ -8,8 +8,12 @@
     </ItemGroup>
     
     <ItemGroup>
-      <None Update="tilesets\*">
+      <None Update="data\*">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Content Include="bin\Debug\net9.0\output.png" />
     </ItemGroup>
 </Project>

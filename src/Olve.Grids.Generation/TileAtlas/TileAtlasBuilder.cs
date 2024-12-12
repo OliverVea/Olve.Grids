@@ -1,4 +1,5 @@
-﻿using Olve.Grids.Grids;
+﻿using Olve.Grids.Brushes;
+using Olve.Grids.Grids;
 
 namespace Olve.Grids.Generation.TileAtlas;
 
@@ -31,6 +32,8 @@ public class TileAtlasBuilder
     
     private GridConfiguration? _gridConfiguration;
     public GridConfiguration GridConfiguration => _gridConfiguration ?? BuildGridConfiguration();
+    
+    public BrushLookupBuilder BrushLookupBuilder { get; } = new();
     
     private TileAtlasBuilder(string filePath, Size imageSize)
     {
@@ -137,6 +140,7 @@ public class TileAtlasBuilder
     public TileAtlas Build()
     {
         var gridConfiguration = GridConfiguration;
+        var brushLookup = BrushLookupBuilder.Build();
         
         if (FallbackTileIndex is {} fallbackTileIndex)
         {
@@ -145,13 +149,14 @@ public class TileAtlasBuilder
                 throw new InvalidOperationException("Fallback tile index is out of bounds.");
             }
             
-            return new TileAtlas(FilePath, gridConfiguration)
+            return new TileAtlas(FilePath, gridConfiguration, brushLookup)
             {
                 FallbackTileIndex = fallbackTileIndex
             };
         }
         
-        return new TileAtlas(FilePath, gridConfiguration);
+        
+        return new TileAtlas(FilePath, gridConfiguration, brushLookup);
         
     }
     
