@@ -129,19 +129,16 @@ jobs:
       - test
     steps:
       - uses: actions/checkout@v3
-
+        
       - name: Set Version Variable
         if: ${{ github.ref_type == 'tag' }}
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          echo "VERSION=${{ env.TAG }}" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Debug Environment
-        run: Get-Content $env:GITHUB_ENV
-
-      - name: Debug Version
-        run: echo "${{ env.VERSION }}"
+          VERSION=${{ env.TAG }}
+          VERSION=${VERSION:1}  # Remove the first character
+          echo "VERSION=${VERSION}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "Version set to: ${VERSION}"  # Echo the version at the end
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
