@@ -4,6 +4,7 @@ using Olve.Grids.Adjacencies;
 using Olve.Grids.DeBroglie;
 using Olve.Grids.FileIO;
 using Olve.Grids.Generation;
+using Olve.Grids.Grids;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -14,25 +15,25 @@ public class RunCommand : Command<RunCommand.Settings>
     private const int Quiet = 0;
     private const int Normal = 1;
     private const int Verbose = 2;
-    
+
     public class Settings : CommandSettings
     {
-        [Description("The tile atlas file. Defaults to 'tile-atlas.png'")]
+        [Description("The tile atlas file. Defaults to 'assets/tile-atlas.png'")]
         [CommandOption("-a|--tile-atlas")]
-        public string TileAtlasFile { get; set; } = "tile-atlas.png";
-        
+        public string TileAtlasFile { get; set; } = "assets/tile-atlas.png";
+
         [Description("The tile size in pixels. Defaults to '4x4'")]
         [CommandOption("-s|--tile-size")]
         public string TileSize { get; set; } = "4x4";
-        
-        [Description("The tile atlas brushes file containing brushes for each tile. Defaults to 'tile-atlas.brushes.txt'")]
+
+        [Description("The tile atlas brushes file containing brushes for each tile. Defaults to 'assets/tile-atlas.brushes.txt'")]
         [CommandOption("-b|--tile-atlas-brushes")]
-        public string TileAtlasBrushesFile { get; set; } = "tile-atlas.brushes.txt";
-        
-        [Description("The input file containing brushes to generate. Defaults to 'input.brushes.txt'")]
+        public string TileAtlasBrushesFile { get; set; } = "assets/tile-atlas.brushes.txt";
+
+        [Description("The input file containing brushes to generate. Defaults to 'assets/input.brushes.txt'")]
         [CommandOption("-i|--input")]
-        public string InputBrushesFile { get; set; } = "input.brushes.txt";
-        
+        public string InputBrushesFile { get; set; } = "assets/input.brushes.txt";
+
         [Description("The output file to generate. Defaults to 'output.png'")]
         [CommandOption("-o|--output")]
         public string OutputFile { get; set; } = "output.png";
@@ -40,7 +41,7 @@ public class RunCommand : Command<RunCommand.Settings>
         [Description("The verbosity level. Defaults to 'Normal'. Available values are 'Quiet', 'Normal', and 'Verbose'.")]
         [CommandOption("-v|--verbosity")]
         public string Verbosity { get; set; } = "Normal";
-        
+
         [Description("Overwrite the output file if it already exists.")]
         [CommandOption("--overwrite")]
         public bool Overwrite { get; set; }
@@ -169,6 +170,7 @@ public class RunCommand : Command<RunCommand.Settings>
         var tileAtlasBuilder = TileAtlasBuilder
             .Create(settings.TileAtlasFile)
             .WithTileSize(settings._tileSize)
+            .WithFallbackTileIndex(new TileIndex(0))
             .ReadBrushLookupFromFile(settings.TileAtlasBrushesFile);
     
         var brushGrid = tileAtlasBuilder.ReadBrushGridFromFile(settings.InputBrushesFile);

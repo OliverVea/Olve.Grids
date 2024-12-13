@@ -18,10 +18,8 @@
     
     <ItemGroup>
         <None Include="assets\**"
-              Exclude="**\output.png"
               CopyToOutputDirectory="PreserveNewest"
-              Link="%(Filename)%(Extension)"
-                Visible="false" />
+              Visible="false" />
 
 
         <None Include="..\..\LICENSE"
@@ -36,5 +34,9 @@
         <None Update="../../LICENSE">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Content Include="bin\Debug\net9.0\output.png" />
     </ItemGroup>
 </Project>

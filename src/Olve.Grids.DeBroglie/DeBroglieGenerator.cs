@@ -12,15 +12,34 @@ public class DeBroglieGenerator : IGenerator
 {
     public GenerationResult Execute(GenerationRequest request)
     {
+        var attempts = 1;
+
+        GenerationResult? result = null;
+        
+        for (; attempts >= 0; attempts--)
+        {
+            result = ExecuteInternal(request, attempts == 0);
+            if (result.Status.IsT0)
+            {
+                return result;
+            }
+            Console.WriteLine($"Generation failed. Retrying... ({attempts} attempts left)");
+        }
+
+        return result ?? throw new InvalidOperationException("Generation failed.");
+    }
+
+    private GenerationResult ExecuteInternal(GenerationRequest request, bool fallback = false)
+    {
         var constraintBuilder = new TileAtlasConstraintBuilder();
         var constraints = constraintBuilder.BuildConstraints(request.TileAtlas, request.BrushGrid);
 
         var adjacencyBuilder = new TileAtlasAdjacencyBuilder();
         var adjacencies = adjacencyBuilder.BuildAdjacencies(request.TileAtlas);
-        
+
         var model = new AdjacentModel();
         model.SetDirections(DirectionSet.Cartesian2d);
-        
+
         foreach (var adjacency in adjacencies)
         {
             model.AddAdjacency(adjacency.Src, adjacency.Dest, adjacency.Direction);
@@ -31,14 +50,15 @@ public class DeBroglieGenerator : IGenerator
             model.SetFrequency(tileIndex.ToTile(), frequency);
         }
 
-        AddFallbackTile(model, request.TileAtlas);
-        
+        if (fallback) AddFallbackTile(model, request.TileAtlas);
+
         var topology = new GridTopology(request.OutputSize.Width, request.OutputSize.Height, false);
 
         var propagatorOptions = new TilePropagatorOptions
         {
             Constraints = constraints.ToArray(),
-            BacktrackType = BacktrackType.Backjump,
+            BacktrackType = BacktrackType.Backtrack,
+            MaxBacktrackDepth = 1000,
             IndexPickerType = IndexPickerType.Default,
             TilePickerType = TilePickerType.Default,
         };
@@ -48,11 +68,22 @@ public class DeBroglieGenerator : IGenerator
         var resolution = propagator.Run();
         var status = GetStatus(resolution);
 
-        var result = propagator.ToArray().Map(x => x.ToTileIndex()).ToArray2d();
+        var result = propagator.ToArray().Map(x => ((Tile?)x).ToTileIndex(request.TileAtlas.FallbackTile)).ToArray2d();
 
+        for (var i = 0; i < request.OutputSize.Width; i++)
+        {
+            for (var j = 0; j < request.OutputSize.Height; j++)
+            {
+                if (result[i, j] == request.TileAtlas.FallbackTile)
+                {
+                    status = new Error();
+                }
+            }
+        }
+        
         return new GenerationResult(request, result, status);
     }
-    
+
     private static OneOf<Success, Waiting, Error> GetStatus(Resolution resolution)
     {
         return resolution switch
@@ -63,18 +94,18 @@ public class DeBroglieGenerator : IGenerator
             _ => throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null)
         };
     }
-    
+
     private static void AddFallbackTile(AdjacentModel model, TileAtlas tileAtlas)
     {
-        var fallbackTile = tileAtlas.FallbackTileIndex.ToTile();
-    
+        var fallbackTile = tileAtlas.FallbackTile.ToTile();
+
         var allTiles = tileAtlas.Grid.GetTileIndices().Select(x => x.ToTile()).ToArray();
-    
+
         foreach (var direction in AdjacencyDirection.All.GetDeBroglieDirections())
         {
             model.AddAdjacency([fallbackTile], allTiles, direction);
         }
-    
+
         model.SetFrequency(fallbackTile, 1e-20);
     }
 }

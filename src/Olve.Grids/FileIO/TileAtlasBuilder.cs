@@ -152,7 +152,7 @@ public class TileAtlasBuilder
             
             return new TileAtlas(FilePath, gridConfiguration, brushLookup)
             {
-                FallbackTileIndex = fallbackTileIndex
+                FallbackTile = fallbackTileIndex
             };
         }
         

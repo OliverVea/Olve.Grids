@@ -10,10 +10,15 @@ public static class TileIndexExtensions
         return new Tile(tileIndex.Index);
     }
 
-    public static TileIndex ToTileIndex(this Tile tile)
+    public static TileIndex ToTileIndex(this Tile? tile, TileIndex fallback = default)
     {
-        var index = (int)tile.Value;
-
+        if (tile?.Value == null)
+        {
+            return fallback;
+        }
+        
+        var index = (int)tile.Value.Value;
+        
         return new TileIndex(index);
     }
 }

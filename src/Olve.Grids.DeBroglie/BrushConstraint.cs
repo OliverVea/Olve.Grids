@@ -37,6 +37,8 @@ public class BrushConstraint(TileAtlas tileAtlas, BrushGrid brushGrid) : ITileCo
         allowedTiles = SetAllowedTiles(position, Corner.UpperRight, UpperRight, allowedTiles);
         allowedTiles = SetAllowedTiles(position, Corner.LowerLeft, LowerLeft, allowedTiles);
         allowedTiles = SetAllowedTiles(position, Corner.LowerRight, LowerRight, allowedTiles);
+
+        allowedTiles?.Add(tileAtlas.FallbackTile);
         
         return allowedTiles;
     }
