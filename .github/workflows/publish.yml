@@ -147,11 +147,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build --no-restore -c Release "/p:Version=${{ env.VERSION }}" /p:DebugType=None /p:DebugSymbols=false -r win-x64
-
       - name: publish demo as executable
-        run: dotnet publish --output ./output/demo --no-restore --no-build -c Release -r win-x64 /p:PackageVersion=${{ env.VERSION }}
+        run: dotnet publish --output ./output/demo --no-restore -c Release -r win-x64 /p:PackageVersion=${{ env.VERSION }}
         
       - name: list files
         run: ls output/demo
