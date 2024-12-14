@@ -1,25 +1,37 @@
 ﻿using System.Collections.Frozen;
 using Olve.Grids.Grids;
+using OneOf.Types;
 
 namespace Olve.Grids.Brushes;
 
-public class BrushLookupBuilder
+public class BrushLookupBuilder : IBrushLookupBuilder
 {
     private readonly Dictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush = new();
-    
-    public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct(); 
-    
-    public BrushLookupBuilder SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes)
+
+    public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct();
+
+    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner)
+    {
+        return _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
+            ? brushId
+            : new NotFound();
+    }
+
+    public IBrushLookupBuilder SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes)
     {
         foreach (var corner in Corners.All)
         {
             SetCornerBrush(tileIndex, corner, cornerBrushes[corner]);
         }
-        
+
         return this;
     }
-    
-    public BrushLookupBuilder SetCornerBrush(TileIndex tileIndex, Corner corner, OneOf<BrushId, Any> brushId)
+
+    public IBrushLookupBuilder SetCornerBrush(
+        TileIndex tileIndex,
+        Corner corner,
+        OneOf<BrushId, Any> brushId
+    )
     {
         if (brushId.TryPickT0(out var actualBrushId, out _))
         {
@@ -32,15 +44,15 @@ public class BrushLookupBuilder
 
         return this;
     }
-    
-    public BrushLookupBuilder Clear()
+
+    public IBrushLookupBuilder Clear()
     {
         _tileCornerToBrush.Clear();
-        
+
         return this;
     }
-    
-    public BrushLookupBuilder ClearTileBrushes(TileIndex tileIndex)
+
+    public IBrushLookupBuilder ClearTileBrushes(TileIndex tileIndex)
     {
         foreach (var corner in Corners.All)
         {
@@ -49,20 +61,20 @@ public class BrushLookupBuilder
 
         return this;
     }
-    
-    public BrushLookupBuilder ClearTileBrush(TileIndex tileIndex, Corner corner)
+
+    public IBrushLookupBuilder ClearTileBrush(TileIndex tileIndex, Corner corner)
     {
         _tileCornerToBrush.Remove((tileIndex, corner));
-        
+
         return this;
     }
-    
-    public BrushLookup Build()
+
+    public IBrushLookup Build()
     {
         var allBrushIds = GetAllBrushIds();
         var tileCornerToBrush = _tileCornerToBrush.ToFrozenDictionary();
         var brushCornerToTiles = GetBrushCornerToTiles(allBrushIds, tileCornerToBrush);
-        
+
         return new BrushLookup(allBrushIds, tileCornerToBrush, brushCornerToTiles);
     }
 
@@ -73,10 +85,11 @@ public class BrushLookupBuilder
 
     private FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> GetBrushCornerToTiles(
         FrozenSet<BrushId> allBrushes,
-        FrozenDictionary<(TileIndex, Corner), BrushId> tileCornerToBrush)
+        FrozenDictionary<(TileIndex, Corner), BrushId> tileCornerToBrush
+    )
     {
         var brushCornerToTiles = new Dictionary<(BrushId, Corner), HashSet<TileIndex>>();
-        
+
         foreach (var brushId in allBrushes)
         {
             foreach (var corner in Corners.All)
@@ -84,7 +97,7 @@ public class BrushLookupBuilder
                 brushCornerToTiles[(brushId, corner)] = [];
             }
         }
-        
+
         foreach (var ((tileIndex, corner), brushId) in tileCornerToBrush)
         {
             var oppositeCorner = corner.Opposite();
@@ -93,8 +106,6 @@ public class BrushLookupBuilder
 
         return brushCornerToTiles
             .Where(x => x.Value.Count > 0)
-            .ToFrozenDictionary(
-                x => x.Key,
-                x => x.Value.ToFrozenSet());
+            .ToFrozenDictionary(x => x.Key, x => x.Value.ToFrozenSet());
     }
 }

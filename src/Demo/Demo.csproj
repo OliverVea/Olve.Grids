@@ -8,18 +8,17 @@
     
     <ItemGroup>
         <ProjectReference Include="..\..\src\Olve.Grids.DeBroglie\Olve.Grids.DeBroglie.csproj" />
+        <ProjectReference Include="..\..\src\Olve.Grids.IO\Olve.Grids.IO.csproj" />
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="SixLabors.ImageSharp" />
         <PackageReference Include="Spectre.Console" />
         <PackageReference Include="Spectre.Console.CLI" />
     </ItemGroup>
     
     <ItemGroup>
         <None Include="assets\**"
-              CopyToOutputDirectory="PreserveNewest"
-              Visible="false" />
+              CopyToOutputDirectory="PreserveNewest" />
 
 
         <None Include="..\..\LICENSE"

@@ -8,7 +8,7 @@ public enum Side
     Left,
     Right,
     Top,
-    Bottom
+    Bottom,
 }
 
 public static class Sides
@@ -21,10 +21,10 @@ public static class Sides
             Side.Right => (Corner.UpperRight, Corner.LowerRight),
             Side.Top => (Corner.UpperLeft, Corner.UpperRight),
             Side.Bottom => (Corner.LowerLeft, Corner.LowerRight),
-            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
         };
     }
-    
+
     public static Side Opposite(this Side side)
     {
         return side switch
@@ -33,10 +33,10 @@ public static class Sides
             Side.Right => Side.Left,
             Side.Top => Side.Bottom,
             Side.Bottom => Side.Top,
-            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
         };
     }
-    
+
     public static AdjacencyDirection ToAdjacencyDirection(this Side side)
     {
         return side switch
@@ -45,29 +45,26 @@ public static class Sides
             Side.Right => AdjacencyDirection.Right,
             Side.Top => AdjacencyDirection.Up,
             Side.Bottom => AdjacencyDirection.Down,
-            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
         };
     }
-    
-    public static readonly IReadOnlyList<Side> All =
-    [
-        Side.Left,
-        Side.Right,
-        Side.Top,
-        Side.Bottom
-    ];
+
+    public static readonly IReadOnlyList<Side> All = [Side.Left, Side.Right, Side.Top, Side.Bottom];
 }
 
 public class AdjacencyFromTileBrushEstimator
 {
-    public void SetAdjacencies(AdjacencyLookup adjacencyLookup, IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> tiles)
+    public void SetAdjacencies(
+        AdjacencyLookup adjacencyLookup,
+        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
+    )
     {
         var tileIndices = new HashSet<TileIndex>();
         var brushIds = new HashSet<BrushId>();
 
         var lookup = new Dictionary<(TileIndex, Corner), OneOf<BrushId, Any>>();
 
-        foreach (var (tileIndex, corner, brush) in tiles)
+        foreach (var (tileIndex, corner, brush) in brushConfiguration)
         {
             tileIndices.Add(tileIndex);
 
@@ -87,8 +84,12 @@ public class AdjacencyFromTileBrushEstimator
             {
                 var (corner1, corner2) = Sides.GetCorners(side);
 
-                var brushes1 = lookup.GetValueOrDefault((tileIndex, corner1), new Any()).Match(x => [x], _ => brushIds);
-                var brushes2 = lookup.GetValueOrDefault((tileIndex, corner2), new Any()).Match(x => [x], _ => brushIds);
+                var brushes1 = lookup
+                    .GetValueOrDefault((tileIndex, corner1), new Any())
+                    .Match(x => [x], _ => brushIds);
+                var brushes2 = lookup
+                    .GetValueOrDefault((tileIndex, corner2), new Any())
+                    .Match(x => [x], _ => brushIds);
 
                 foreach (var brush1 in brushes1)
                 {
@@ -105,14 +106,14 @@ public class AdjacencyFromTileBrushEstimator
                 }
             }
         }
-        
+
         foreach (var ((side, brush1, brush2), tilesFrom) in dict)
         {
             var direction = side.ToAdjacencyDirection();
             var oppositeSide = side.Opposite();
-            
+
             var otherTiles = dict.GetValueOrDefault((oppositeSide, brush1, brush2), []);
-            
+
             foreach (var tileFrom in tilesFrom)
             {
                 foreach (var tileTo in otherTiles)
@@ -122,13 +123,15 @@ public class AdjacencyFromTileBrushEstimator
             }
         }
     }
-    
-    public AdjacencyLookup GetAdjacencyLookup(IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> tiles)
+
+    public AdjacencyLookup GetAdjacencyLookup(
+        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> tiles
+    )
     {
         var adjacencyLookup = new AdjacencyLookup();
-        
+
         SetAdjacencies(adjacencyLookup, tiles);
-        
+
         return adjacencyLookup;
     }
 }

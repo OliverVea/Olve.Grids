@@ -1,4 +1,4 @@
-﻿namespace Olve.Grids.FileIO;
+﻿namespace Olve.Grids.IO;
 
 public static class FileIOConstants
 {

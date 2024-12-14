@@ -4,5 +4,14 @@ DL  LL  LD  LD  DL  LD
 DL  LL  LD  LD  DL  LD
 DL  LL  LD  LL  LL  DL
 
-DL  LL  LD  DD  DD  QQ
-DD  DD  DD  DD  DD  QQ
+DL  LL  LD  DD  DD  DD
+DD  DD  DD  DD  DD  DD
+
+DD  DD  DD  DD  WW  DW
+DW  WW  WD  DD  WW  WD
+
+DW  WW  WD  WW  WW  WD
+DW  WW  WD  WD  DW  DW
+
+DW  WW  WD  WD  DW  QQ
+DD  DD  DD  WW  WW  QQ

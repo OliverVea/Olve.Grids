@@ -3,7 +3,6 @@ using DeBroglie.Models;
 using DeBroglie.Topo;
 using Olve.Grids.Adjacencies;
 using Olve.Grids.Generation;
-using Olve.Utilities.Types;
 using OneOf.Types;
 
 namespace Olve.Grids.DeBroglie;

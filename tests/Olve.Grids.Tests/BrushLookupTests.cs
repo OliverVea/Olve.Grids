@@ -11,10 +11,10 @@ public class BrushLookupTests
         // Arrange
         var tile = new TileIndex(42);
         var corner = Corner.UpperRight;
-        
+
         var builder = new BrushLookupBuilder();
         var lookup = builder.Build();
-        
+
         // Act
         var actual = lookup.GetBrushId(tile, corner);
 
@@ -29,13 +29,13 @@ public class BrushLookupTests
         var tile = new TileIndex(42);
         var brushId = BrushId.New();
         var corner = Corner.UpperRight;
-        
+
         var builder = new BrushLookupBuilder();
 
         builder.SetCornerBrush(tile, corner, brushId);
 
         var lookup = builder.Build();
-        
+
         // Act
         var actual = lookup.GetBrushId(tile, corner);
 
@@ -52,7 +52,7 @@ public class BrushLookupTests
         var brushId = BrushId.New();
         var corner = Corner.UpperRight;
         var oppositeCorner = corner.Opposite();
-        
+
         var builder = new BrushLookupBuilder();
 
         builder.SetCornerBrush(tile, corner, brushId);
@@ -114,8 +114,7 @@ public class BrushLookupTests
         // Assert
         await Assert.That(actual.IsT1).IsTrue();
     }
-    
-    
+
     [Test]
     public async Task GetBrushId_AfterClearingTileBrush_ReturnsNotFound()
     {
@@ -220,7 +219,7 @@ public class BrushLookupTests
         var lookup = builder.Build();
 
         // Act
-        var allBrushIds = lookup.AllBrushIds;
+        var allBrushIds = lookup.Brushes;
 
         // Assert
         await Assert.That(allBrushIds).IsEmpty();
@@ -243,7 +242,7 @@ public class BrushLookupTests
         var lookup = builder.Build();
 
         // Act
-        var allBrushIds = lookup.AllBrushIds;
+        var allBrushIds = lookup.Brushes;
 
         // Assert
         await Assert.That(allBrushIds).IsEmpty();

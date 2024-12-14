@@ -1,0 +1,11 @@
+generateFromBrushes: true
+adjacencies:
+  - tile: 16
+    overwriteBrushAdjacencies:
+      - right
+    adjacents:
+      - tile: 17
+        direction: right
+  - tile: 17
+    overwriteBrushAdjacencies:
+      - left
