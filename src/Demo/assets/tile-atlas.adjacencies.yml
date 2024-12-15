@@ -5,7 +5,7 @@ adjacencies:
       - right
     adjacents:
       - tile: 17
-        direction: right
+        direction: right | left
   - tile: 17
     overwriteBrushAdjacencies:
       - left
