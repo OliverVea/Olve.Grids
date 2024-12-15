@@ -3,9 +3,7 @@ using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Generation;
 using Olve.Grids.Grids;
-using Olve.Grids.IO.Readers;
 using Olve.Grids.Weights;
-using SixLabors.ImageSharp;
 
 namespace Olve.Grids.IO.TileAtlasBuilder;
 
@@ -40,20 +38,6 @@ public class TileAtlasBuilder
         Action<IAdjacencyLookupBuilder?> configurationAction
     ) => Modify(config => configurationAction(config.AdjacencyLookupBuilder));
 
-    public TileAtlasBuilder WithAdjacencyLookupFromFile(string filePath)
-    {
-        var fileReader = new TileAtlasAdjacenciesFileReader(filePath);
-
-        if (Configuration.BrushLookupBuilder is not { } brushLookupBuilder)
-        {
-            throw new InvalidOperationException("Brush lookup builder must be configured.");
-        }
-
-        var brushLookup = brushLookupBuilder.Build();
-
-        return WithAdjacencyLookupBuilder(fileReader.Read(brushLookup));
-    }
-
     public TileAtlasBuilder WithBrushLookupBuilder(IBrushLookupBuilder brushLookupBuilder) =>
         Modify(config => config.BrushLookupBuilder = brushLookupBuilder);
 
@@ -61,33 +45,12 @@ public class TileAtlasBuilder
         Action<IBrushLookupBuilder?> configurationAction
     ) => Modify(config => configurationAction(config.BrushLookupBuilder));
 
-    public TileAtlasBuilder WithBrushLookupFromFile(string filePath)
-    {
-        var fileReader = new TileAtlasBrushesFileReader(filePath);
-
-        if (!fileReader.Load().TryPickT0(out var brushLookupBuilder, out var errors))
-        {
-            throw errors.ToException();
-        }
-
-        return WithBrushLookupBuilder(brushLookupBuilder);
-    }
-
     public TileAtlasBuilder WithWeightLookupBuilder(IWeightLookupBuilder weightLookupBuilder) =>
         Modify(config => config.WeightLookupBuilder = weightLookupBuilder);
 
-    public TileAtlasBuilder WithNewWeightLookupBuilder(
-        Action<IWeightLookupBuilder> configurationAction,
-        IEnumerable<KeyValuePair<TileIndex, float>>? weights = null,
-        float defaultWeight = 1f
-    )
-    {
-        var weightLookupBuilder = new WeightLookup(weights, defaultWeight);
-
-        configurationAction(weightLookupBuilder);
-
-        return WithWeightLookupBuilder(weightLookupBuilder);
-    }
+    public TileAtlasBuilder ConfigureWeightLookupBuilder(
+        Action<IWeightLookupBuilder?> configurationAction
+    ) => Modify(config => configurationAction(config.WeightLookupBuilder));
 
     public OneOf<TileAtlas, IList<ValidationFailure>> Build()
     {

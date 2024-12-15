@@ -55,8 +55,8 @@ public class RunCommand : Command<RunCommand.Settings>
         public bool Overwrite { get; set; }
 
         [Description]
-        [CommandOption("--tile-atlas-adjacencies")]
-        public string? TileAtlasAdjacenciesFile { get; set; }
+        [CommandOption("--tile-atlas-config")]
+        public string? TileAtlasConfigFile { get; set; }
 
         public Size ParsedTileSize;
         public int ParsedVerbosity;
@@ -192,14 +192,41 @@ public class RunCommand : Command<RunCommand.Settings>
 
         var tileAtlasBuilder = new TileAtlasBuilder()
             .WithFilePath(settings.TileAtlasFile)
-            .WithTileSize(settings.ParsedTileSize)
-            .WithBrushLookupFromFile(settings.TileAtlasBrushesFile);
+            .WithTileSize(settings.ParsedTileSize);
 
-        if (settings.TileAtlasAdjacenciesFile is { } tileAtlasAdjacenciesFile)
+        var tileAtlasBrushesReader = new TileAtlasBrushesFileReader(settings.TileAtlasBrushesFile);
+        if (!tileAtlasBrushesReader.Load().TryPickT0(out var tileAtlasBrushes, out var brushErrors))
         {
-            tileAtlasBuilder = tileAtlasBuilder.WithAdjacencyLookupFromFile(
-                tileAtlasAdjacenciesFile
-            );
+            foreach (var problem in brushErrors.Problems)
+            {
+                AnsiConsole.MarkupLine($"[bold red]Error:[/] {problem}");
+            }
+
+            return 1;
+        }
+
+        tileAtlasBuilder.WithBrushLookupBuilder(tileAtlasBrushes);
+
+        if (settings.TileAtlasConfigFile is { } tileAtlasAdjacenciesFile)
+        {
+            var adjacencyLookupBuilder = new AdjacencyLookupBuilder();
+            var adjacencyLookupReader = new AdjacencyLookupFileReader(tileAtlasAdjacenciesFile);
+            if (
+                !adjacencyLookupReader
+                    .Load()
+                    .TryPickT0(out var adjacencyLookup, out var adjacencyErrors)
+            )
+            {
+                foreach (var problem in adjacencyErrors.Problems)
+                {
+                    AnsiConsole.MarkupLine($"[bold red]Error:[/] {problem}");
+                }
+
+                return 1;
+            }
+
+            adjacencyLookupBuilder.WithAdjacencyLookup(adjacencyLookup);
+            tileAtlasBuilder = tileAtlasBuilder.WithAdjacencyLookupBuilder(adjacencyLookupBuilder);
         }
         else
         {
