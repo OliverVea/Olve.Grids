@@ -1,6 +1,7 @@
 ﻿# grid-demo
 
 This is a demo CLI application showcasing the [Olve.Grids](https://github.com/OliverVea/Olve.grids) nuget package.
+It can be downloaded in the newest [release](https://github.com/OliverVea/Olve.Grids/releases/latest).
 
 ## How to use this demo
 
