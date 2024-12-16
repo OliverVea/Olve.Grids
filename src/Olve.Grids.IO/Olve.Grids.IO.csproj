@@ -25,6 +25,7 @@
     <ItemGroup>
         <PackageReference Include="FluentValidation"/>
         <PackageReference Include="SixLabors.ImageSharp"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator"/>
         <PackageReference Include="YamlDotNet"/>
     </ItemGroup>

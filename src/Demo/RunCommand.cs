@@ -179,7 +179,8 @@ public class RunCommand : Command<RunCommand.Settings>
             var adjacencyBuilder = new AdjacencyLookup();
             var weightBuilder = new WeightLookup();
 
-            var configurationLoader = new ConfigurationLoader();
+            var configurationLoader = ConfigurationLoader.Create();
+
             if (!configurationLoader
                     .Load(tileAtlasConfigFile, adjacencyBuilder, weightBuilder, tileIndices, tileAtlasBrushes)
                     .TryPickT0(out _, out var error))

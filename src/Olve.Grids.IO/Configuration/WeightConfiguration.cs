@@ -8,7 +8,7 @@ public class WeightConfiguration
 
     public class TileWeight
     {
-        public required TileIndex Tile { get; init; }
-        public required float Weight { get; init; }
+        public required IReadOnlyCollection<TileIndex> Tiles { get; init; }
+        public required Func<float, float> WeightFunction { get; init; }
     }
 }

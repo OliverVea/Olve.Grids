@@ -2,8 +2,11 @@
 
 internal class AdjacentModel
 {
-    /// <example>16</example>
-    public int? Tile { get; set; }
+    /// <example>16, 23-25</example>
+    public string? Tiles { get; set; }
+
+    /// <example>water</example>
+    public string? Group { get; set; }
 
     /// <example>false</example>
     public bool IsAdjacent { get; set; } = true;

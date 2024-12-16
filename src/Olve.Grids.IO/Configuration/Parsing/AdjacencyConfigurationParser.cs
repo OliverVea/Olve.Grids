@@ -4,17 +4,24 @@ using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
-internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
+public class AdjacencyConfigurationParser(
+    TileGroupParser tileGroupParser,
+    AdjacencyDirectionParser adjacencyDirectionParser)
+    : IParser<AdjacencyConfiguration>
 {
-    private readonly AdjacencyDirectionParser _adjacencyDirectionParser = new();
-    private readonly TileIndexParser _tileIndexParser = new();
-
     public OneOf<AdjacencyConfiguration, FileParsingError> Parse(
         ConfigurationModel configurationModel
     )
     {
+        if (!tileGroupParser
+                .Parse(configurationModel)
+                .TryPickT0(out var tileGroups, out var tileGroupsError))
+        {
+            return tileGroupsError;
+        }
+
         if (
-            !ParseAdjacencies(configurationModel)
+            !ParseAdjacencies(tileGroups, configurationModel)
                 .TryPickT0(out var adjacencies, out var adjacenciesError)
         )
         {
@@ -28,10 +35,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         };
     }
 
-    private OneOf<
-        IReadOnlyList<AdjacencyConfiguration.Adjacency>,
-        FileParsingError
-    > ParseAdjacencies(ConfigurationModel configurationModel)
+    private OneOf<IReadOnlyList<AdjacencyConfiguration.Adjacency>, FileParsingError> ParseAdjacencies(
+        TileGroups tileGroups,
+        ConfigurationModel configurationModel)
     {
         if (configurationModel.Adjacencies is not { } adjacencyModels)
         {
@@ -39,7 +45,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         }
 
         var adjacencyParsingResults = adjacencyModels
-            .Select(ParseAdjacency)
+            .Select(x => ParseAdjacency(tileGroups, x))
             .ToArray();
 
         if (!adjacencyParsingResults.AllT0())
@@ -54,21 +60,21 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
     }
 
     private OneOf<AdjacencyConfiguration.Adjacency, FileParsingError> ParseAdjacency(
+        TileGroups tileGroups,
         AdjacencyModel adjacencyModel
     )
     {
-        if (
-            !_tileIndexParser
-                .Parse(adjacencyModel.Tile)
-                .TryPickT0(out var tileIndex, out var tileError)
-        )
+        if (!tileGroupParser
+                .Parse(adjacencyModel.Tiles, adjacencyModel.Group, tileGroups)
+                .TryPickT0(out var tiles, out var tileError)
+           )
         {
             return tileError;
         }
 
         var adjacents = adjacencyModel.Adjacents is { } adjacentModels
             ? adjacentModels
-                .Select(ParseAdjacent)
+                .Select(x => ParseAdjacent(tileGroups, x))
                 .ToArray()
             : [ ];
 
@@ -81,7 +87,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         var overwriteDirections = adjacencyModel.OverwriteBrushAdjacencies
             is { } overwriteDirectionsModel
             ? overwriteDirectionsModel
-                .Select(x => _adjacencyDirectionParser.ParseAdjacencyDirection(x, false))
+                .Select(x => adjacencyDirectionParser.ParseAdjacencyDirection(x, false))
                 .ToArray()
             : [ ];
 
@@ -97,7 +103,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         return new AdjacencyConfiguration.Adjacency
         {
-            Tile = tileIndex,
+            Tiles = tiles.ToArray(),
             AdjacencyDirectionToOverwrite = adjacencyDirection,
             Adjacents = adjacents
                 .OfT0()
@@ -106,20 +112,20 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
     }
 
     private OneOf<AdjacencyConfiguration.Adjacent, FileParsingError> ParseAdjacent(
+        TileGroups tileGroups,
         AdjacentModel adjacentModel
     )
     {
-        if (
-            !_tileIndexParser
-                .Parse(adjacentModel.Tile)
-                .TryPickT0(out var tileIndex, out var tileIndexError)
-        )
+        if (!tileGroupParser
+                .Parse(adjacentModel.Tiles, adjacentModel.Group, tileGroups)
+                .TryPickT0(out var tiles, out var tileIndexError)
+           )
         {
             return tileIndexError;
         }
 
         if (
-            !_adjacencyDirectionParser
+            !adjacencyDirectionParser
                 .ParseAdjacencyDirection(adjacentModel.Direction, true)
                 .TryPickT0(out var direction, out var directionError)
         )
@@ -129,7 +135,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         return new AdjacencyConfiguration.Adjacent
         {
-            Tile = tileIndex,
+            Tiles = tiles.ToArray(),
             IsAdjacent = adjacentModel.IsAdjacent,
             Direction = direction,
         };

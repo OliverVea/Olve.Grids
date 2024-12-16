@@ -6,10 +6,8 @@ using OneOf.Types;
 
 namespace Olve.Grids.IO.Configuration;
 
-public class WeightConfigurationLoader
+public class WeightConfigurationLoader(WeightConfigurationParser weightConfigurationParser)
 {
-    private readonly WeightConfigurationParser _weightConfigurationParser = new();
-
     public OneOf<IWeightLookupBuilder, FileParsingError> LoadWeightConfiguration(
         ConfigurationModel configurationModel,
         IEnumerable<TileIndex> tileIndices
@@ -37,7 +35,7 @@ public class WeightConfigurationLoader
             weightLookupBuilder.SetWeight(tileIndex, defaultWeight);
         }
 
-        if (!_weightConfigurationParser
+        if (!weightConfigurationParser
                 .Parse(configurationModel)
                 .TryPickT0(out var weightConfiguration, out var parsingError))
         {
@@ -46,7 +44,13 @@ public class WeightConfigurationLoader
 
         foreach (var tileWeight in weightConfiguration.Weights)
         {
-            weightLookupBuilder.SetWeight(tileWeight.Tile, tileWeight.Weight);
+            foreach (var tile in tileWeight.Tiles)
+            {
+                var currentWeight = weightLookupBuilder.GetWeight(tile);
+                var newWeight = tileWeight.WeightFunction(currentWeight);
+
+                weightLookupBuilder.SetWeight(tile, newWeight);
+            }
         }
 
         return new Success();

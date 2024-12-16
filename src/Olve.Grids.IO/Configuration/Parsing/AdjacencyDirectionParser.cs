@@ -3,7 +3,7 @@ using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
-internal class AdjacencyDirectionParser
+public class AdjacencyDirectionParser
 {
     private static readonly Dictionary<string, AdjacencyDirection> DirectionLookup = new()
     {

@@ -8,4 +8,5 @@ namespace Olve.Grids.IO.Configuration;
 [YamlSerializable(typeof(AdjacencyModel))]
 [YamlSerializable(typeof(AdjacentModel))]
 [YamlSerializable(typeof(WeightModel))]
+[YamlSerializable(typeof(GroupModel))]
 public partial class YamlStaticContext;

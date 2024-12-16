@@ -1,16 +1,64 @@
-generateAdjacenciesFromBrushes: true
+# This file is used to configure the tile atlas generation process
+# It is optional. If not present, adjacencies will be generated from brushes and weights will be set to 1
+
+# Generates adjacencies automatically from tile brushes
+# see 
+generateAdjacenciesFromBrushes: true # Default is true
+
+# Manually configure adjacencies
 adjacencies:
-  - tile: 16
+  - tiles: 16
+    
+    # Clears the generated adjacencies in the specified directions
     overwriteBrushAdjacencies:
       - right
+    
+    # Adds adjacencies in the specified directions
     adjacents:
-      - tile: 17
+      # - group: water
+      - tiles: 17
         direction: right
-  - tile: 17
+
+  - tiles: 17
     overwriteBrushAdjacencies:
       - left
+
+# Configure tile weights
 weights:
-  - tile: 16
+  - group: rocks
     weight: 0.1
-  - tile: 17
+    mode: multiply # Default. This will multiply the weight with the existing weight
+    #   mode: add # This will add the weight to the existing weight
+    #   mode: set # This will set the weight to the new value
+
+  - group: dark
+    weight: 2
+
+  - group: full-dark
+    weight: 4
+
+  - group: diagonals
     weight: 0.1
+
+  - tiles: 21
+    weight: 0.6
+
+# Groups are used to define a set of tiles that share the same weight
+# They are not necessary but can be useful to avoid repeating the same group of tiles
+groups:
+  rocks:
+    tiles: 16, 17
+  water-diagonals:
+    tiles: 23, 29
+  light-diagonals:
+    tiles: 5, 11
+  light:
+    tiles: 0-14
+  dark:
+    tiles: 0-6, 8-21, 23, 24, 26-34
+  full-dark:
+    tiles: 15, 16, 17, 21
+  water:
+    tiles: 18-20, 22-34
+  diagonals:
+    tiles: 5, 11, 23, 29

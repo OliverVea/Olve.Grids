@@ -7,10 +7,8 @@ using OneOf.Types;
 
 namespace Olve.Grids.IO.Configuration;
 
-public class AdjacencyConfigurationLoader
+public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacencyConfigurationParser)
 {
-    private readonly AdjacencyConfigurationParser _adjacencyConfigurationParser = new();
-
     public OneOf<IAdjacencyLookupBuilder, FileParsingError> LoadAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
@@ -39,11 +37,10 @@ public class AdjacencyConfigurationLoader
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
     )
     {
-        if (
-            !_adjacencyConfigurationParser
+        if (!adjacencyConfigurationParser
                 .Parse(configurationModel)
                 .TryPickT0(out var adjacencyConfiguration, out var parsingError)
-        )
+           )
         {
             return parsingError;
         }
@@ -75,7 +72,10 @@ public class AdjacencyConfigurationLoader
     {
         foreach (var adjacency in adjacencyConfiguration.Adjacencies)
         {
-            adjacencyLookupBuilder.Clear(adjacency.Tile, adjacency.AdjacencyDirectionToOverwrite);
+            foreach (var tile in adjacency.Tiles)
+            {
+                adjacencyLookupBuilder.Clear(tile, adjacency.AdjacencyDirectionToOverwrite);
+            }
         }
     }
 
@@ -86,19 +86,25 @@ public class AdjacencyConfigurationLoader
     {
         foreach (var adjacency in adjacencyConfiguration.Adjacencies)
         {
-            foreach (var adjacent in adjacency.Adjacents)
+            foreach (var adjacencyTile in adjacency.Tiles)
             {
-                if (adjacent.IsAdjacent)
+                foreach (var adjacent in adjacency.Adjacents)
                 {
-                    adjacencyLookupBuilder.Set(adjacency.Tile, adjacent.Tile, adjacent.Direction);
-                }
-                else
-                {
-                    adjacencyLookupBuilder.Remove(
-                        adjacency.Tile,
-                        adjacent.Tile,
-                        adjacent.Direction
-                    );
+                    foreach (var adjacentTile in adjacent.Tiles)
+                    {
+                        if (adjacent.IsAdjacent)
+                        {
+                            adjacencyLookupBuilder.Set(adjacencyTile, adjacentTile, adjacent.Direction);
+                        }
+                        else
+                        {
+                            adjacencyLookupBuilder.Remove(
+                                adjacencyTile,
+                                adjacentTile,
+                                adjacent.Direction
+                            );
+                        }
+                    }
                 }
             }
         }

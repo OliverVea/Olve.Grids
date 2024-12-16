@@ -10,14 +10,14 @@ public class AdjacencyConfiguration
 
     public class Adjacency
     {
-        public required TileIndex Tile { get; init; }
+        public required IReadOnlyCollection<TileIndex> Tiles { get; init; }
         public required AdjacencyDirection AdjacencyDirectionToOverwrite { get; init; }
         public required IReadOnlyList<Adjacent> Adjacents { get; init; }
     }
 
     public class Adjacent
     {
-        public required TileIndex Tile { get; init; }
+        public required IReadOnlyCollection<TileIndex> Tiles { get; init; }
         public bool IsAdjacent { get; init; }
         public required AdjacencyDirection Direction { get; init; }
     }
