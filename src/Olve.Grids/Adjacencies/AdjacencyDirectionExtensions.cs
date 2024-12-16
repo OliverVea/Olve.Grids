@@ -1,4 +1,4 @@
-namespace Olve.Grids.Adjacencies;
+﻿namespace Olve.Grids.Adjacencies;
 
 public static class AdjacencyDirectionExtensions
 {

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Olve.Grids.Grids;
 
 namespace Olve.Grids.Adjacencies;

@@ -1,4 +1,4 @@
-using Olve.Grids.Adjacencies;
+﻿using Olve.Grids.Adjacencies;
 using Olve.Grids.Grids;
 
 namespace Olve.Grids.Tests;
@@ -17,7 +17,9 @@ public class AdjacencyLookupTests
         var result = lookup.Get(from, to);
 
         // Assert
-        await Assert.That(result).IsEqualTo(AdjacencyDirection.None);
+        await Assert
+            .That(result)
+            .IsEqualTo(AdjacencyDirection.None);
     }
 
     [Test]
@@ -33,7 +35,9 @@ public class AdjacencyLookupTests
         var result = lookup.Get(from, to);
 
         // Assert
-        await Assert.That(result).IsEqualTo(direction);
+        await Assert
+            .That(result)
+            .IsEqualTo(direction);
     }
 
     [Test]
@@ -49,7 +53,9 @@ public class AdjacencyLookupTests
         var result = lookup.Get(to, from);
 
         // Assert
-        await Assert.That(result).IsEqualTo(opposite);
+        await Assert
+            .That(result)
+            .IsEqualTo(opposite);
     }
 
     [Test]
@@ -65,7 +71,9 @@ public class AdjacencyLookupTests
         var result = lookup.Get(from, to);
 
         // Assert
-        await Assert.That(result).IsEqualTo(AdjacencyDirection.Down);
+        await Assert
+            .That(result)
+            .IsEqualTo(AdjacencyDirection.Down);
     }
 
     [Test]
@@ -83,7 +91,9 @@ public class AdjacencyLookupTests
         var result = lookup.Get(tile, tile);
 
         // Assert
-        await Assert.That(result).IsEqualTo(direction | opposite);
+        await Assert
+            .That(result)
+            .IsEqualTo(direction | opposite);
     }
 
 
@@ -95,7 +105,6 @@ public class AdjacencyLookupTests
         return (from, to);
     }
 }
-
 
 public class AdjacencyDirectionGenerator
 {
@@ -110,8 +119,10 @@ public class AdjacencyDirectionGenerator
         return AllDirections.Select<AdjacencyDirection, Func<AdjacencyDirection>>(direction => () => direction);
     }
 
-    public static IEnumerable<Func<(AdjacencyDirection direction, AdjacencyDirection opposite)>> GetDirectionsWithOpposites()
+    public static IEnumerable<Func<(AdjacencyDirection direction, AdjacencyDirection opposite)>>
+        GetDirectionsWithOpposites()
     {
-        return AllDirections.Select<AdjacencyDirection, Func<(AdjacencyDirection direction, AdjacencyDirection opposite)>>(direction => () => (direction, direction.Opposite()));
+        return AllDirections.Select<AdjacencyDirection, Func<(AdjacencyDirection direction, AdjacencyDirection opposite)>>(
+            direction => () => (direction, direction.Opposite()));
     }
 }

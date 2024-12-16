@@ -1,4 +1,4 @@
-using Olve.Grids.Brushes;
+﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 
 namespace Olve.Grids.Tests;
@@ -19,7 +19,9 @@ public class BrushLookupTests
         var actual = lookup.GetBrushId(tile, corner);
 
         // Assert
-        await Assert.That(actual.IsT1).IsTrue();
+        await Assert
+            .That(actual.IsT1)
+            .IsTrue();
     }
 
     [Test]
@@ -40,8 +42,12 @@ public class BrushLookupTests
         var actual = lookup.GetBrushId(tile, corner);
 
         // Assert
-        await Assert.That(actual.IsT0).IsTrue();
-        await Assert.That(actual.AsT0).IsEqualTo(brushId);
+        await Assert
+            .That(actual.IsT0)
+            .IsTrue();
+        await Assert
+            .That(actual.AsT0)
+            .IsEqualTo(brushId);
     }
 
     [Test]
@@ -63,8 +69,12 @@ public class BrushLookupTests
         var actual = lookup.GetTiles(brushId, oppositeCorner);
 
         // Assert
-        await Assert.That(actual.IsT0).IsTrue();
-        await Assert.That(actual.AsT0).Contains(tile);
+        await Assert
+            .That(actual.IsT0)
+            .IsTrue();
+        await Assert
+            .That(actual.AsT0)
+            .Contains(tile);
     }
 
     [Test]
@@ -88,9 +98,15 @@ public class BrushLookupTests
         var actual = lookup.GetTiles(brushId, oppositeCorner);
 
         // Assert
-        await Assert.That(actual.IsT0).IsTrue();
-        await Assert.That(actual.AsT0).Contains(tileA);
-        await Assert.That(actual.AsT0).Contains(tileB);
+        await Assert
+            .That(actual.IsT0)
+            .IsTrue();
+        await Assert
+            .That(actual.AsT0)
+            .Contains(tileA);
+        await Assert
+            .That(actual.AsT0)
+            .Contains(tileB);
     }
 
     [Test]
@@ -112,7 +128,9 @@ public class BrushLookupTests
         var actual = lookup.GetTiles(brushId, wrongCorner);
 
         // Assert
-        await Assert.That(actual.IsT1).IsTrue();
+        await Assert
+            .That(actual.IsT1)
+            .IsTrue();
     }
 
     [Test]
@@ -133,7 +151,9 @@ public class BrushLookupTests
         var actual = lookup.GetBrushId(tile, corner);
 
         // Assert
-        await Assert.That(actual.IsT1).IsTrue();
+        await Assert
+            .That(actual.IsT1)
+            .IsTrue();
     }
 
     [Test]
@@ -155,8 +175,12 @@ public class BrushLookupTests
         var actual2 = lookup.GetBrushId(tile, Corner.LowerLeft);
 
         // Assert
-        await Assert.That(actual1.IsT1).IsTrue();
-        await Assert.That(actual2.IsT1).IsTrue();
+        await Assert
+            .That(actual1.IsT1)
+            .IsTrue();
+        await Assert
+            .That(actual2.IsT1)
+            .IsTrue();
     }
 
     [Test]
@@ -179,7 +203,9 @@ public class BrushLookupTests
         var actual = lookup.GetTiles(brushId, corner);
 
         // Assert
-        await Assert.That(actual.IsT1).IsTrue();
+        await Assert
+            .That(actual.IsT1)
+            .IsTrue();
     }
 
     [Test]
@@ -201,13 +227,25 @@ public class BrushLookupTests
         var actualLowerLeft = lookup.GetTiles(brushId, Corner.LowerLeft.Opposite());
 
         // Assert
-        await Assert.That(actualUpperRight.IsT0).IsTrue();
-        await Assert.That(actualUpperRight.AsT0).Contains(tileA);
-        await Assert.That(actualUpperRight.AsT0).DoesNotContain(tileB);
+        await Assert
+            .That(actualUpperRight.IsT0)
+            .IsTrue();
+        await Assert
+            .That(actualUpperRight.AsT0)
+            .Contains(tileA);
+        await Assert
+            .That(actualUpperRight.AsT0)
+            .DoesNotContain(tileB);
 
-        await Assert.That(actualLowerLeft.IsT0).IsTrue();
-        await Assert.That(actualLowerLeft.AsT0).Contains(tileB);
-        await Assert.That(actualLowerLeft.AsT0).DoesNotContain(tileA);
+        await Assert
+            .That(actualLowerLeft.IsT0)
+            .IsTrue();
+        await Assert
+            .That(actualLowerLeft.AsT0)
+            .Contains(tileB);
+        await Assert
+            .That(actualLowerLeft.AsT0)
+            .DoesNotContain(tileA);
     }
 
     [Test]
@@ -222,7 +260,9 @@ public class BrushLookupTests
         var allBrushIds = lookup.Brushes;
 
         // Assert
-        await Assert.That(allBrushIds).IsEmpty();
+        await Assert
+            .That(allBrushIds)
+            .IsEmpty();
     }
 
     [Test]
@@ -245,6 +285,8 @@ public class BrushLookupTests
         var allBrushIds = lookup.Brushes;
 
         // Assert
-        await Assert.That(allBrushIds).IsEmpty();
+        await Assert
+            .That(allBrushIds)
+            .IsEmpty();
     }
 }

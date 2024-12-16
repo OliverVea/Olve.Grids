@@ -1,4 +1,4 @@
-using DeBroglie.Models;
+﻿using DeBroglie.Models;
 using Olve.Grids.Generation;
 
 namespace Olve.Grids.DeBroglie;
@@ -30,9 +30,7 @@ public class TileAtlasAdjacencyBuilder
                 {
                     var adjacency = new AdjacentModel.Adjacency
                     {
-                        Src = [src],
-                        Dest = [neighbor.ToTile()],
-                        Direction = direction,
+                        Src = [src], Dest = [neighbor.ToTile()], Direction = direction
                     };
 
                     adjacencies.Add(adjacency);

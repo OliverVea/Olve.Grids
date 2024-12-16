@@ -1,4 +1,4 @@
-using FluentValidation.Results;
+﻿using FluentValidation.Results;
 using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Generation;
@@ -11,9 +11,10 @@ public class TileAtlasBuilder
 {
     private readonly TileAtlasConfigurationValidator _validator = new();
 
+    private ValidationResult? _validationResult;
+
     public TileAtlasConfiguration Configuration { get; } = new();
 
-    private ValidationResult? _validationResult;
     public ValidationResult ValidationResult =>
         _validationResult ??= _validator.Validate(Configuration);
 

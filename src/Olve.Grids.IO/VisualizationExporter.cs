@@ -1,4 +1,4 @@
-using Olve.Grids.Generation;
+﻿using Olve.Grids.Generation;
 using Olve.Grids.Grids;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -50,7 +50,7 @@ public class VisualizationExporter
         return new Rectangle(x, y, tileWidth, tileHeight);
     }
 
-    private Point GetToLocation(int x, int y, Olve.Utilities.IntegerMath2D.Size gridTileSize)
+    private Point GetToLocation(int x, int y, Size gridTileSize)
     {
         var (tileWidth, tileHeight) = gridTileSize;
 

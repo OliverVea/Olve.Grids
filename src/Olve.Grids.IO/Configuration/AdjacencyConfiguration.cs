@@ -1,4 +1,4 @@
-using Olve.Grids.Adjacencies;
+﻿using Olve.Grids.Adjacencies;
 using Olve.Grids.Grids;
 
 namespace Olve.Grids.IO.Configuration;

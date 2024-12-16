@@ -1,4 +1,4 @@
-using Olve.Grids.Adjacencies;
+﻿using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.Weights;

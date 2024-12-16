@@ -1,7 +1,13 @@
-namespace Olve.Grids.Brushes;
+﻿namespace Olve.Grids.Brushes;
 
 public static class Corners
 {
+
+    public static readonly IReadOnlyList<Corner> All =
+    [
+        Corner.UpperLeft, Corner.UpperRight, Corner.LowerLeft, Corner.LowerRight
+    ];
+
     public static Corner Opposite(this Corner corner)
     {
         return corner switch
@@ -13,12 +19,4 @@ public static class Corners
             _ => throw new ArgumentOutOfRangeException(nameof(corner), corner, null)
         };
     }
-
-    public static readonly IReadOnlyList<Corner> All =
-    [
-        Corner.UpperLeft,
-        Corner.UpperRight,
-        Corner.LowerLeft,
-        Corner.LowerRight
-    ];
 }

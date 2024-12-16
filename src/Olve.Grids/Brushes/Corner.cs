@@ -1,4 +1,4 @@
-namespace Olve.Grids.Brushes;
+﻿namespace Olve.Grids.Brushes;
 
 public enum Corner
 {

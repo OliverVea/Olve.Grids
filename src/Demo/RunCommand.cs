@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using Olve.Grids.Adjacencies;
 using Olve.Grids.DeBroglie;

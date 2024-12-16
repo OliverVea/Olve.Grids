@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Olve.Grids.IO;
 
@@ -14,8 +14,15 @@ public class FileParsingException(FileParsingError error)
 /// <param name="errors">The errors.</param>
 public class FileParsingError(IReadOnlyList<FileParsingProblem> errors)
 {
+
+    /// <summary>
+    ///     Gets all problems.
+    /// </summary>
+    public IReadOnlyList<FileParsingProblem> Problems { get; } = errors;
+
     internal static FileParsingError New(
-        [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message,
+        [StringSyntax(StringSyntaxAttribute.CompositeFormat)]
+        string message,
         params object[]? args
     ) => new([new FileParsingProblem(message, args)]);
 
@@ -25,12 +32,9 @@ public class FileParsingError(IReadOnlyList<FileParsingProblem> errors)
     /// <param name="errors">The list of errors.</param>
     /// <returns></returns>
     public static FileParsingError Combine(params IEnumerable<FileParsingError> errors) =>
-        new(errors.SelectMany(x => x.Problems).ToList());
-
-    /// <summary>
-    /// Gets all problems.
-    /// </summary>
-    public IReadOnlyList<FileParsingProblem> Problems { get; } = errors;
+        new(errors
+            .SelectMany(x => x.Problems)
+            .ToList());
 
     public Exception ToException() => new FileParsingException(this);
 }

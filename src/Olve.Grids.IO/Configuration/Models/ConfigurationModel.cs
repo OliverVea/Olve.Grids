@@ -1,4 +1,4 @@
-namespace Olve.Grids.IO.Configuration.Models;
+﻿namespace Olve.Grids.IO.Configuration.Models;
 
 /// <summary>
 /// The model of the configuration file.

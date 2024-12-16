@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Frozen;
 using Olve.Grids.Grids;
 using OneOf.Types;
@@ -7,10 +7,8 @@ namespace Olve.Grids.Brushes;
 
 public class BrushLookup : IBrushLookup
 {
-    private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
     private readonly FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> _brushCornerToTiles;
-
-    public FrozenSet<BrushId> AllBrushIds { get; }
+    private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
 
     internal BrushLookup(
         FrozenSet<BrushId> allBrushIds,
@@ -22,6 +20,8 @@ public class BrushLookup : IBrushLookup
         _tileCornerToBrush = tileCornerToBrush;
         _brushCornerToTiles = brushCornerToTiles;
     }
+
+    public FrozenSet<BrushId> AllBrushIds { get; }
 
     public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner)
     {

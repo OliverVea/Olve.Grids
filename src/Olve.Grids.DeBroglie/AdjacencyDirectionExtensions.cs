@@ -1,4 +1,4 @@
-using DeBroglie.Topo;
+﻿using DeBroglie.Topo;
 using Olve.Grids.Adjacencies;
 
 namespace Olve.Grids.DeBroglie;
@@ -28,5 +28,4 @@ public static class AdjacencyDirectionExtensions
             yield return Direction.XPlus;
         }
     }
-
 }

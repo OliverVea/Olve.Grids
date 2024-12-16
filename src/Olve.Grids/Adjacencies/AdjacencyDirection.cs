@@ -1,4 +1,4 @@
-namespace Olve.Grids.Adjacencies;
+﻿namespace Olve.Grids.Adjacencies;
 
 [Flags]
 public enum AdjacencyDirection : byte
