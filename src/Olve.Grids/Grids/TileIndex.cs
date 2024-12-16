@@ -1,6 +1,6 @@
-﻿namespace Olve.Grids.Grids;
+namespace Olve.Grids.Grids;
 
 public readonly record struct TileIndex(int Index)
 {
-    public static TileIndex operator++(TileIndex index) => new(index.Index + 1);
+    public static TileIndex operator ++(TileIndex index) => new(index.Index + 1);
 }

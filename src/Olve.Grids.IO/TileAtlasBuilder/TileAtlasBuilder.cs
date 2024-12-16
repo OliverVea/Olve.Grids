@@ -1,4 +1,4 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Generation;

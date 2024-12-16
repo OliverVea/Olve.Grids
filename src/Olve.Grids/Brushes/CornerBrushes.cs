@@ -1,4 +1,4 @@
-﻿namespace Olve.Grids.Brushes;
+namespace Olve.Grids.Brushes;
 
 public record CornerBrushes(
     OneOf<BrushId, Any> UpperLeft,
@@ -7,7 +7,7 @@ public record CornerBrushes(
     OneOf<BrushId, Any> LowerRight)
 {
     public static readonly CornerBrushes Any = new(new Any(), new Any(), new Any(), new Any());
-    
+
     public OneOf<BrushId, Any> this[Corner corner] => corner switch
     {
         Corner.UpperLeft => UpperLeft,

@@ -1,4 +1,4 @@
-﻿namespace Olve.Grids.Adjacencies;
+namespace Olve.Grids.Adjacencies;
 
 [Flags]
 public enum AdjacencyDirection : byte
@@ -8,7 +8,7 @@ public enum AdjacencyDirection : byte
     Left = 2,
     Right = 4,
     Down = 8,
-    
-    
+
+
     All = Up | Left | Right | Down
 }

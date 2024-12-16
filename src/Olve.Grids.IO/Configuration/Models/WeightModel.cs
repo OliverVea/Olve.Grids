@@ -4,7 +4,7 @@ internal class WeightModel
 {
     /// <example>16</example>
     public int? Tile { get; set; }
-    
+
     /// <example>1</example>
     public float? Weight { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using DeBroglie;
+using DeBroglie;
 using DeBroglie.Models;
 using DeBroglie.Topo;
 using Olve.Grids.Adjacencies;
@@ -14,7 +14,7 @@ public class DeBroglieGenerator : IGenerator
         var attempts = 1;
 
         GenerationResult? result = null;
-        
+
         for (; attempts >= 0; attempts--)
         {
             result = ExecuteInternal(request, attempts == 0);
@@ -79,7 +79,7 @@ public class DeBroglieGenerator : IGenerator
                 }
             }
         }
-        
+
         return new GenerationResult(request, result, status);
     }
 

@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 

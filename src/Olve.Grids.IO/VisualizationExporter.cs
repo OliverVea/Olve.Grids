@@ -1,4 +1,4 @@
-﻿using Olve.Grids.Generation;
+using Olve.Grids.Generation;
 using Olve.Grids.Grids;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;

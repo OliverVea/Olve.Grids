@@ -1,4 +1,4 @@
-﻿using Olve.Grids.Grids;
+using Olve.Grids.Grids;
 using OneOf.Types;
 
 namespace Olve.Grids.Brushes;

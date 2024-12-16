@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using Olve.Grids.Brushes;
 
 namespace Olve.Grids.Generation;
@@ -7,28 +7,28 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
 {
     public Size Size { get; }
     public int Count { get; }
-    
+
     private readonly BrushId?[] _brushes;
 
     public BrushGrid(Size size, BrushId? initialBrush = null)
     {
         Size = size;
         Count = size.Width * size.Height;
-        
+
         _brushes = new BrushId?[Count];
-        
+
         if (initialBrush != null)
         {
             Fill(initialBrush.Value);
         }
     }
-    
+
     public OneOf<BrushId, Any> GetBrush(Position position)
     {
         VerifyPosition(position);
         var index = GetIndex(position);
         var brushId = _brushes[index];
-        
+
         return GetBrushOrAny(brushId);
     }
 
@@ -36,7 +36,7 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
     {
         VerifyPosition(position);
         var index = GetIndex(position);
-        
+
         _brushes[index] = GetBrushId(brush);
     }
 
@@ -59,17 +59,17 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
 
         ArgumentOutOfRangeException.ThrowIfNegative(x);
         ArgumentOutOfRangeException.ThrowIfNegative(y);
-        
+
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(x, Size.Width);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(y, Size.Height);
     }
-    
+
     private int GetIndex(Position position) => position.Y * Size.Width + position.X;
-    
+
     private static OneOf<BrushId, Any> GetBrushOrAny(BrushId? brushId) => brushId ?? OneOf<BrushId, Any>.FromT1(new Any());
     private static BrushId? GetBrushId(OneOf<BrushId, Any> brush) => brush.TryPickT0(out var brushId, out _) ? brushId : null;
 
-    
+
     public IEnumerator<(Position position, OneOf<BrushId, Any>)> GetEnumerator()
     {
         for (var y = 0; y < Size.Height; y++)
@@ -78,7 +78,7 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
             {
                 var position = new Position(x, y);
                 var brush = GetBrush(position);
-                
+
                 yield return (position, brush);
             }
         }

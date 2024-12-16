@@ -1,4 +1,4 @@
-﻿namespace Olve.Grids.Grids;
+namespace Olve.Grids.Grids;
 
 public readonly record struct GridConfiguration(Size TileSize, int Rows, int Columns)
 {

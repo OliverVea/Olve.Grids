@@ -1,4 +1,4 @@
-﻿using DeBroglie.Constraints;
+using DeBroglie.Constraints;
 using Olve.Grids.Generation;
 
 namespace Olve.Grids.DeBroglie;

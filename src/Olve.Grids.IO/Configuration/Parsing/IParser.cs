@@ -1,4 +1,4 @@
-﻿using Olve.Grids.IO.Configuration.Models;
+using Olve.Grids.IO.Configuration.Models;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using Olve.Grids.Grids;
 
 namespace Olve.Grids.Weights;
@@ -16,7 +16,8 @@ public class WeightLookup(
         : this(
             tileIndices.Select(x => new KeyValuePair<TileIndex, float>(x, defaultWeight)),
             defaultWeight
-        ) { }
+        )
+    { }
 
     public IEnumerator<KeyValuePair<TileIndex, float>> GetEnumerator()
     {

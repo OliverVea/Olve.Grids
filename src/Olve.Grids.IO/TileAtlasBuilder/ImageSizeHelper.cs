@@ -1,4 +1,4 @@
-﻿namespace Olve.Grids.IO.TileAtlasBuilder;
+namespace Olve.Grids.IO.TileAtlasBuilder;
 
 public static class ImageSizeHelper
 {

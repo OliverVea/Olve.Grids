@@ -1,6 +1,6 @@
-﻿namespace Olve.Grids.IO.TileAtlasBuilder;
+namespace Olve.Grids.IO.TileAtlasBuilder;
 
 public class AdjacencyLookupBuilder
 {
-    
+
 }

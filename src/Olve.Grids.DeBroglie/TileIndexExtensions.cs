@@ -1,4 +1,4 @@
-﻿using DeBroglie;
+using DeBroglie;
 using Olve.Grids.Grids;
 
 namespace Olve.Grids.DeBroglie;
@@ -16,9 +16,9 @@ public static class TileIndexExtensions
         {
             return fallback;
         }
-        
+
         var index = (int)tile.Value.Value;
-        
+
         return new TileIndex(index);
     }
 }
