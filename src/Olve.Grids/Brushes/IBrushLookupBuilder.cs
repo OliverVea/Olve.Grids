@@ -3,7 +3,7 @@ using OneOf.Types;
 
 namespace Olve.Grids.Brushes;
 
-public interface IBrushLookupBuilder
+public interface IBrushLookupBuilder : IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)>
 {
     OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner);
     IBrushLookupBuilder SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes);

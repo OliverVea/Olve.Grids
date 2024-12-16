@@ -2,7 +2,7 @@
   <ItemGroup>
     <!-- Olve.Grids -->
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
-    <PackageVersion Include="Olve.Utilities" Version="0.0.10" />
+    <PackageVersion Include="Olve.Utilities" Version="0.0.11" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="StrictId" Version="1.1.0" />
     <!-- Olve.Grids.Generation -->

@@ -1,4 +1,5 @@
-﻿using System.Collections.Frozen;
+﻿using System.Collections;
+using System.Collections.Frozen;
 using Olve.Grids.Grids;
 using OneOf.Types;
 
@@ -107,5 +108,18 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         return brushCornerToTiles
             .Where(x => x.Value.Count > 0)
             .ToFrozenDictionary(x => x.Key, x => x.Value.ToFrozenSet());
+    }
+
+    public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()
+    {
+        foreach (var (tileCorner, brushId) in _tileCornerToBrush)
+        {
+            yield return (tileCorner.Item1, tileCorner.Item2, brushId);
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

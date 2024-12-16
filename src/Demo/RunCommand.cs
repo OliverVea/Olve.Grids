@@ -3,10 +3,11 @@ using System.Diagnostics;
 using Olve.Grids.Adjacencies;
 using Olve.Grids.DeBroglie;
 using Olve.Grids.Generation;
-using Olve.Grids.Grids;
 using Olve.Grids.IO;
+using Olve.Grids.IO.Configuration;
 using Olve.Grids.IO.Readers;
 using Olve.Grids.IO.TileAtlasBuilder;
+using Olve.Grids.Weights;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -18,49 +19,12 @@ public class RunCommand : Command<RunCommand.Settings>
     private const int Normal = 1;
     private const int Verbose = 2;
 
-    public class Settings : CommandSettings
-    {
-        [Description("The tile atlas file. Defaults to 'assets/tile-atlas.png'")]
-        [CommandOption("-a|--tile-atlas")]
-        public string TileAtlasFile { get; set; } = "assets/tile-atlas.png";
-
-        [Description("The tile size in pixels. Defaults to '4x4'")]
-        [CommandOption("-s|--tile-size")]
-        public string TileSize { get; set; } = "4x4";
-
-        [Description(
-            "The tile atlas brushes file containing brushes for each tile. Defaults to 'assets/tile-atlas.brushes.txt'"
-        )]
-        [CommandOption("-b|--tile-atlas-brushes")]
-        public string TileAtlasBrushesFile { get; set; } = "assets/tile-atlas.brushes.txt";
-
-        [Description(
-            "The input file containing brushes to generate. Defaults to 'assets/input.brushes.txt'"
-        )]
-        [CommandOption("-i|--input")]
-        public string InputBrushesFile { get; set; } = "assets/input.brushes.txt";
-
-        [Description("The output file to generate. Defaults to 'output.png'")]
-        [CommandOption("-o|--output")]
-        public string OutputFile { get; set; } = "output.png";
-
-        [Description(
-            "The verbosity level. Defaults to 'Normal'. Available values are 'Quiet', 'Normal', and 'Verbose'."
-        )]
-        [CommandOption("-v|--verbosity")]
-        public string Verbosity { get; set; } = "Normal";
-
-        [Description("Overwrite the output file if it already exists.")]
-        [CommandOption("--overwrite")]
-        public bool Overwrite { get; set; }
-
-        [Description]
-        [CommandOption("--tile-atlas-config")]
-        public string? TileAtlasConfigFile { get; set; }
-
-        public Size ParsedTileSize;
-        public int ParsedVerbosity;
-    }
+    private const int Success = 0;
+    private const int TileAtlasError = 1;
+    private const int TileAtlasBrushesError = 2;
+    private const int AtlasConfigurationError = 3;
+    private const int InputBrushesError = 4;
+    private const int GenerationError = 5;
 
     public override ValidationResult Validate(CommandContext context, Settings settings)
     {
@@ -87,9 +51,7 @@ public class RunCommand : Command<RunCommand.Settings>
         var tileSizeParts = settings.TileSize.Split('x');
         if (tileSizeParts.Length != 2)
         {
-            return ValidationResult.Error(
-                "The tile size must be in the format '[width]x[height]', e.g. 4x4."
-            );
+            return ValidationResult.Error("The tile size must be in the format '[width]x[height]', e.g. 4x4.");
         }
 
         if (!int.TryParse(tileSizeParts[0], out var width) || width <= 0)
@@ -102,7 +64,7 @@ public class RunCommand : Command<RunCommand.Settings>
             return ValidationResult.Error("The tile height must be a positive integer.");
         }
 
-        settings.ParsedTileSize = new Olve.Utilities.IntegerMath2D.Size(width, height);
+        settings.ParsedTileSize = new Size(width, height);
 
         if (string.IsNullOrWhiteSpace(settings.TileAtlasBrushesFile))
         {
@@ -136,9 +98,7 @@ public class RunCommand : Command<RunCommand.Settings>
 
         if (File.Exists(settings.OutputFile) && !settings.Overwrite)
         {
-            return ValidationResult.Error(
-                "The output file already exists. Use the '--overwrite' option to overwrite it."
-            );
+            return ValidationResult.Error("The output file already exists. Use the '--overwrite' option to overwrite it.");
         }
 
         if (string.IsNullOrWhiteSpace(settings.Verbosity))
@@ -152,19 +112,24 @@ public class RunCommand : Command<RunCommand.Settings>
         {
             settings.ParsedVerbosity = Quiet;
         }
-        else if (settings.Verbosity is "normal" or "n")
-        {
-            settings.ParsedVerbosity = Normal;
-        }
-        else if (settings.Verbosity is "verbose" or "v")
-        {
-            settings.ParsedVerbosity = Verbose;
-        }
         else
         {
-            return ValidationResult.Error(
-                "The verbosity level must be 'Quiet', 'Normal', or 'Verbose' or 'q', 'n', or 'v'."
-            );
+            if (settings.Verbosity is "normal" or "n")
+            {
+                settings.ParsedVerbosity = Normal;
+            }
+            else
+            {
+                if (settings.Verbosity is "verbose" or "v")
+                {
+                    settings.ParsedVerbosity = Verbose;
+                }
+                else
+                {
+                    return ValidationResult.Error(
+                        "The verbosity level must be 'Quiet', 'Normal', or 'Verbose' or 'q', 'n', or 'v'.");
+                }
+            }
         }
 
         return base.Validate(context, settings);
@@ -176,12 +141,8 @@ public class RunCommand : Command<RunCommand.Settings>
         {
             AnsiConsole.MarkupLine("[bold yellow]Running DeBroglie demo...[/]");
             AnsiConsole.MarkupLine($"Tile atlas file: [bold]{settings.TileAtlasFile}[/]");
-            AnsiConsole.MarkupLine(
-                $"Tile size: [bold]{settings.ParsedTileSize.Width}x{settings.ParsedTileSize.Height}[/]"
-            );
-            AnsiConsole.MarkupLine(
-                $"Tile atlas brushes file: [bold]{settings.TileAtlasBrushesFile}[/]"
-            );
+            AnsiConsole.MarkupLine($"Tile size: [bold]{settings.ParsedTileSize.Width}x{settings.ParsedTileSize.Height}[/]");
+            AnsiConsole.MarkupLine($"Tile atlas brushes file: [bold]{settings.TileAtlasBrushesFile}[/]");
             AnsiConsole.MarkupLine($"Input brushes file: [bold]{settings.InputBrushesFile}[/]");
             AnsiConsole.MarkupLine($"Output file: [bold]{settings.OutputFile}[/]");
         }
@@ -195,87 +156,101 @@ public class RunCommand : Command<RunCommand.Settings>
             .WithTileSize(settings.ParsedTileSize);
 
         var tileAtlasBrushesReader = new TileAtlasBrushesFileReader(settings.TileAtlasBrushesFile);
-        if (!tileAtlasBrushesReader.Load().TryPickT0(out var tileAtlasBrushes, out var brushErrors))
+        if (!tileAtlasBrushesReader
+                .Load()
+                .TryPickT0(out var tileAtlasBrushes, out var brushErrors))
         {
             foreach (var problem in brushErrors.Problems)
             {
                 AnsiConsole.MarkupLine($"[bold red]Error:[/] {problem}");
             }
 
-            return 1;
+            return TileAtlasBrushesError;
         }
 
         tileAtlasBuilder.WithBrushLookupBuilder(tileAtlasBrushes);
+        var tileIndices = tileAtlasBrushes
+            .Select(x => x.Item1)
+            .Distinct()
+            .ToArray();
 
-        if (settings.TileAtlasConfigFile is { } tileAtlasAdjacenciesFile)
+        if (settings.TileAtlasConfigFile is { } tileAtlasConfigFile)
         {
-            var adjacencyLookupBuilder = new AdjacencyLookupBuilder();
-            var adjacencyLookupReader = new AdjacencyLookupFileReader(tileAtlasAdjacenciesFile);
-            if (
-                !adjacencyLookupReader
-                    .Load()
-                    .TryPickT0(out var adjacencyLookup, out var adjacencyErrors)
-            )
+            var adjacencyBuilder = new AdjacencyLookup();
+            var weightBuilder = new WeightLookup();
+
+            var configurationLoader = new ConfigurationLoader();
+            if (!configurationLoader
+                    .Load(tileAtlasConfigFile, adjacencyBuilder, weightBuilder, tileIndices, tileAtlasBrushes)
+                    .TryPickT0(out _, out var error))
             {
-                foreach (var problem in adjacencyErrors.Problems)
+                foreach (var problem in error.Problems)
                 {
                     AnsiConsole.MarkupLine($"[bold red]Error:[/] {problem}");
                 }
 
-                return 1;
+                return AtlasConfigurationError;
             }
 
-            adjacencyLookupBuilder.WithAdjacencyLookup(adjacencyLookup);
-            tileAtlasBuilder = tileAtlasBuilder.WithAdjacencyLookupBuilder(adjacencyLookupBuilder);
+            tileAtlasBuilder = tileAtlasBuilder
+                .WithAdjacencyLookupBuilder(adjacencyBuilder)
+                .WithWeightLookupBuilder(weightBuilder);
+
+            AnsiConsole.MarkupLine(
+                $"Using tile atlas configuration file: [bold]{new FileInfo(tileAtlasConfigFile).FullName}[/]");
         }
         else
         {
             var builder = new AdjacencyLookup();
 
             var adjacencyEstimator = new AdjacencyFromTileBrushEstimator();
-            adjacencyEstimator.SetAdjacencies(
-                builder,
-                tileAtlasBuilder.Configuration.BrushLookupBuilder?.Build() ?? throw new Exception()
-            );
+            adjacencyEstimator.SetAdjacencies(builder,
+                tileAtlasBuilder.Configuration.BrushLookupBuilder?.Build() ?? throw new Exception());
 
             tileAtlasBuilder = tileAtlasBuilder.WithAdjacencyLookupBuilder(builder);
+
+            AnsiConsole.MarkupLine(
+                "[bold yellow]No tile atlas configuration file specified. Using default configuration...[/]");
         }
 
         var tileAtlasBuilderTime = Stopwatch.GetElapsedTime(tileAtlasBuilderStart);
 
         if (settings.ParsedVerbosity == Verbose)
-            AnsiConsole.MarkupLine(
-                $"Created tile atlas builder in: [bold]{tileAtlasBuilderTime}[/]"
-            );
+        {
+            AnsiConsole.MarkupLine($"Created tile atlas builder in: [bold]{tileAtlasBuilderTime}[/]");
+        }
 
         var tileAtlasStart = Stopwatch.GetTimestamp();
-        if (!tileAtlasBuilder.Build().TryPickT0(out var tileAtlas, out var errors))
+        if (!tileAtlasBuilder
+                .Build()
+                .TryPickT0(out var tileAtlas, out var errors))
         {
             foreach (var error in errors)
             {
                 AnsiConsole.MarkupLine($"[bold red]Error:[/] {error.ErrorMessage}");
             }
 
-            return 1;
+            return TileAtlasError;
         }
+
         var tileAtlasTime = Stopwatch.GetElapsedTime(tileAtlasStart);
 
         if (settings.ParsedVerbosity == Verbose)
+        {
             AnsiConsole.MarkupLine($"Built tile atlas in: [bold]{tileAtlasTime}[/]");
+        }
 
         var inputBrushFileReader = new InputBrushFileReader(settings.InputBrushesFile);
-        if (
-            !inputBrushFileReader
+        if (!inputBrushFileReader
                 .Load(tileAtlas.BrushLookup.Brushes)
-                .TryPickT0(out var brushGrid, out var fileParsingError)
-        )
+                .TryPickT0(out var brushGrid, out var fileParsingError))
         {
             foreach (var problem in fileParsingError.Problems)
             {
                 AnsiConsole.MarkupLine($"[bold red]Error:[/] {problem}");
             }
 
-            return 1;
+            return InputBrushesError;
         }
 
         var request = new GenerationRequest(tileAtlas, brushGrid);
@@ -286,7 +261,9 @@ public class RunCommand : Command<RunCommand.Settings>
         var generationTime = Stopwatch.GetElapsedTime(generationStart);
 
         if (settings.ParsedVerbosity == Verbose)
+        {
             AnsiConsole.MarkupLine($"Generated output in: [bold]{generationTime}[/]");
+        }
 
         var visualizationExporter = new VisualizationExporter();
         visualizationExporter.ExportAsPng(result, settings.OutputFile);
@@ -296,9 +273,7 @@ public class RunCommand : Command<RunCommand.Settings>
         if (settings.ParsedVerbosity > Quiet)
         {
             AnsiConsole.MarkupLine("[bold green]Done![/]");
-            AnsiConsole.MarkupLine(
-                $"Wrote output to: [bold]{new FileInfo(settings.OutputFile).FullName}[/]"
-            );
+            AnsiConsole.MarkupLine($"Wrote output to: [bold]{new FileInfo(settings.OutputFile).FullName}[/]");
         }
 
         if (settings.ParsedVerbosity == Verbose)
@@ -306,6 +281,51 @@ public class RunCommand : Command<RunCommand.Settings>
             AnsiConsole.MarkupLine($"Total time: [bold]{totalEnd}[/]");
         }
 
-        return 0;
+        if (result.Status.IsT2)
+        {
+            return GenerationError;
+        }
+
+        return Success;
+    }
+
+    public class Settings : CommandSettings
+    {
+
+        public Size ParsedTileSize;
+        public int ParsedVerbosity;
+
+        [Description("The tile atlas file. Defaults to 'assets/tile-atlas.png'")]
+        [CommandOption("-a|--tile-atlas")]
+        public string TileAtlasFile { get; set; } = "assets/tile-atlas.png";
+
+        [Description("The tile size in pixels. Defaults to '4x4'")]
+        [CommandOption("-s|--tile-size")]
+        public string TileSize { get; set; } = "4x4";
+
+        [Description(
+            "The tile atlas brushes file containing brushes for each tile. Defaults to 'assets/tile-atlas.brushes.txt'")]
+        [CommandOption("-b|--tile-atlas-brushes")]
+        public string TileAtlasBrushesFile { get; set; } = "assets/tile-atlas.brushes.txt";
+
+        [Description("The input file containing brushes to generate. Defaults to 'assets/input.brushes.txt'")]
+        [CommandOption("-i|--input")]
+        public string InputBrushesFile { get; set; } = "assets/input.brushes.txt";
+
+        [Description("The output file to generate. Defaults to 'output.png'")]
+        [CommandOption("-o|--output")]
+        public string OutputFile { get; set; } = "output.png";
+
+        [Description("The verbosity level. Defaults to 'Normal'. Available values are 'Quiet', 'Normal', and 'Verbose'.")]
+        [CommandOption("-v|--verbosity")]
+        public string Verbosity { get; set; } = "Normal";
+
+        [Description("Overwrite the output file if it already exists.")]
+        [CommandOption("--overwrite")]
+        public bool Overwrite { get; set; }
+
+        [Description]
+        [CommandOption("--tile-atlas-config")]
+        public string? TileAtlasConfigFile { get; set; }
     }
 }

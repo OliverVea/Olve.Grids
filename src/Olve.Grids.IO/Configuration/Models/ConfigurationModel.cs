@@ -4,9 +4,9 @@ namespace Olve.Grids.IO.Configuration.Models;
 /// The model of the configuration file.
 /// Parsed into <see cref="IOConfiguration"/>.
 /// </summary>
-internal class ConfigurationModel
+public class ConfigurationModel
 {
-    public bool GenerateAdjacenciesFromBrushes { get; set; } = true;
-    public AdjacencyModel[]? Adjacencies { get; set; }
-    public WeightModel[]? Weights { get; set; }
+    internal bool GenerateAdjacenciesFromBrushes { get; set; } = true;
+    internal AdjacencyModel[]? Adjacencies { get; set; }
+    internal WeightModel[]? Weights { get; set; }
 }

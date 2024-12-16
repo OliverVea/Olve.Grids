@@ -1,11 +1,16 @@
-generateFromBrushes: true
+generateAdjacenciesFromBrushes: true
 adjacencies:
   - tile: 16
     overwriteBrushAdjacencies:
       - right
     adjacents:
       - tile: 17
-        direction: right | left
+        direction: right
   - tile: 17
     overwriteBrushAdjacencies:
       - left
+weights:
+  - tile: 16
+    weight: 0.1
+  - tile: 17
+    weight: 0.1

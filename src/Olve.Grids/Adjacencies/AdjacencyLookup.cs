@@ -20,6 +20,7 @@ public interface IAdjacencyLookupBuilder
     void Add(TileIndex a, TileIndex b, AdjacencyDirection direction);
     void Remove(TileIndex a, TileIndex b, AdjacencyDirection direction);
     void Clear(TileIndex a, TileIndex b);
+    void Clear(TileIndex adjacencyTile, AdjacencyDirection direction);
 
     IAdjacencyLookup Build();
 }
@@ -111,6 +112,16 @@ public class AdjacencyLookup(
     {
         Lookup.GetValueOrDefault(a, EmptyLookup).Remove(b);
         Lookup.GetValueOrDefault(b, EmptyLookup).Remove(a);
+    }
+
+    public void Clear(TileIndex adjacencyTile, AdjacencyDirection direction)
+    {
+        var neighbors = GetNeighborsInDirection(adjacencyTile, direction).ToList();
+
+        foreach (var neighbor in neighbors)
+        {
+            Remove(adjacencyTile, neighbor, direction);
+        }
     }
 
     public IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex)

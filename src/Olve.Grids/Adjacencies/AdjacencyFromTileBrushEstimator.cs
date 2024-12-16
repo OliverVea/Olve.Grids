@@ -55,7 +55,7 @@ public static class Sides
 public class AdjacencyFromTileBrushEstimator
 {
     public void SetAdjacencies(
-        AdjacencyLookup adjacencyLookup,
+        IAdjacencyLookupBuilder adjacencyLookup,
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
     )
     {
