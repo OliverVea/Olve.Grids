@@ -35,8 +35,10 @@ public class VisualizationExporter
         outputImage.SaveAsPng(path);
     }
 
-    private Rectangle GetSourceBox(TileAtlas tileAtlas, TileIndex tileIndex) =>
-        GetSourceBox(tileAtlas.Grid, tileIndex);
+    private Rectangle GetSourceBox(TileAtlas tileAtlas, TileIndex tileIndex)
+    {
+        return GetSourceBox(tileAtlas.Grid, tileIndex);
+    }
 
     private Rectangle GetSourceBox(GridConfiguration grid, TileIndex tileIndex)
     {

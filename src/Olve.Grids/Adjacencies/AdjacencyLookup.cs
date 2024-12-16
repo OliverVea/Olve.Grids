@@ -44,10 +44,12 @@ public class AdjacencyLookup(
             )
         ?? new Dictionary<TileIndex, Dictionary<TileIndex, AdjacencyDirection>>();
 
-    public AdjacencyDirection Get(TileIndex a, TileIndex b) =>
-        Lookup
+    public AdjacencyDirection Get(TileIndex a, TileIndex b)
+    {
+        return Lookup
             .GetValueOrDefault(a, EmptyLookup)
             .GetValueOrDefault(b, AdjacencyDirection.None);
+    }
 
     public IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex)
     {
@@ -102,7 +104,10 @@ public class AdjacencyLookup(
         }
     }
 
-    public IAdjacencyLookup Build() => new AdjacencyLookup(this);
+    public IAdjacencyLookup Build()
+    {
+        return new AdjacencyLookup(this);
+    }
 
     public IEnumerator<(TileIndex from, TileIndex to, AdjacencyDirection direction)> GetEnumerator()
     {

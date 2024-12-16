@@ -15,7 +15,10 @@ internal class WeightConfigurationParser : IParser<WeightConfiguration>
             return error;
         }
 
-        return new WeightConfiguration { Weights = weights };
+        return new WeightConfiguration
+        {
+            Weights = weights,
+        };
     }
 
     private OneOf<IReadOnlyList<WeightConfiguration.TileWeight>, FileParsingError> ParseWeights(
@@ -60,6 +63,10 @@ internal class WeightConfigurationParser : IParser<WeightConfiguration>
             return FileParsingError.New("Weight is required.");
         }
 
-        return new WeightConfiguration.TileWeight { Tile = tileIndex, Weight = weight };
+        return new WeightConfiguration.TileWeight
+        {
+            Tile = tileIndex,
+            Weight = weight,
+        };
     }
 }

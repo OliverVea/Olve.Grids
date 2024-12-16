@@ -14,6 +14,6 @@ public record CornerBrushes(
         Corner.UpperRight => UpperRight,
         Corner.LowerLeft => LowerLeft,
         Corner.LowerRight => LowerRight,
-        _ => throw new ArgumentOutOfRangeException(nameof(corner), corner, null)
+        _ => throw new ArgumentOutOfRangeException(nameof(corner), corner, null),
     };
 }

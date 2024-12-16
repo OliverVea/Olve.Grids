@@ -5,5 +5,5 @@ public enum Corner
     UpperLeft,
     UpperRight,
     LowerLeft,
-    LowerRight
+    LowerRight,
 }

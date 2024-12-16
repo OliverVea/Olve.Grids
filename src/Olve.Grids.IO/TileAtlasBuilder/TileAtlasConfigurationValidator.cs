@@ -21,24 +21,24 @@ internal class TileAtlasConfigurationValidator : AbstractValidator<TileAtlasConf
         RuleFor(x => x.TileSize)
             .NotNull()
             .WithMessage("{PropertyName} must not be null.")
-            .Must(tileSize => tileSize!.Value is { Width: > 0, Height: > 0 })
+            .Must(tileSize => tileSize!.Value is { Width: > 0, Height: > 0, })
             .WithMessage("{PropertyName} must be greater than 0.")
             .Must(x => x!.Value.Width <= imageSize.Width && x.Value.Height <= imageSize.Height)
             .WithMessage("{PropertyName} must be less than or equal to the image size.");
 
         RuleFor(x => x.Columns)
             .GreaterThan(0)
-            .When(x => x.Columns is not null)
+            .When(x => x.Columns is { })
             .WithMessage("{PropertyName} must be greater than 0.");
 
         RuleFor(x => x.Rows)
             .GreaterThan(0)
-            .When(x => x.Rows is not null)
+            .When(x => x.Rows is { })
             .WithMessage("Rows must be greater than 0.");
 
         RuleFor(x => x.FallbackTileIndex)
             .Must(x => x?.Index is >= 0)
-            .When(x => x.FallbackTileIndex is not null)
+            .When(x => x.FallbackTileIndex is { })
             .WithMessage("{PropertyName} must be greater than or equal to 0.");
 
         RuleFor(x => x.AdjacencyLookupBuilder)

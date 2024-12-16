@@ -4,13 +4,13 @@ using Olve.Grids.Generation;
 namespace Olve.Grids.IO.Readers;
 
 /// <summary>
-/// Reads a brush grid from a file.
+///     Reads a brush grid from a file.
 /// </summary>
 /// <param name="filePath">The file path.</param>
 public class InputBrushFileReader(string filePath)
 {
     /// <summary>
-    /// Loads a brush grid from the file.
+    ///     Loads a brush grid from the file.
     /// </summary>
     /// <param name="brushes">The brushes to use.</param>
     /// <returns>The loaded brush grid.</returns>
@@ -28,7 +28,7 @@ public class InputBrushFileReader(string filePath)
 
         var brushLookup = brushes.ToDictionary(x => x.DisplayName[0], x => x);
 
-        List<FileParsingError> errors = [];
+        List<FileParsingError> errors = [ ];
 
         for (var y = 0; y < size.Height; y++)
         {

@@ -70,7 +70,7 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
     }
 
     /// <summary>
-    /// Verifies that the position is within the bounds of the grid.
+    ///     Verifies that the position is within the bounds of the grid.
     /// </summary>
     /// <param name="position">The position to verify.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the position is outside the bounds of the grid.</exception>
@@ -85,9 +85,15 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(y, Size.Height);
     }
 
-    private int GetIndex(Position position) => position.Y * Size.Width + position.X;
+    private int GetIndex(Position position)
+    {
+        return position.Y * Size.Width + position.X;
+    }
 
-    private static OneOf<BrushId, Any> GetBrushOrAny(BrushId? brushId) => brushId ?? OneOf<BrushId, Any>.FromT1(new Any());
+    private static OneOf<BrushId, Any> GetBrushOrAny(BrushId? brushId)
+    {
+        return brushId ?? OneOf<BrushId, Any>.FromT1(new Any());
+    }
 
     private static BrushId? GetBrushId(OneOf<BrushId, Any> brush)
     {

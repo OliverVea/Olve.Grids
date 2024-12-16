@@ -23,7 +23,8 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         return new AdjacencyConfiguration
         {
-            GenerateFromBrushes = configurationModel.GenerateAdjacenciesFromBrushes, Adjacencies = adjacencies
+            GenerateFromBrushes = configurationModel.GenerateAdjacenciesFromBrushes,
+            Adjacencies = adjacencies,
         };
     }
 
@@ -69,7 +70,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
             ? adjacentModels
                 .Select(ParseAdjacent)
                 .ToArray()
-            : [];
+            : [ ];
 
         if (!adjacents.AllT0())
         {
@@ -80,9 +81,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         var overwriteDirections = adjacencyModel.OverwriteBrushAdjacencies
             is { } overwriteDirectionsModel
             ? overwriteDirectionsModel
-                .Select(x => _adjacencyDirectionParser.ParseAdjacencyDirection(x, required: false))
+                .Select(x => _adjacencyDirectionParser.ParseAdjacencyDirection(x, false))
                 .ToArray()
-            : [];
+            : [ ];
 
         if (!overwriteDirections.AllT0())
         {
@@ -100,7 +101,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
             AdjacencyDirectionToOverwrite = adjacencyDirection,
             Adjacents = adjacents
                 .OfT0()
-                .ToArray()
+                .ToArray(),
         };
     }
 
@@ -119,7 +120,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         if (
             !_adjacencyDirectionParser
-                .ParseAdjacencyDirection(adjacentModel.Direction, required: true)
+                .ParseAdjacencyDirection(adjacentModel.Direction, true)
                 .TryPickT0(out var direction, out var directionError)
         )
         {
@@ -128,7 +129,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         return new AdjacencyConfiguration.Adjacent
         {
-            Tile = tileIndex, IsAdjacent = adjacentModel.IsAdjacent, Direction = direction
+            Tile = tileIndex,
+            IsAdjacent = adjacentModel.IsAdjacent,
+            Direction = direction,
         };
     }
 }

@@ -18,40 +18,68 @@ public class TileAtlasBuilder
     public ValidationResult ValidationResult =>
         _validationResult ??= _validator.Validate(Configuration);
 
-    public TileAtlasBuilder WithFilePath(string filePath) =>
-        Modify(config => config.FilePath = filePath);
+    public TileAtlasBuilder WithFilePath(string filePath)
+    {
+        return Modify(config => config.FilePath = filePath);
+    }
 
-    public TileAtlasBuilder WithTileSize(Size tileSize) =>
-        Modify(config => config.TileSize = tileSize);
+    public TileAtlasBuilder WithTileSize(Size tileSize)
+    {
+        return Modify(config => config.TileSize = tileSize);
+    }
 
-    public TileAtlasBuilder WithColumns(int columns) => Modify(config => config.Columns = columns);
+    public TileAtlasBuilder WithColumns(int columns)
+    {
+        return Modify(config => config.Columns = columns);
+    }
 
-    public TileAtlasBuilder WithRows(int rows) => Modify(config => config.Rows = rows);
+    public TileAtlasBuilder WithRows(int rows)
+    {
+        return Modify(config => config.Rows = rows);
+    }
 
-    public TileAtlasBuilder WithFallbackTileIndex(TileIndex fallbackTileIndex) =>
-        Modify(config => config.FallbackTileIndex = fallbackTileIndex);
+    public TileAtlasBuilder WithFallbackTileIndex(TileIndex fallbackTileIndex)
+    {
+        return Modify(config => config.FallbackTileIndex = fallbackTileIndex);
+    }
 
     public TileAtlasBuilder WithAdjacencyLookupBuilder(
         IAdjacencyLookupBuilder adjacencyLookupBuilder
-    ) => Modify(config => config.AdjacencyLookupBuilder = adjacencyLookupBuilder);
+    )
+    {
+        return Modify(config => config.AdjacencyLookupBuilder = adjacencyLookupBuilder);
+    }
 
     public TileAtlasBuilder ConfigureAdjacencyLookupBuilder(
         Action<IAdjacencyLookupBuilder?> configurationAction
-    ) => Modify(config => configurationAction(config.AdjacencyLookupBuilder));
+    )
+    {
+        return Modify(config => configurationAction(config.AdjacencyLookupBuilder));
+    }
 
-    public TileAtlasBuilder WithBrushLookupBuilder(IBrushLookupBuilder brushLookupBuilder) =>
-        Modify(config => config.BrushLookupBuilder = brushLookupBuilder);
+    public TileAtlasBuilder WithBrushLookupBuilder(IBrushLookupBuilder brushLookupBuilder)
+    {
+        return Modify(config => config.BrushLookupBuilder = brushLookupBuilder);
+    }
 
     public TileAtlasBuilder ConfigureBrushLookupBuilder(
         Action<IBrushLookupBuilder?> configurationAction
-    ) => Modify(config => configurationAction(config.BrushLookupBuilder));
+    )
+    {
+        return Modify(config => configurationAction(config.BrushLookupBuilder));
+    }
 
-    public TileAtlasBuilder WithWeightLookupBuilder(IWeightLookupBuilder weightLookupBuilder) =>
-        Modify(config => config.WeightLookupBuilder = weightLookupBuilder);
+    public TileAtlasBuilder WithWeightLookupBuilder(IWeightLookupBuilder weightLookupBuilder)
+    {
+        return Modify(config => config.WeightLookupBuilder = weightLookupBuilder);
+    }
 
     public TileAtlasBuilder ConfigureWeightLookupBuilder(
         Action<IWeightLookupBuilder?> configurationAction
-    ) => Modify(config => configurationAction(config.WeightLookupBuilder));
+    )
+    {
+        return Modify(config => configurationAction(config.WeightLookupBuilder));
+    }
 
     public OneOf<TileAtlas, IList<ValidationFailure>> Build()
     {
@@ -101,7 +129,9 @@ public class TileAtlasBuilder
     private TileAtlasBuilder Modify(Action<TileAtlasConfiguration> modifyAction)
     {
         modifyAction(Configuration);
+
         _validationResult = null;
+
         return this;
     }
 }

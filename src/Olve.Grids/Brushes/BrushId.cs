@@ -19,5 +19,8 @@ public readonly record struct BrushId(Id Id, string DisplayName)
         return new BrushId(Id.NewId(), displayName);
     }
 
-    public override string ToString() => ShortDisplay;
+    public override string ToString()
+    {
+        return ShortDisplay;
+    }
 }

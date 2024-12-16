@@ -2,12 +2,12 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Olve.Grids\Olve.Grids.csproj" />
+        <ProjectReference Include="..\..\src\Olve.Grids\Olve.Grids.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="TUnit" />
+        <PackageReference Include="TUnit"/>
     </ItemGroup>
 </Project>

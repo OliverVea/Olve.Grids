@@ -108,7 +108,7 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         {
             foreach (var corner in Corners.All)
             {
-                brushCornerToTiles[(brushId, corner)] = [];
+                brushCornerToTiles[(brushId, corner)] = [ ];
             }
         }
 
