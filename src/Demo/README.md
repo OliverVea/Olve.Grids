@@ -8,8 +8,7 @@ Run the `grid-demo` executable with the following arguments:
 
 ### Tile atlas
 
-A tile atlas is a `.png` file that contains all the tiles that can be used in the output. The tiles are arranged in a
-grid, where each tile is the same size.
+A tile atlas is a `.png` file that contains all the tiles that can be used in the output. The tiles are arranged in a grid, where each tile is the same size.
 
 An example tile atlas is provided in the `Demo` directory.
 
@@ -21,8 +20,7 @@ It has 18 tiles of an even 4x4 pixel size:
 
 ### Tile atlas brushes
 
-As this library is based on the dual grid system, each tile is assigned four different brushes, each brush corresponding
-to a corner of the tile.
+As this library is based on the dual grid system, each tile is assigned four different brushes, each brush corresponding to acorner of the tile.
 
 For example, tile 0 from the tile atlas has the following brushes:
 
@@ -31,8 +29,7 @@ DD
 DL
 ```
 
-Where `D` and `L` are the brush of the light and dark color respectively.
-To better understand this format, here's an illustration of what a tile with this configuration might look like:
+Where `D` and `L` are the brush of the light and dark color respectively. To better understand this format, here's an illustration of what a tile with this configuration might look like:
 
 ![Example of tile with configuration overlaid](https://raw.githubusercontent.com/OliverVea/Olve.Grids/refs/heads/master/docs/imgs/atlas-overlay-tile1.png)
 
@@ -59,8 +56,7 @@ Whitespace can be used to separate each tile like above, but are simply ignored 
 
 ### Input brushes
 
-The input brushes are the brushes that are used to generate the output. These brushes must be defined in a file and
-provided to the application.
+The input brushes are the brushes that are used to generate the output. These brushes must be defined in a file and provided to the application.
 
 Here is an example input brush file:
 
@@ -77,8 +73,7 @@ D???DLDLDLD
 DDDDDDDDDDD
 ```
 
-Here, each cell describes a brush, where `D` is the dark color, `L` is the light color, and `?` is a wildcard that can
-be any color.
+Here, each cell describes a brush, where `D` is the dark color, `L` is the light color, and `?` is a wildcard that can be any color.
 
 The characters are retrieved from the tile atlas brushes file above.
 

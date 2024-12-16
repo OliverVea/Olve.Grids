@@ -1,7 +1,6 @@
 # Contributing to Olve.Utilities
 
-Please do not contribute to this project, it's a personal project and I'm not looking for contributions. If you have any
-questions, please feel free to open an issue
+Please do not contribute to this project, it's a personal project and I'm not looking for contributions. If you have any questions, please feel free to open an issue
 
 ## License
 
