@@ -13,6 +13,9 @@ public enum Side
 
 public static class Sides
 {
+
+    public static readonly IReadOnlyList<Side> All = [Side.Left, Side.Right, Side.Top, Side.Bottom];
+
     public static (Corner, Corner) GetCorners(Side side)
     {
         return side switch
@@ -48,8 +51,6 @@ public static class Sides
             _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
         };
     }
-
-    public static readonly IReadOnlyList<Side> All = [Side.Left, Side.Right, Side.Top, Side.Bottom];
 }
 
 public class AdjacencyFromTileBrushEstimator

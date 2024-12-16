@@ -22,6 +22,7 @@ public class DeBroglieGenerator : IGenerator
             {
                 return result;
             }
+
             Console.WriteLine($"Generation failed. Retrying... ({attempts} attempts left)");
         }
 
@@ -67,7 +68,10 @@ public class DeBroglieGenerator : IGenerator
         var resolution = propagator.Run();
         var status = GetStatus(resolution);
 
-        var result = propagator.ToArray().Map(x => ((Tile?)x).ToTileIndex(request.TileAtlas.FallbackTile)).ToArray2d();
+        var result = propagator
+            .ToArray()
+            .Map(x => ((Tile?)x).ToTileIndex(request.TileAtlas.FallbackTile))
+            .ToArray2d();
 
         for (var i = 0; i < request.OutputSize.Width; i++)
         {
@@ -98,7 +102,10 @@ public class DeBroglieGenerator : IGenerator
     {
         var fallbackTile = tileAtlas.FallbackTile.ToTile();
 
-        var allTiles = tileAtlas.Grid.GetTileIndices().Select(x => x.ToTile()).ToArray();
+        var allTiles = tileAtlas
+            .Grid.GetTileIndices()
+            .Select(x => x.ToTile())
+            .ToArray();
 
         foreach (var direction in AdjacencyDirection.All.GetDeBroglieDirections())
         {

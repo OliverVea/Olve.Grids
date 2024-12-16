@@ -7,6 +7,7 @@ public interface IAdjacencyLookup
 {
     AdjacencyDirection Get(TileIndex a, TileIndex b);
     IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex);
+
     IEnumerable<TileIndex> GetNeighborsInDirection(
         TileIndex tileIndex,
         AdjacencyDirection direction
@@ -40,10 +41,30 @@ public class AdjacencyLookup(
             .ToDictionary(
                 group => group.Key,
                 group => group.ToDictionary(pair => pair.to, pair => pair.direction)
-            ) ?? new Dictionary<TileIndex, Dictionary<TileIndex, AdjacencyDirection>>();
+            )
+        ?? new Dictionary<TileIndex, Dictionary<TileIndex, AdjacencyDirection>>();
 
     public AdjacencyDirection Get(TileIndex a, TileIndex b) =>
-        Lookup.GetValueOrDefault(a, EmptyLookup).GetValueOrDefault(b, AdjacencyDirection.None);
+        Lookup
+            .GetValueOrDefault(a, EmptyLookup)
+            .GetValueOrDefault(b, AdjacencyDirection.None);
+
+    public IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex)
+    {
+        return Lookup.GetValueOrDefault(tileIndex, EmptyLookup)
+            .Keys;
+    }
+
+    public IEnumerable<TileIndex> GetNeighborsInDirection(
+        TileIndex tileIndex,
+        AdjacencyDirection direction
+    )
+    {
+        return Lookup
+            .GetValueOrDefault(tileIndex, EmptyLookup)
+            .Where(pair => pair.Value.HasFlag(direction))
+            .Select(pair => pair.Key);
+    }
 
     public void Set(TileIndex a, TileIndex b, AdjacencyDirection direction)
     {
@@ -58,6 +79,44 @@ public class AdjacencyLookup(
     public void Remove(TileIndex a, TileIndex b, AdjacencyDirection direction)
     {
         Transform(a, b, x => a != b ? x & ~direction : x & ~direction & ~direction.Opposite());
+    }
+
+    public void Clear(TileIndex a, TileIndex b)
+    {
+        Lookup
+            .GetValueOrDefault(a, EmptyLookup)
+            .Remove(b);
+        Lookup
+            .GetValueOrDefault(b, EmptyLookup)
+            .Remove(a);
+    }
+
+    public void Clear(TileIndex adjacencyTile, AdjacencyDirection direction)
+    {
+        var neighbors = GetNeighborsInDirection(adjacencyTile, direction)
+            .ToList();
+
+        foreach (var neighbor in neighbors)
+        {
+            Remove(adjacencyTile, neighbor, direction);
+        }
+    }
+
+    public IAdjacencyLookup Build() => new AdjacencyLookup(this);
+
+    public IEnumerator<(TileIndex from, TileIndex to, AdjacencyDirection direction)> GetEnumerator()
+    {
+        return Lookup
+            .SelectMany(pair =>
+                pair.Value.Select(innerPair => (pair.Key, innerPair.Key, innerPair.Value))
+            )
+            .Distinct()
+            .GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 
     private void Transform(
@@ -106,54 +165,5 @@ public class AdjacencyLookup(
         }
 
         Lookup[b][a] = direction.Opposite();
-    }
-
-    public void Clear(TileIndex a, TileIndex b)
-    {
-        Lookup.GetValueOrDefault(a, EmptyLookup).Remove(b);
-        Lookup.GetValueOrDefault(b, EmptyLookup).Remove(a);
-    }
-
-    public void Clear(TileIndex adjacencyTile, AdjacencyDirection direction)
-    {
-        var neighbors = GetNeighborsInDirection(adjacencyTile, direction).ToList();
-
-        foreach (var neighbor in neighbors)
-        {
-            Remove(adjacencyTile, neighbor, direction);
-        }
-    }
-
-    public IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex)
-    {
-        return Lookup.GetValueOrDefault(tileIndex, EmptyLookup).Keys;
-    }
-
-    public IEnumerable<TileIndex> GetNeighborsInDirection(
-        TileIndex tileIndex,
-        AdjacencyDirection direction
-    )
-    {
-        return Lookup
-            .GetValueOrDefault(tileIndex, EmptyLookup)
-            .Where(pair => pair.Value.HasFlag(direction))
-            .Select(pair => pair.Key);
-    }
-
-    public IAdjacencyLookup Build() => new AdjacencyLookup(this);
-
-    public IEnumerator<(TileIndex from, TileIndex to, AdjacencyDirection direction)> GetEnumerator()
-    {
-        return Lookup
-            .SelectMany(pair =>
-                pair.Value.Select(innerPair => (pair.Key, innerPair.Key, innerPair.Value))
-            )
-            .Distinct()
-            .GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 }

@@ -18,7 +18,8 @@ public class InputBrushFileReader(string filePath)
     {
         var lines = File.ReadAllLines(filePath);
 
-        if (!GetSize(lines).TryPickT0(out var size, out var error))
+        if (!GetSize(lines)
+                .TryPickT0(out var size, out var error))
         {
             return error;
         }

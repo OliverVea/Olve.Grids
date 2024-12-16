@@ -79,6 +79,19 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         return new BrushLookup(allBrushIds, tileCornerToBrush, brushCornerToTiles);
     }
 
+    public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()
+    {
+        foreach (var (tileCorner, brushId) in _tileCornerToBrush)
+        {
+            yield return (tileCorner.Item1, tileCorner.Item2, brushId);
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
     private FrozenSet<BrushId> GetAllBrushIds()
     {
         return _tileCornerToBrush.Values.ToFrozenSet();
@@ -102,24 +115,12 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         foreach (var ((tileIndex, corner), brushId) in tileCornerToBrush)
         {
             var oppositeCorner = corner.Opposite();
-            brushCornerToTiles[(brushId, oppositeCorner)].Add(tileIndex);
+            brushCornerToTiles[(brushId, oppositeCorner)]
+                .Add(tileIndex);
         }
 
         return brushCornerToTiles
             .Where(x => x.Value.Count > 0)
             .ToFrozenDictionary(x => x.Key, x => x.Value.ToFrozenSet());
-    }
-
-    public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()
-    {
-        foreach (var (tileCorner, brushId) in _tileCornerToBrush)
-        {
-            yield return (tileCorner.Item1, tileCorner.Item2, brushId);
-        }
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 }

@@ -8,8 +8,8 @@ namespace Olve.Grids.IO.Configuration;
 public class ConfigurationModelFileReader
 {
     private static readonly IDeserializer Deserializer = new StaticDeserializerBuilder(
-        new YamlStaticContext()
-    )
+            new YamlStaticContext()
+        )
         .WithNamingConvention(CamelCaseNamingConvention.Instance)
         .Build();
 

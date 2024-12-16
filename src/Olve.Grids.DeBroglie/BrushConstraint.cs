@@ -29,6 +29,10 @@ public class BrushConstraint(TileAtlas tileAtlas, BrushGrid brushGrid) : ITileCo
         }
     }
 
+    public void Check(TilePropagator propagator)
+    {
+    }
+
     private HashSet<TileIndex>? GetAllowedTiles(Position position)
     {
         HashSet<TileIndex>? allowedTiles = null;
@@ -43,7 +47,10 @@ public class BrushConstraint(TileAtlas tileAtlas, BrushGrid brushGrid) : ITileCo
         return allowedTiles;
     }
 
-    private HashSet<TileIndex>? SetAllowedTiles(Position position, Corner corner, DeltaPosition deltaPosition, HashSet<TileIndex>? allowedTiles)
+    private HashSet<TileIndex>? SetAllowedTiles(Position position,
+        Corner corner,
+        DeltaPosition deltaPosition,
+        HashSet<TileIndex>? allowedTiles)
     {
         var brush = brushGrid.GetBrush(position + deltaPosition);
         if (!brush.TryPickT0(out var brushId, out _))
@@ -65,9 +72,5 @@ public class BrushConstraint(TileAtlas tileAtlas, BrushGrid brushGrid) : ITileCo
         allowedTiles.IntersectWith(tileIds);
 
         return allowedTiles;
-    }
-
-    public void Check(TilePropagator propagator)
-    {
     }
 }

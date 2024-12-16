@@ -44,7 +44,9 @@ internal class AdjacencyDirectionParser
             return FileParsingError.Combine(errors);
         }
 
-        return components.OfT0().Aggregate((a, b) => a | b);
+        return components
+            .OfT0()
+            .Aggregate((a, b) => a | b);
     }
 
     private OneOf<AdjacencyDirection, FileParsingError> ParseAdjacencyDirectionInternal(

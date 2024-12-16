@@ -23,8 +23,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         return new AdjacencyConfiguration
         {
-            GenerateFromBrushes = configurationModel.GenerateAdjacenciesFromBrushes,
-            Adjacencies = adjacencies,
+            GenerateFromBrushes = configurationModel.GenerateAdjacenciesFromBrushes, Adjacencies = adjacencies
         };
     }
 
@@ -38,7 +37,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
             return Array.Empty<AdjacencyConfiguration.Adjacency>();
         }
 
-        var adjacencyParsingResults = adjacencyModels.Select(ParseAdjacency).ToArray();
+        var adjacencyParsingResults = adjacencyModels
+            .Select(ParseAdjacency)
+            .ToArray();
 
         if (!adjacencyParsingResults.AllT0())
         {
@@ -46,7 +47,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
             return FileParsingError.Combine(errors);
         }
 
-        return adjacencyParsingResults.OfT0().ToArray();
+        return adjacencyParsingResults
+            .OfT0()
+            .ToArray();
     }
 
     private OneOf<AdjacencyConfiguration.Adjacency, FileParsingError> ParseAdjacency(
@@ -63,7 +66,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         }
 
         var adjacents = adjacencyModel.Adjacents is { } adjacentModels
-            ? adjacentModels.Select(ParseAdjacent).ToArray()
+            ? adjacentModels
+                .Select(ParseAdjacent)
+                .ToArray()
             : [];
 
         if (!adjacents.AllT0())
@@ -93,7 +98,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         {
             Tile = tileIndex,
             AdjacencyDirectionToOverwrite = adjacencyDirection,
-            Adjacents = adjacents.OfT0().ToArray(),
+            Adjacents = adjacents
+                .OfT0()
+                .ToArray()
         };
     }
 
@@ -121,9 +128,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         return new AdjacencyConfiguration.Adjacent
         {
-            Tile = tileIndex,
-            IsAdjacent = adjacentModel.IsAdjacent,
-            Direction = direction,
+            Tile = tileIndex, IsAdjacent = adjacentModel.IsAdjacent, Direction = direction
         };
     }
 }

@@ -7,11 +7,13 @@ public interface IBrushLookupBuilder : IEnumerable<(TileIndex, Corner, OneOf<Bru
 {
     OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner);
     IBrushLookupBuilder SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes);
+
     IBrushLookupBuilder SetCornerBrush(
         TileIndex tileIndex,
         Corner corner,
         OneOf<BrushId, Any> brushId
     );
+
     IBrushLookupBuilder Clear();
     IBrushLookupBuilder ClearTileBrushes(TileIndex tileIndex);
     IBrushLookupBuilder ClearTileBrush(TileIndex tileIndex, Corner corner);
