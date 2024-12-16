@@ -1,4 +1,15 @@
+<div align="center">
+
 # Olve.Grids [![NuGet](https://img.shields.io/nuget/v/Olve.Grids?logo=nuget)](https://www.nuget.org/packages/Olve.Grids) [![GitHub](https://img.shields.io/github/license/OliverVea/Olve.Grids)](LICENSE)
+
+![Grids Banner](https://raw.githubusercontent.com/OliverVea/Olve.Grids/refs/heads/master/docs/imgs/grids-banner.gif)
+
+</div>
+
+## Table of contents
+
+- [Purpose](#purpose)
+- [Overview](#overview)
 
 ## Purpose
 
