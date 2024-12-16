@@ -326,7 +326,7 @@ public class RunCommand : Command<RunCommand.Settings>
         public bool Overwrite { get; set; }
 
         [Description]
-        [CommandOption("--tile-atlas-config")]
+        [CommandOption("-c|--tile-atlas-config")]
         public string? TileAtlasConfigFile { get; set; }
     }
 }

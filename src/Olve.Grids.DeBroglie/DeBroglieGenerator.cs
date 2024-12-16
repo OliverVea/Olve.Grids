@@ -9,21 +9,20 @@ namespace Olve.Grids.DeBroglie;
 
 public class DeBroglieGenerator : IGenerator
 {
+
     public GenerationResult Execute(GenerationRequest request)
     {
-        var attempts = 1;
-
         GenerationResult? result = null;
 
-        for (; attempts >= 0; attempts--)
+        for (var attempt = 1; attempt <= request.Attempts; attempt++)
         {
-            result = ExecuteInternal(request, attempts == 0);
+            result = ExecuteInternal(request, attempt == request.Attempts);
             if (result.Status.IsT0)
             {
                 return result;
             }
 
-            Console.WriteLine($"Generation failed. Retrying... ({attempts} attempts left)");
+            Console.WriteLine($"Generation failed. Retrying... ({request.Attempts - attempt} attempts left)");
         }
 
         return result ?? throw new InvalidOperationException("Generation failed.");
