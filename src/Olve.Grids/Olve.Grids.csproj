@@ -13,14 +13,14 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <NoWarn Label="">CS1591</NoWarn> <!-- Temporarily disable the requirement for XML documentation on public types and members -->
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="Olve.Utilities" />
-        <PackageReference Include="StrictId" />
-        <PackageReference Include="OneOf" />
+        <PackageReference Include="Olve.Utilities"/>
+        <PackageReference Include="StrictId"/>
+        <PackageReference Include="OneOf"/>
     </ItemGroup>
 </Project>

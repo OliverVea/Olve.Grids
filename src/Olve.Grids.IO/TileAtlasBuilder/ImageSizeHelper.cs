@@ -23,12 +23,18 @@ public static class ImageSizeHelper
         br.BaseStream.Position = 16;
         var widthBytes = new byte[sizeof(int)];
         for (var i = 0; i < sizeof(int); i++)
+        {
             widthBytes[sizeof(int) - 1 - i] = br.ReadByte();
+        }
+
         var width = BitConverter.ToInt32(widthBytes, 0);
 
         var heightBytes = new byte[sizeof(int)];
         for (var i = 0; i < sizeof(int); i++)
+        {
             heightBytes[sizeof(int) - 1 - i] = br.ReadByte();
+        }
+
         var height = BitConverter.ToInt32(heightBytes, 0);
 
         return new Size(width, height);

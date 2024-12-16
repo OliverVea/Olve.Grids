@@ -12,4 +12,5 @@ public record GenerationRequest(TileAtlas TileAtlas, BrushGrid BrushGrid)
 public record GenerationResult(GenerationRequest Request, TileIndex[,] Tiles, OneOf<Success, Waiting, Error> Status);
 
 public interface IGenerator : IOperation<GenerationRequest, GenerationResult>;
+
 public interface IAsyncGenerator : IAsyncOperation<GenerationRequest, GenerationResult>;

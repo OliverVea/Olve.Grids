@@ -7,13 +7,13 @@ public record CornerBrushes(
     OneOf<BrushId, Any> LowerRight)
 {
     public static readonly CornerBrushes Any = new(new Any(), new Any(), new Any(), new Any());
-    
+
     public OneOf<BrushId, Any> this[Corner corner] => corner switch
     {
         Corner.UpperLeft => UpperLeft,
         Corner.UpperRight => UpperRight,
         Corner.LowerLeft => LowerLeft,
         Corner.LowerRight => LowerRight,
-        _ => throw new ArgumentOutOfRangeException(nameof(corner), corner, null)
+        _ => throw new ArgumentOutOfRangeException(nameof(corner), corner, null),
     };
 }

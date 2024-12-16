@@ -13,6 +13,9 @@ public enum Side
 
 public static class Sides
 {
+
+    public static readonly IReadOnlyList<Side> All = [ Side.Left, Side.Right, Side.Top, Side.Bottom, ];
+
     public static (Corner, Corner) GetCorners(Side side)
     {
         return side switch
@@ -48,8 +51,6 @@ public static class Sides
             _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
         };
     }
-
-    public static readonly IReadOnlyList<Side> All = [Side.Left, Side.Right, Side.Top, Side.Bottom];
 }
 
 public class AdjacencyFromTileBrushEstimator
@@ -86,10 +87,10 @@ public class AdjacencyFromTileBrushEstimator
 
                 var brushes1 = lookup
                     .GetValueOrDefault((tileIndex, corner1), new Any())
-                    .Match(x => [x], _ => brushIds);
+                    .Match(x => [ x, ], _ => brushIds);
                 var brushes2 = lookup
                     .GetValueOrDefault((tileIndex, corner2), new Any())
-                    .Match(x => [x], _ => brushIds);
+                    .Match(x => [ x, ], _ => brushIds);
 
                 foreach (var brush1 in brushes1)
                 {
@@ -97,7 +98,7 @@ public class AdjacencyFromTileBrushEstimator
                     {
                         if (!dict.TryGetValue((side, brush1, brush2), out var list))
                         {
-                            list = [];
+                            list = [ ];
                             dict[(side, brush1, brush2)] = list;
                         }
 
@@ -112,7 +113,7 @@ public class AdjacencyFromTileBrushEstimator
             var direction = side.ToAdjacencyDirection();
             var oppositeSide = side.Opposite();
 
-            var otherTiles = dict.GetValueOrDefault((oppositeSide, brush1, brush2), []);
+            var otherTiles = dict.GetValueOrDefault((oppositeSide, brush1, brush2), [ ]);
 
             foreach (var tileFrom in tilesFrom)
             {

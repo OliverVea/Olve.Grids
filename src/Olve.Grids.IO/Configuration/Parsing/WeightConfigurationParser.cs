@@ -9,12 +9,16 @@ internal class WeightConfigurationParser : IParser<WeightConfiguration>
 
     public OneOf<WeightConfiguration, FileParsingError> Parse(ConfigurationModel configurationModel)
     {
-        if (!ParseWeights(configurationModel).TryPickT0(out var weights, out var error))
+        if (!ParseWeights(configurationModel)
+                .TryPickT0(out var weights, out var error))
         {
             return error;
         }
 
-        return new WeightConfiguration { Weights = weights };
+        return new WeightConfiguration
+        {
+            Weights = weights,
+        };
     }
 
     private OneOf<IReadOnlyList<WeightConfiguration.TileWeight>, FileParsingError> ParseWeights(
@@ -26,7 +30,9 @@ internal class WeightConfigurationParser : IParser<WeightConfiguration>
             return Array.Empty<WeightConfiguration.TileWeight>();
         }
 
-        var weightParsingResults = weightModels.Select(ParseWeight).ToArray();
+        var weightParsingResults = weightModels
+            .Select(ParseWeight)
+            .ToArray();
 
         if (weightParsingResults.AnyT1())
         {
@@ -34,7 +40,9 @@ internal class WeightConfigurationParser : IParser<WeightConfiguration>
             return FileParsingError.Combine(errors);
         }
 
-        return weightParsingResults.OfT0().ToArray();
+        return weightParsingResults
+            .OfT0()
+            .ToArray();
     }
 
     private OneOf<WeightConfiguration.TileWeight, FileParsingError> ParseWeight(
@@ -55,6 +63,10 @@ internal class WeightConfigurationParser : IParser<WeightConfiguration>
             return FileParsingError.New("Weight is required.");
         }
 
-        return new WeightConfiguration.TileWeight { Tile = tileIndex, Weight = weight };
+        return new WeightConfiguration.TileWeight
+        {
+            Tile = tileIndex,
+            Weight = weight,
+        };
     }
 }

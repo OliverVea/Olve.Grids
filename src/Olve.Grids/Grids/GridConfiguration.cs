@@ -2,6 +2,9 @@
 
 public readonly record struct GridConfiguration(Size TileSize, int Rows, int Columns)
 {
+
+    public int TileCount => Rows * Columns;
+
     public IEnumerable<TileIndex> GetTileIndices()
     {
         for (var i = 0; i < Rows * Columns; i++)
@@ -48,6 +51,4 @@ public readonly record struct GridConfiguration(Size TileSize, int Rows, int Col
 
         return (row, column);
     }
-
-    public int TileCount => Rows * Columns;
 }

@@ -9,42 +9,43 @@ public class FileParsingException(FileParsingError error)
 }
 
 /// <summary>
-/// Represents a collection of errors that occurred while parsing a file.
+///     Represents a collection of errors that occurred while parsing a file.
 /// </summary>
 /// <param name="errors">The errors.</param>
 public class FileParsingError(IReadOnlyList<FileParsingProblem> errors)
 {
-    internal static FileParsingError New(
-        [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message,
-        params object[]? args
-    ) => new([new FileParsingProblem(message, args)]);
 
     /// <summary>
-    /// Combines two errors.
+    ///     Gets all problems.
+    /// </summary>
+    public IReadOnlyList<FileParsingProblem> Problems { get; } = errors;
+
+    internal static FileParsingError New([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message,
+        params object[]? args) =>
+        new([ new FileParsingProblem(message, args), ]);
+
+    /// <summary>
+    ///     Combines two errors.
     /// </summary>
     /// <param name="errors">The list of errors.</param>
     /// <returns></returns>
-    public static FileParsingError Combine(params IEnumerable<FileParsingError> errors) =>
-        new(errors.SelectMany(x => x.Problems).ToList());
-
-    /// <summary>
-    /// Gets all problems.
-    /// </summary>
-    public IReadOnlyList<FileParsingProblem> Problems { get; } = errors;
+    public static FileParsingError Combine(params IEnumerable<FileParsingError> errors)
+    {
+        return new FileParsingError(errors
+            .SelectMany(x => x.Problems)
+            .ToList());
+    }
 
     public Exception ToException() => new FileParsingException(this);
 }
 
 /// <summary>
-/// Represents an error that occurred while parsing a file.
+///     Represents an error that occurred while parsing a file.
 /// </summary>
 /// <param name="Message">The error message.</param>
 /// <param name="Args">The arguments for the message.</param>
 public record FileParsingProblem(string Message, object[]? Args)
 {
     /// <inheritdoc />
-    public override string ToString()
-    {
-        return string.Format(Message, Args ?? []);
-    }
+    public override string ToString() => string.Format(Message, Args ?? [ ]);
 }

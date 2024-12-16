@@ -14,7 +14,7 @@ public class DeBroglieGenerator : IGenerator
         var attempts = 1;
 
         GenerationResult? result = null;
-        
+
         for (; attempts >= 0; attempts--)
         {
             result = ExecuteInternal(request, attempts == 0);
@@ -22,6 +22,7 @@ public class DeBroglieGenerator : IGenerator
             {
                 return result;
             }
+
             Console.WriteLine($"Generation failed. Retrying... ({attempts} attempts left)");
         }
 
@@ -49,7 +50,10 @@ public class DeBroglieGenerator : IGenerator
             model.SetFrequency(tileIndex.ToTile(), frequency);
         }
 
-        if (fallback) AddFallbackTile(model, request.TileAtlas);
+        if (fallback)
+        {
+            AddFallbackTile(model, request.TileAtlas);
+        }
 
         var topology = new GridTopology(request.OutputSize.Width, request.OutputSize.Height, false);
 
@@ -67,7 +71,10 @@ public class DeBroglieGenerator : IGenerator
         var resolution = propagator.Run();
         var status = GetStatus(resolution);
 
-        var result = propagator.ToArray().Map(x => ((Tile?)x).ToTileIndex(request.TileAtlas.FallbackTile)).ToArray2d();
+        var result = propagator
+            .ToArray()
+            .Map(x => ((Tile?)x).ToTileIndex(request.TileAtlas.FallbackTile))
+            .ToArray2d();
 
         for (var i = 0; i < request.OutputSize.Width; i++)
         {
@@ -79,7 +86,7 @@ public class DeBroglieGenerator : IGenerator
                 }
             }
         }
-        
+
         return new GenerationResult(request, result, status);
     }
 
@@ -90,7 +97,7 @@ public class DeBroglieGenerator : IGenerator
             Resolution.Decided => new Success(),
             Resolution.Undecided => new Waiting(),
             Resolution.Contradiction => new Error(),
-            _ => throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null),
         };
     }
 
@@ -98,11 +105,14 @@ public class DeBroglieGenerator : IGenerator
     {
         var fallbackTile = tileAtlas.FallbackTile.ToTile();
 
-        var allTiles = tileAtlas.Grid.GetTileIndices().Select(x => x.ToTile()).ToArray();
+        var allTiles = tileAtlas
+            .Grid.GetTileIndices()
+            .Select(x => x.ToTile())
+            .ToArray();
 
         foreach (var direction in AdjacencyDirection.All.GetDeBroglieDirections())
         {
-            model.AddAdjacency([fallbackTile], allTiles, direction);
+            model.AddAdjacency([ fallbackTile, ], allTiles, direction);
         }
 
         model.SetFrequency(fallbackTile, 1e-20);

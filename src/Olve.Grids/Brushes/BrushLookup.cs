@@ -7,10 +7,8 @@ namespace Olve.Grids.Brushes;
 
 public class BrushLookup : IBrushLookup
 {
-    private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
     private readonly FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> _brushCornerToTiles;
-
-    public FrozenSet<BrushId> AllBrushIds { get; }
+    private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
 
     internal BrushLookup(
         FrozenSet<BrushId> allBrushIds,
@@ -23,19 +21,17 @@ public class BrushLookup : IBrushLookup
         _brushCornerToTiles = brushCornerToTiles;
     }
 
-    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner)
-    {
-        return _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
+    public FrozenSet<BrushId> AllBrushIds { get; }
+
+    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner) =>
+        _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
             ? brushId
             : new NotFound();
-    }
 
-    public OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner)
-    {
-        return _brushCornerToTiles.TryGetValue((brushId, corner), out var tiles)
+    public OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner) =>
+        _brushCornerToTiles.TryGetValue((brushId, corner), out var tiles)
             ? tiles
             : new NotFound();
-    }
 
     public IEnumerable<BrushId> Brushes => AllBrushIds;
 
@@ -47,8 +43,5 @@ public class BrushLookup : IBrushLookup
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

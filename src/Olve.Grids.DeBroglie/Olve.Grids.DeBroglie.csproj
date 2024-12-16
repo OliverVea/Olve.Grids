@@ -17,13 +17,13 @@
     <PropertyGroup>
         <NoWarn Label="">CS1591</NoWarn> <!-- Temporarily disable the requirement for XML documentation on public types and members -->
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <ProjectReference Include="..\Olve.Grids\Olve.Grids.csproj" />
+        <ProjectReference Include="..\Olve.Grids\Olve.Grids.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="DeBroglie" />
+        <PackageReference Include="DeBroglie"/>
     </ItemGroup>
 
 </Project>

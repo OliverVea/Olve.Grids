@@ -38,7 +38,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
             return Array.Empty<AdjacencyConfiguration.Adjacency>();
         }
 
-        var adjacencyParsingResults = adjacencyModels.Select(ParseAdjacency).ToArray();
+        var adjacencyParsingResults = adjacencyModels
+            .Select(ParseAdjacency)
+            .ToArray();
 
         if (!adjacencyParsingResults.AllT0())
         {
@@ -46,7 +48,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
             return FileParsingError.Combine(errors);
         }
 
-        return adjacencyParsingResults.OfT0().ToArray();
+        return adjacencyParsingResults
+            .OfT0()
+            .ToArray();
     }
 
     private OneOf<AdjacencyConfiguration.Adjacency, FileParsingError> ParseAdjacency(
@@ -63,8 +67,10 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         }
 
         var adjacents = adjacencyModel.Adjacents is { } adjacentModels
-            ? adjacentModels.Select(ParseAdjacent).ToArray()
-            : [];
+            ? adjacentModels
+                .Select(ParseAdjacent)
+                .ToArray()
+            : [ ];
 
         if (!adjacents.AllT0())
         {
@@ -75,9 +81,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         var overwriteDirections = adjacencyModel.OverwriteBrushAdjacencies
             is { } overwriteDirectionsModel
             ? overwriteDirectionsModel
-                .Select(x => _adjacencyDirectionParser.ParseAdjacencyDirection(x, required: false))
+                .Select(x => _adjacencyDirectionParser.ParseAdjacencyDirection(x, false))
                 .ToArray()
-            : [];
+            : [ ];
 
         if (!overwriteDirections.AllT0())
         {
@@ -93,7 +99,9 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
         {
             Tile = tileIndex,
             AdjacencyDirectionToOverwrite = adjacencyDirection,
-            Adjacents = adjacents.OfT0().ToArray(),
+            Adjacents = adjacents
+                .OfT0()
+                .ToArray(),
         };
     }
 
@@ -112,7 +120,7 @@ internal class AdjacencyConfigurationParser : IParser<AdjacencyConfiguration>
 
         if (
             !_adjacencyDirectionParser
-                .ParseAdjacencyDirection(adjacentModel.Direction, required: true)
+                .ParseAdjacencyDirection(adjacentModel.Direction, true)
                 .TryPickT0(out var direction, out var directionError)
         )
         {

@@ -12,21 +12,20 @@ public static class AdjacencyDirectionExtensions
         {
             yield return Direction.YMinus;
         }
-        
+
         if (adjacencyDirection.HasFlag(AdjacencyDirection.Down))
         {
             yield return Direction.YPlus;
         }
-        
+
         if (adjacencyDirection.HasFlag(AdjacencyDirection.Left))
         {
             yield return Direction.XMinus;
         }
-        
+
         if (adjacencyDirection.HasFlag(AdjacencyDirection.Right))
         {
             yield return Direction.XPlus;
         }
     }
-    
 }

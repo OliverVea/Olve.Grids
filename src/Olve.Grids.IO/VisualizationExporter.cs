@@ -35,8 +35,7 @@ public class VisualizationExporter
         outputImage.SaveAsPng(path);
     }
 
-    private Rectangle GetSourceBox(TileAtlas tileAtlas, TileIndex tileIndex) =>
-        GetSourceBox(tileAtlas.Grid, tileIndex);
+    private Rectangle GetSourceBox(TileAtlas tileAtlas, TileIndex tileIndex) => GetSourceBox(tileAtlas.Grid, tileIndex);
 
     private Rectangle GetSourceBox(GridConfiguration grid, TileIndex tileIndex)
     {
@@ -50,7 +49,7 @@ public class VisualizationExporter
         return new Rectangle(x, y, tileWidth, tileHeight);
     }
 
-    private Point GetToLocation(int x, int y, Olve.Utilities.IntegerMath2D.Size gridTileSize)
+    private Point GetToLocation(int x, int y, Size gridTileSize)
     {
         var (tileWidth, tileHeight) = gridTileSize;
 

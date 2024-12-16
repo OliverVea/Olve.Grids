@@ -11,12 +11,10 @@ public class BrushLookupBuilder : IBrushLookupBuilder
 
     public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct();
 
-    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner)
-    {
-        return _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
+    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner) =>
+        _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
             ? brushId
             : new NotFound();
-    }
 
     public IBrushLookupBuilder SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes)
     {
@@ -79,10 +77,17 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         return new BrushLookup(allBrushIds, tileCornerToBrush, brushCornerToTiles);
     }
 
-    private FrozenSet<BrushId> GetAllBrushIds()
+    public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()
     {
-        return _tileCornerToBrush.Values.ToFrozenSet();
+        foreach (var (tileCorner, brushId) in _tileCornerToBrush)
+        {
+            yield return (tileCorner.Item1, tileCorner.Item2, brushId);
+        }
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    private FrozenSet<BrushId> GetAllBrushIds() => _tileCornerToBrush.Values.ToFrozenSet();
 
     private FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> GetBrushCornerToTiles(
         FrozenSet<BrushId> allBrushes,
@@ -95,31 +100,19 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         {
             foreach (var corner in Corners.All)
             {
-                brushCornerToTiles[(brushId, corner)] = [];
+                brushCornerToTiles[(brushId, corner)] = [ ];
             }
         }
 
         foreach (var ((tileIndex, corner), brushId) in tileCornerToBrush)
         {
             var oppositeCorner = corner.Opposite();
-            brushCornerToTiles[(brushId, oppositeCorner)].Add(tileIndex);
+            brushCornerToTiles[(brushId, oppositeCorner)]
+                .Add(tileIndex);
         }
 
         return brushCornerToTiles
             .Where(x => x.Value.Count > 0)
             .ToFrozenDictionary(x => x.Key, x => x.Value.ToFrozenSet());
-    }
-
-    public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()
-    {
-        foreach (var (tileCorner, brushId) in _tileCornerToBrush)
-        {
-            yield return (tileCorner.Item1, tileCorner.Item2, brushId);
-        }
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 }

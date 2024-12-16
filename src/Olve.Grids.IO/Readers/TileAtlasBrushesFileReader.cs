@@ -13,7 +13,8 @@ public class TileAtlasBrushesFileReader(string filePath)
         var text = File.ReadAllText(filePath);
         var sb = new StringBuilder(text);
 
-        var whiteSpaceChars = text.Where(c => char.IsWhiteSpace(c) && c != NewLine)
+        var whiteSpaceChars = text
+            .Where(c => char.IsWhiteSpace(c) && c != NewLine)
             .Distinct()
             .ToArray();
         foreach (var whiteSpaceChar in whiteSpaceChars)
@@ -21,7 +22,11 @@ public class TileAtlasBrushesFileReader(string filePath)
             sb.Replace(whiteSpaceChar.ToString(), string.Empty);
         }
 
-        var lines = sb.ToString().Split(NewLine).Where(x => x.Length != 0).ToArray();
+        var lines = sb
+            .ToString()
+            .Split(NewLine)
+            .Where(x => x.Length != 0)
+            .ToArray();
 
         var lineCount = lines.Length;
 
@@ -30,9 +35,14 @@ public class TileAtlasBrushesFileReader(string filePath)
             return FileParsingError.New("Invalid brush lookup file: line number must be even.");
         }
 
-        var charCounts = lines.Select(x => x.Length).ToArray();
+        var charCounts = lines
+            .Select(x => x.Length)
+            .ToArray();
 
-        if (charCounts.Distinct().Count() != 1)
+        if (charCounts
+                .Distinct()
+                .Count()
+            != 1)
         {
             return FileParsingError.New("Invalid brush lookup file: inconsistent line lengths.");
         }

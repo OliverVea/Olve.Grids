@@ -4,8 +4,7 @@
 
 The purpose of this library is to define rules for a tile atlas and then procedurally generate outputs given some input geometry.
 
-It handles a specific problem, i.e. generating valid variations of a tile atlas given some input geometry.
-It assumes a grid-based system where each cell can contain a tile from a tile atlas.
+It handles a specific problem, i.e. generating valid variations of a tile atlas given some input geometry. It assumes a grid-based system where each cell can contain a tile from a tile atlas.
 
 ## Overview
 

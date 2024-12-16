@@ -29,8 +29,7 @@ DD
 DL
 ```
 
-Where `D` and `L` are the brush of the light and dark color respectively.
-To better understand this format, here's an illustration of what a tile with this configuration might look like:
+Where `D` and `L` are the brush of the light and dark color respectively. To better understand this format, here's an illustration of what a tile with this configuration might look like:
 
 ![Example of tile with configuration overlaid](https://raw.githubusercontent.com/OliverVea/Olve.Grids/refs/heads/master/docs/imgs/atlas-overlay-tile1.png)
 

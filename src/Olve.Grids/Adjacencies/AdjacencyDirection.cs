@@ -8,7 +8,7 @@ public enum AdjacencyDirection : byte
     Left = 2,
     Right = 4,
     Down = 8,
-    
-    
-    All = Up | Left | Right | Down
+
+
+    All = Up | Left | Right | Down,
 }

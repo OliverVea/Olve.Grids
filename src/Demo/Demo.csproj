@@ -5,37 +5,37 @@
         <PublishAot>true</PublishAot>
         <PublishTrimmed>true</PublishTrimmed>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Olve.Grids.DeBroglie\Olve.Grids.DeBroglie.csproj" />
-        <ProjectReference Include="..\..\src\Olve.Grids.IO\Olve.Grids.IO.csproj" />
+        <ProjectReference Include="..\..\src\Olve.Grids.DeBroglie\Olve.Grids.DeBroglie.csproj"/>
+        <ProjectReference Include="..\..\src\Olve.Grids.IO\Olve.Grids.IO.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="Spectre.Console" />
-        <PackageReference Include="Spectre.Console.CLI" />
+        <PackageReference Include="Spectre.Console"/>
+        <PackageReference Include="Spectre.Console.CLI"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <None Include="assets\**"
-              CopyToOutputDirectory="PreserveNewest" />
+              CopyToOutputDirectory="PreserveNewest"/>
 
 
         <None Include="..\..\LICENSE"
               CopyToOutputDirectory="PreserveNewest"
               Link="LICENSE"
-              Visible="false" />
-        
+              Visible="false"/>
+
         <None Update="README.md">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        
+
         <None Update="../../LICENSE">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Content Include="bin\Debug\net9.0\output.png" />
+        <Content Include="bin\Debug\net9.0\output.png"/>
     </ItemGroup>
 </Project>
