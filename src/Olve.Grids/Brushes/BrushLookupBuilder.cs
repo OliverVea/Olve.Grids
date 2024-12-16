@@ -11,12 +11,10 @@ public class BrushLookupBuilder : IBrushLookupBuilder
 
     public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct();
 
-    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner)
-    {
-        return _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
+    public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner) =>
+        _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
             ? brushId
             : new NotFound();
-    }
 
     public IBrushLookupBuilder SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes)
     {
@@ -87,15 +85,9 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    private FrozenSet<BrushId> GetAllBrushIds()
-    {
-        return _tileCornerToBrush.Values.ToFrozenSet();
-    }
+    private FrozenSet<BrushId> GetAllBrushIds() => _tileCornerToBrush.Values.ToFrozenSet();
 
     private FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> GetBrushCornerToTiles(
         FrozenSet<BrushId> allBrushes,

@@ -21,20 +21,11 @@ public class WeightLookup(
         weights?.ToDictionary(pair => pair.Key, pair => pair.Value)
         ?? new Dictionary<TileIndex, float>();
 
-    public IEnumerator<KeyValuePair<TileIndex, float>> GetEnumerator()
-    {
-        return Lookup.GetEnumerator();
-    }
+    public IEnumerator<KeyValuePair<TileIndex, float>> GetEnumerator() => Lookup.GetEnumerator();
 
-    public float GetWeight(TileIndex tileIndex)
-    {
-        return Lookup.GetValueOrDefault(tileIndex, defaultWeight);
-    }
+    public float GetWeight(TileIndex tileIndex) => Lookup.GetValueOrDefault(tileIndex, defaultWeight);
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public IWeightLookupBuilder SetWeight(TileIndex tileIndex, float weight)
     {
@@ -43,8 +34,5 @@ public class WeightLookup(
         return this;
     }
 
-    public IWeightLookup Build()
-    {
-        return this;
-    }
+    public IWeightLookup Build() => this;
 }

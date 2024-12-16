@@ -39,10 +39,7 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public OneOf<BrushId, Any> GetBrush(Position position)
     {
@@ -85,18 +82,10 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(y, Size.Height);
     }
 
-    private int GetIndex(Position position)
-    {
-        return position.Y * Size.Width + position.X;
-    }
+    private int GetIndex(Position position) => position.Y * Size.Width + position.X;
 
-    private static OneOf<BrushId, Any> GetBrushOrAny(BrushId? brushId)
-    {
-        return brushId ?? OneOf<BrushId, Any>.FromT1(new Any());
-    }
+    private static OneOf<BrushId, Any> GetBrushOrAny(BrushId? brushId) => brushId ?? OneOf<BrushId, Any>.FromT1(new Any());
 
-    private static BrushId? GetBrushId(OneOf<BrushId, Any> brush)
-    {
-        return brush.TryPickT0(out var brushId, out _) ? brushId : null;
-    }
+    private static BrushId? GetBrushId(OneOf<BrushId, Any> brush) =>
+        brush.TryPickT0(out var brushId, out _) ? brushId : null;
 }

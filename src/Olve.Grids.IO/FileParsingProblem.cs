@@ -20,14 +20,9 @@ public class FileParsingError(IReadOnlyList<FileParsingProblem> errors)
     /// </summary>
     public IReadOnlyList<FileParsingProblem> Problems { get; } = errors;
 
-    internal static FileParsingError New(
-        [StringSyntax(StringSyntaxAttribute.CompositeFormat)]
-        string message,
-        params object[]? args
-    )
-    {
-        return new FileParsingError([ new FileParsingProblem(message, args), ]);
-    }
+    internal static FileParsingError New([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message,
+        params object[]? args) =>
+        new([ new FileParsingProblem(message, args), ]);
 
     /// <summary>
     ///     Combines two errors.
@@ -41,10 +36,7 @@ public class FileParsingError(IReadOnlyList<FileParsingProblem> errors)
             .ToList());
     }
 
-    public Exception ToException()
-    {
-        return new FileParsingException(this);
-    }
+    public Exception ToException() => new FileParsingException(this);
 }
 
 /// <summary>
@@ -55,8 +47,5 @@ public class FileParsingError(IReadOnlyList<FileParsingProblem> errors)
 public record FileParsingProblem(string Message, object[]? Args)
 {
     /// <inheritdoc />
-    public override string ToString()
-    {
-        return string.Format(Message, Args ?? [ ]);
-    }
+    public override string ToString() => string.Format(Message, Args ?? [ ]);
 }

@@ -20,7 +20,7 @@ It has 18 tiles of an even 4x4 pixel size:
 
 ### Tile atlas brushes
 
-As this library is based on the dual grid system, each tile is assigned four different brushes, each brush corresponding to acorner of the tile.
+As this library is based on the dual grid system, each tile is assigned four different brushes, each brush corresponding to a corner of the tile.
 
 For example, tile 0 from the tile atlas has the following brushes:
 

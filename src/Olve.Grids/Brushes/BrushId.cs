@@ -9,18 +9,9 @@ public readonly record struct BrushId(Id Id, string DisplayName)
     public string ShortDisplay => string.IsNullOrWhiteSpace(DisplayName) ? Id.ToString() : DisplayName;
     public string LongDisplay => string.IsNullOrWhiteSpace(DisplayName) ? Id.ToString() : $"{Id} ({DisplayName})";
 
-    public static BrushId New()
-    {
-        return new BrushId(Id.NewId(), string.Empty);
-    }
+    public static BrushId New() => new(Id.NewId(), string.Empty);
 
-    public static BrushId New(string displayName)
-    {
-        return new BrushId(Id.NewId(), displayName);
-    }
+    public static BrushId New(string displayName) => new(Id.NewId(), displayName);
 
-    public override string ToString()
-    {
-        return ShortDisplay;
-    }
+    public override string ToString() => ShortDisplay;
 }
