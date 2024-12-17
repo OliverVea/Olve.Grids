@@ -59,7 +59,7 @@ public class BrushConstraint(TileAtlas tileAtlas, BrushGrid brushGrid) : ITileCo
             return allowedTiles;
         }
 
-        var tilesResult = tileAtlas.ReadOnlyBrushLookup.GetTiles(brushId, corner.Opposite());
+        var tilesResult = tileAtlas.BrushLookup.GetTiles(brushId, corner.Opposite());
         if (!tilesResult.TryPickT0(out var tileIds, out _))
         {
             return allowedTiles;

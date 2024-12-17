@@ -20,7 +20,6 @@
         <None Include="assets\**"
               CopyToOutputDirectory="PreserveNewest"/>
 
-
         <None Include="..\..\LICENSE"
               CopyToOutputDirectory="PreserveNewest"
               Link="LICENSE"

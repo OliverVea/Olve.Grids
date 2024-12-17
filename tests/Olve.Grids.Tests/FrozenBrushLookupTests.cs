@@ -13,7 +13,7 @@ public class FrozenBrushLookupTests
         var tile = new TileIndex(42);
         var corner = Corner.UpperRight;
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
         var lookup = builder.Build();
 
         // Act
@@ -33,7 +33,7 @@ public class FrozenBrushLookupTests
         var brushId = BrushId.New();
         var corner = Corner.UpperRight;
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
 
         builder.SetCornerBrush(tile, corner, brushId);
 
@@ -60,7 +60,7 @@ public class FrozenBrushLookupTests
         var corner = Corner.UpperRight;
         var oppositeCorner = corner.Opposite();
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
 
         builder.SetCornerBrush(tile, corner, brushId);
 
@@ -88,7 +88,7 @@ public class FrozenBrushLookupTests
         var corner = Corner.UpperRight;
         var oppositeCorner = corner.Opposite();
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
 
         builder.SetCornerBrush(tileA, corner, brushId);
         builder.SetCornerBrush(tileB, corner, brushId);
@@ -119,7 +119,7 @@ public class FrozenBrushLookupTests
         var corner = Corner.UpperRight;
         var wrongCorner = Corner.LowerRight;
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
 
         builder.SetCornerBrush(tile, corner, brushId);
 
@@ -142,7 +142,7 @@ public class FrozenBrushLookupTests
         var corner = Corner.UpperRight;
         var brushId = BrushId.New();
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
         builder.SetCornerBrush(tile, corner, brushId);
         builder.ClearTileBrush(tile, corner);
 
@@ -164,7 +164,7 @@ public class FrozenBrushLookupTests
         var tile = new TileIndex(42);
         var brushId = BrushId.New();
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
         builder.SetCornerBrush(tile, Corner.UpperRight, brushId);
         builder.SetCornerBrush(tile, Corner.LowerLeft, brushId);
         builder.ClearTileBrushes(tile);
@@ -193,7 +193,7 @@ public class FrozenBrushLookupTests
         var brushId = BrushId.New();
         var corner = Corner.UpperRight;
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
         builder.SetCornerBrush(tileA, corner, brushId);
         builder.SetCornerBrush(tileB, corner, brushId);
         builder.Clear();
@@ -217,7 +217,7 @@ public class FrozenBrushLookupTests
         var tileB = new TileIndex(43);
         var brushId = BrushId.New();
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
         builder.SetCornerBrush(tileA, Corner.UpperRight, brushId);
         builder.SetCornerBrush(tileB, Corner.LowerLeft, brushId);
 
@@ -253,7 +253,7 @@ public class FrozenBrushLookupTests
     public async Task Build_WithNoBrushes_ReturnsEmptyLookup()
     {
         // Arrange
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
 
         var lookup = builder.Build();
 
@@ -274,7 +274,7 @@ public class FrozenBrushLookupTests
         var brushId = BrushId.New();
         var corner = Corner.UpperRight;
 
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
         builder.SetCornerBrush(tile, corner, brushId);
         builder.Clear();
         builder.SetCornerBrush(tile, corner, brushId);

@@ -1,6 +1,4 @@
-﻿using DeBroglie.Topo;
-using Olve.Grids.Adjacencies;
-using Direction = Olve.Grids.Primitives.Direction;
+﻿using Direction = Olve.Grids.Primitives.Direction;
 
 namespace Olve.Grids.DeBroglie;
 

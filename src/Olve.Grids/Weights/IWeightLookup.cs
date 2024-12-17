@@ -2,7 +2,8 @@
 
 namespace Olve.Grids.Weights;
 
-public interface IWeightLookup : IEnumerable<KeyValuePair<TileIndex, float>>
+public interface IWeightLookup : IReadOnlyWeightLookup
 {
-    float GetWeight(TileIndex tileIndex);
+    void SetWeight(TileIndex tileIndex, float weight);
+    void ModifyWeight(TileIndex tileIndex, Func<float, float> modifier, float defaultValue = 0);
 }

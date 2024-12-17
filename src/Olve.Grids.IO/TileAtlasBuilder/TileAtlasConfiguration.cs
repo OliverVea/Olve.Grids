@@ -15,6 +15,6 @@ public class TileAtlasConfiguration
     public TileIndex? FallbackTileIndex { get; internal set; }
 
     public IAdjacencyLookup? AdjacencyLookup { get; internal set; }
-    public IBrushLookupBuilder? BrushLookupBuilder { get; internal set; }
-    public IWeightLookupBuilder? WeightLookupBuilder { get; internal set; }
+    public IBrushLookup? BrushLookup { get; internal set; }
+    public IWeightLookup? WeightLookup { get; internal set; }
 }

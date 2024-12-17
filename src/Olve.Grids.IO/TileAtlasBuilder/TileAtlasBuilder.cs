@@ -58,28 +58,28 @@ public class TileAtlasBuilder
         return Modify(config => configurationAction(config.AdjacencyLookup));
     }
 
-    public TileAtlasBuilder WithBrushLookupBuilder(IBrushLookupBuilder brushLookupBuilder)
+    public TileAtlasBuilder WithBrushLookupBuilder(IBrushLookup brushLookup)
     {
-        return Modify(config => config.BrushLookupBuilder = brushLookupBuilder);
+        return Modify(config => config.BrushLookup = brushLookup);
     }
 
     public TileAtlasBuilder ConfigureBrushLookupBuilder(
-        Action<IBrushLookupBuilder?> configurationAction
+        Action<IBrushLookup?> configurationAction
     )
     {
-        return Modify(config => configurationAction(config.BrushLookupBuilder));
+        return Modify(config => configurationAction(config.BrushLookup));
     }
 
-    public TileAtlasBuilder WithWeightLookupBuilder(IWeightLookupBuilder weightLookupBuilder)
+    public TileAtlasBuilder WithWeightLookupBuilder(IWeightLookup weightLookup)
     {
-        return Modify(config => config.WeightLookupBuilder = weightLookupBuilder);
+        return Modify(config => config.WeightLookup = weightLookup);
     }
 
     public TileAtlasBuilder ConfigureWeightLookupBuilder(
-        Action<IWeightLookupBuilder?> configurationAction
+        Action<IWeightLookup?> configurationAction
     )
     {
-        return Modify(config => configurationAction(config.WeightLookupBuilder));
+        return Modify(config => configurationAction(config.WeightLookup));
     }
 
     public TileAtlas Build()
@@ -100,14 +100,14 @@ public class TileAtlasBuilder
             Configuration.Columns ?? imageSize.Width / tileSize.Width
         );
 
-        ThrowIfNull(Configuration.BrushLookupBuilder, "Brush lookup builder must be set.");
-        var frozenBrushLookup = new FrozenBrushLookup(Configuration.BrushLookupBuilder.Brushes);
+        ThrowIfNull(Configuration.BrushLookup, "Brush lookup builder must be set.");
+        var frozenBrushLookup = new FrozenBrushLookup(Configuration.BrushLookup.Entries);
 
         ThrowIfNull(Configuration.AdjacencyLookup, "Adjacency lookup must be set.");
         var frozenAdjacencyLookup = new FrozenAdjacencyLookup(Configuration.AdjacencyLookup.Adjacencies);
 
-        ThrowIfNull(Configuration.WeightLookupBuilder, "Weight lookup builder must be set.");
-        var frozenWeightLookup = new FrozenWeightLookup(Configuration.WeightLookupBuilder.Weights);
+        ThrowIfNull(Configuration.WeightLookup, "Weight lookup builder must be set.");
+        var frozenWeightLookup = new FrozenWeightLookup(Configuration.WeightLookup.Weights);
 
         return new TileAtlas(
             filePath,

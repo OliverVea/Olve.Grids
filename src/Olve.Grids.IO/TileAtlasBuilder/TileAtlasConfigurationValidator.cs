@@ -45,7 +45,7 @@ internal class TileAtlasConfigurationValidator : AbstractValidator<TileAtlasConf
             .NotNull()
             .WithMessage("{PropertyName} must be specified.");
 
-        RuleFor(x => x.BrushLookupBuilder)
+        RuleFor(x => x.BrushLookup)
             .NotNull()
             .WithMessage("{PropertyName} must be specified.");
     }

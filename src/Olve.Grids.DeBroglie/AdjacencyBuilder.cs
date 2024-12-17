@@ -12,9 +12,9 @@ public class TileAtlasAdjacencyBuilder
         foreach (var tileIndex in tileAtlas.Grid.GetTileIndices())
         {
             var neighbors = tileAtlas
-                .ReadOnlyAdjacencyLookup
+                .AdjacencyLookup
                 .GetNeighbors(tileIndex)
-                .Select(x => (tileIndex: x, direction: tileAtlas.ReadOnlyAdjacencyLookup.Get(tileIndex, x)))
+                .Select(x => (tileIndex: x, direction: tileAtlas.AdjacencyLookup.Get(tileIndex, x)))
                 .ToArray();
 
             if (neighbors.Length == 0)

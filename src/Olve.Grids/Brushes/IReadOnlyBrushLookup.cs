@@ -10,5 +10,5 @@ public interface IReadOnlyBrushLookup
     OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner);
     OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner);
 
-    IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> Entries { get; }
+    IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)> Entries { get; }
 }

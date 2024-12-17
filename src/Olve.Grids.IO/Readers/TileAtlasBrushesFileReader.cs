@@ -8,7 +8,7 @@ public class TileAtlasBrushesFileReader(string filePath)
 {
     private const char NewLine = '\n';
 
-    public OneOf<BrushLookupBuilder, FileParsingError> Load()
+    public OneOf<BrushLookup, FileParsingError> Load()
     {
         var text = File.ReadAllText(filePath);
         var sb = new StringBuilder(text);
@@ -57,7 +57,7 @@ public class TileAtlasBrushesFileReader(string filePath)
         var brushLookup = new Dictionary<char, BrushId>();
 
         var tileIndex = new TileIndex(0);
-        var builder = new BrushLookupBuilder();
+        var builder = new BrushLookup();
 
         for (var y = 0; y < lineCount; y += 2)
         {

@@ -8,7 +8,7 @@ public class AdjacencyFromTileBrushEstimator
 {
     public void SetAdjacencies(
         IAdjacencyLookup adjacencyLookup,
-        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
+        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
     )
     {
         var tileIndices = new HashSet<TileIndex>();
@@ -16,16 +16,12 @@ public class AdjacencyFromTileBrushEstimator
 
         var lookup = new Dictionary<(TileIndex, Corner), OneOf<BrushId, Any>>();
 
-        foreach (var (tileIndex, corner, brush) in brushConfiguration)
+        foreach (var (tileIndex, corner, brushId) in brushConfiguration)
         {
             tileIndices.Add(tileIndex);
+            brushIds.Add(brushId);
 
-            if (brush.TryPickT0(out var brushId, out _))
-            {
-                brushIds.Add(brushId);
-            }
-
-            lookup[(tileIndex, corner)] = brush;
+            lookup[(tileIndex, corner)] = brushId;
         }
 
         var dict = new Dictionary<(Side, BrushId, BrushId), List<TileIndex>>();
@@ -74,16 +70,5 @@ public class AdjacencyFromTileBrushEstimator
                 }
             }
         }
-    }
-
-    public IAdjacencyLookup GetAdjacencyLookup(
-        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> tiles
-    )
-    {
-        var adjacencyLookup = new AdjacencyLookup();
-
-        SetAdjacencies(adjacencyLookup, tiles);
-
-        return adjacencyLookup;
     }
 }

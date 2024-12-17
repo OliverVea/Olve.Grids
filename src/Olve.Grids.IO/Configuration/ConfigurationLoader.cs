@@ -36,9 +36,9 @@ public class ConfigurationLoader(
 
     public OneOf<Success, FileParsingError> Load(string configurationFilePath,
         IAdjacencyLookup adjacencyLookup,
-        IWeightLookupBuilder weightLookupBuilder,
+        IWeightLookup weightLookup,
         IEnumerable<TileIndex> tileIndices,
-        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration)
+        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration)
     {
         if (!configurationModelFileReader
                 .Read(configurationFilePath)
@@ -55,7 +55,7 @@ public class ConfigurationLoader(
         }
 
         if (!weightConfigurationLoader
-                .ConfigureWeightLookupBuilder(configurationModel, weightLookupBuilder, tileIndices)
+                .ConfigureWeightLookupBuilder(configurationModel, weightLookup, tileIndices)
                 .TryPickT0(out _, out error))
         {
             return error;

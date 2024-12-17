@@ -12,10 +12,10 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
 {
     public OneOf<IAdjacencyLookup, FileParsingError> LoadAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
-        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
+        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
     )
     {
-        var adjacencyLookupBuilder = new FrozenAdjacencyLookup();
+        var adjacencyLookupBuilder = new AdjacencyLookup();
 
         if (
             !ConfigureAdjacencyLookupBuilder(
@@ -35,7 +35,7 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
     public OneOf<Success, FileParsingError> ConfigureAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
         IAdjacencyLookup adjacencyLookup,
-        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
+        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
     )
     {
         if (!adjacencyConfigurationParser
@@ -59,7 +59,7 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
 
     private void GenerateFromBrushes(
         IAdjacencyLookup adjacencyLookup,
-        IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
+        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
     )
     {
         var b = new AdjacencyFromTileBrushEstimator();

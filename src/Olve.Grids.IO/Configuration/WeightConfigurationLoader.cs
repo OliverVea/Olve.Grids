@@ -8,7 +8,7 @@ namespace Olve.Grids.IO.Configuration;
 
 public class WeightConfigurationLoader(WeightConfigurationParser weightConfigurationParser)
 {
-    public OneOf<IWeightLookupBuilder, FileParsingError> LoadWeightConfiguration(
+    public OneOf<IWeightLookup, FileParsingError> LoadWeightConfiguration(
         ConfigurationModel configurationModel,
         IEnumerable<TileIndex> tileIndices
     )
@@ -17,7 +17,7 @@ public class WeightConfigurationLoader(WeightConfigurationParser weightConfigura
 
         var result = ConfigureWeightLookupBuilder(configurationModel, weightLookupBuilder, tileIndices);
 
-        return result.Match<OneOf<IWeightLookupBuilder, FileParsingError>>(
+        return result.Match<OneOf<IWeightLookup, FileParsingError>>(
             _ => weightLookupBuilder,
             error => error
         );
@@ -25,14 +25,14 @@ public class WeightConfigurationLoader(WeightConfigurationParser weightConfigura
 
     public OneOf<Success, FileParsingError> ConfigureWeightLookupBuilder(
         ConfigurationModel configurationModel,
-        IWeightLookupBuilder weightLookupBuilder,
+        IWeightLookup weightLookup,
         IEnumerable<TileIndex> tileIndices,
         float defaultWeight = 1.0f)
 
     {
         foreach (var tileIndex in tileIndices)
         {
-            weightLookupBuilder.SetWeight(tileIndex, defaultWeight);
+            weightLookup.SetWeight(tileIndex, defaultWeight);
         }
 
         if (!weightConfigurationParser
@@ -46,10 +46,10 @@ public class WeightConfigurationLoader(WeightConfigurationParser weightConfigura
         {
             foreach (var tile in tileWeight.Tiles)
             {
-                var currentWeight = weightLookupBuilder.GetWeight(tile);
+                var currentWeight = weightLookup.GetWeight(tile);
                 var newWeight = tileWeight.WeightFunction(currentWeight);
 
-                weightLookupBuilder.SetWeight(tile, newWeight);
+                weightLookup.SetWeight(tile, newWeight);
             }
         }
 

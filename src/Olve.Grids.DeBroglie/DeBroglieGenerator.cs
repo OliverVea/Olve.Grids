@@ -1,7 +1,6 @@
 ﻿using DeBroglie;
 using DeBroglie.Models;
 using DeBroglie.Topo;
-using Olve.Grids.Adjacencies;
 using Olve.Grids.Generation;
 using OneOf.Types;
 using Direction = Olve.Grids.Primitives.Direction;
@@ -10,7 +9,6 @@ namespace Olve.Grids.DeBroglie;
 
 public class DeBroglieGenerator : IGenerator
 {
-
     public GenerationResult Execute(GenerationRequest request)
     {
         GenerationResult? result = null;
@@ -45,7 +43,7 @@ public class DeBroglieGenerator : IGenerator
             model.AddAdjacency(adjacency.Src, adjacency.Dest, adjacency.Direction);
         }
 
-        foreach (var (tileIndex, frequency) in request.TileAtlas.WeightLookup)
+        foreach (var (tileIndex, frequency) in request.TileAtlas.WeightLookup.Weights)
         {
             model.SetFrequency(tileIndex.ToTile(), frequency);
         }

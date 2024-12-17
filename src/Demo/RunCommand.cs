@@ -20,7 +20,6 @@ public class RunCommand : Command<RunCommand.Settings>
     private const int Verbose = 2;
 
     private const int Success = 0;
-    private const int TileAtlasError = 1;
     private const int TileAtlasBrushesError = 2;
     private const int AtlasConfigurationError = 3;
     private const int InputBrushesError = 4;
@@ -170,7 +169,8 @@ public class RunCommand : Command<RunCommand.Settings>
 
         tileAtlasBuilder.WithBrushLookupBuilder(tileAtlasBrushes);
         var tileIndices = tileAtlasBrushes
-            .Select(x => x.Item1)
+            .Entries
+            .Select(x => x.TileIndex)
             .Distinct()
             .ToArray();
 
@@ -182,7 +182,7 @@ public class RunCommand : Command<RunCommand.Settings>
             var configurationLoader = ConfigurationLoader.Create();
 
             if (!configurationLoader
-                    .Load(tileAtlasConfigFile, adjacencyBuilder, weightBuilder, tileIndices, tileAtlasBrushes)
+                    .Load(tileAtlasConfigFile, adjacencyBuilder, weightBuilder, tileIndices, tileAtlasBrushes.Entries)
                     .TryPickT0(out _, out var error))
             {
                 foreach (var problem in error.Problems)
@@ -206,7 +206,7 @@ public class RunCommand : Command<RunCommand.Settings>
 
             var adjacencyEstimator = new AdjacencyFromTileBrushEstimator();
             adjacencyEstimator.SetAdjacencies(builder,
-                tileAtlasBuilder.Configuration.BrushLookupBuilder?.Build() ?? throw new Exception());
+                tileAtlasBuilder.Configuration.BrushLookup?.Entries ?? throw new Exception());
 
             tileAtlasBuilder = tileAtlasBuilder.WithAdjacencyLookupBuilder(builder);
 
@@ -222,17 +222,7 @@ public class RunCommand : Command<RunCommand.Settings>
         }
 
         var tileAtlasStart = Stopwatch.GetTimestamp();
-        if (!tileAtlasBuilder
-                .Build()
-                .TryPickT0(out var tileAtlas, out var errors))
-        {
-            foreach (var error in errors)
-            {
-                AnsiConsole.MarkupLine($"[bold red]Error:[/] {error.ErrorMessage}");
-            }
-
-            return TileAtlasError;
-        }
+        var tileAtlas = tileAtlasBuilder.Build();
 
         var tileAtlasTime = Stopwatch.GetElapsedTime(tileAtlasStart);
 
