@@ -1,8 +1,7 @@
-﻿namespace Olve.Grids.Brushes;
+﻿namespace Olve.Grids.Primitives;
 
 public static class Corners
 {
-
     public static readonly IReadOnlyList<Corner> All =
     [
         Corner.UpperLeft, Corner.UpperRight, Corner.LowerLeft, Corner.LowerRight,

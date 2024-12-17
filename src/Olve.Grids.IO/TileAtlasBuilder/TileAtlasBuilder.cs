@@ -1,4 +1,5 @@
-﻿using FluentValidation.Results;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentValidation.Results;
 using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Generation;
@@ -44,17 +45,17 @@ public class TileAtlasBuilder
     }
 
     public TileAtlasBuilder WithAdjacencyLookupBuilder(
-        IAdjacencyLookupBuilder adjacencyLookupBuilder
+        IAdjacencyLookup adjacencyLookup
     )
     {
-        return Modify(config => config.AdjacencyLookupBuilder = adjacencyLookupBuilder);
+        return Modify(config => config.AdjacencyLookup = adjacencyLookup);
     }
 
     public TileAtlasBuilder ConfigureAdjacencyLookupBuilder(
-        Action<IAdjacencyLookupBuilder?> configurationAction
+        Action<IAdjacencyLookup?> configurationAction
     )
     {
-        return Modify(config => configurationAction(config.AdjacencyLookupBuilder));
+        return Modify(config => configurationAction(config.AdjacencyLookup));
     }
 
     public TileAtlasBuilder WithBrushLookupBuilder(IBrushLookupBuilder brushLookupBuilder)
@@ -81,19 +82,17 @@ public class TileAtlasBuilder
         return Modify(config => configurationAction(config.WeightLookupBuilder));
     }
 
-    public OneOf<TileAtlas, IList<ValidationFailure>> Build()
+    public TileAtlas Build()
     {
         if (!ValidationResult.IsValid)
         {
-            return ValidationResult.Errors;
+            throw new InvalidOperationException("Cannot build a tile atlas with invalid configuration.");
         }
 
-        var filePath =
-            Configuration.FilePath ?? throw new InvalidOperationException("File path must be set.");
+        var filePath = Configuration.FilePath ?? throw new InvalidOperationException("File path must be set.");
 
         var imageSize = ImageSizeHelper.GetImageSize(filePath);
-        var tileSize =
-            Configuration.TileSize ?? throw new InvalidOperationException("Tile size must be set.");
+        var tileSize = Configuration.TileSize ?? throw new InvalidOperationException("Tile size must be set.");
 
         var gridConfiguration = new GridConfiguration(
             tileSize,
@@ -101,29 +100,33 @@ public class TileAtlasBuilder
             Configuration.Columns ?? imageSize.Width / tileSize.Width
         );
 
-        var brushLookup =
-            Configuration.BrushLookupBuilder?.Build()
-            ?? throw new InvalidOperationException("Brush lookup builder must be set.");
+        ThrowIfNull(Configuration.BrushLookupBuilder, "Brush lookup builder must be set.");
+        var frozenBrushLookup = new FrozenBrushLookup(Configuration.BrushLookupBuilder.Brushes);
 
-        var adjacencyLookup =
-            Configuration.AdjacencyLookupBuilder?.Build()
-            ?? throw new InvalidOperationException("Adjacency lookup builder must be set.");
+        ThrowIfNull(Configuration.AdjacencyLookup, "Adjacency lookup must be set.");
+        var frozenAdjacencyLookup = new FrozenAdjacencyLookup(Configuration.AdjacencyLookup.Adjacencies);
 
-        var weightLookup =
-            Configuration.WeightLookupBuilder?.Build()
-            ?? new WeightLookup(gridConfiguration.GetTileIndices());
+        ThrowIfNull(Configuration.WeightLookupBuilder, "Weight lookup builder must be set.");
+        var frozenWeightLookup = new FrozenWeightLookup(Configuration.WeightLookupBuilder.Weights);
 
         return new TileAtlas(
             filePath,
             gridConfiguration,
-            brushLookup,
-            adjacencyLookup,
-            weightLookup
+            frozenBrushLookup,
+            frozenAdjacencyLookup,
+            frozenWeightLookup
         )
         {
-            FallbackTile =
-                Configuration.FallbackTileIndex ?? new TileIndex(gridConfiguration.TileCount - 1),
+            FallbackTile = Configuration.FallbackTileIndex ?? new TileIndex(gridConfiguration.TileCount - 1),
         };
+    }
+
+    private void ThrowIfNull([NotNull] object? value, string message)
+    {
+        if (value is null)
+        {
+            throw new InvalidOperationException(message);
+        }
     }
 
     private TileAtlasBuilder Modify(Action<TileAtlasConfiguration> modifyAction)

@@ -1,4 +1,6 @@
-﻿namespace Olve.Grids.Brushes;
+﻿using Olve.Grids.Primitives;
+
+namespace Olve.Grids.Brushes;
 
 public record CornerBrushes(
     OneOf<BrushId, Any> UpperLeft,

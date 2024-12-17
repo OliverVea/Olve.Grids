@@ -1,4 +1,5 @@
 ﻿using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 using OneOf.Types;
 
 namespace Olve.Grids.Brushes;
@@ -17,5 +18,5 @@ public interface IBrushLookupBuilder : IEnumerable<(TileIndex, Corner, OneOf<Bru
     IBrushLookupBuilder Clear();
     IBrushLookupBuilder ClearTileBrushes(TileIndex tileIndex);
     IBrushLookupBuilder ClearTileBrush(TileIndex tileIndex, Corner corner);
-    IBrushLookup Build();
+    IReadOnlyBrushLookup Build();
 }

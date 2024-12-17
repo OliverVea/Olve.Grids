@@ -4,7 +4,6 @@ public readonly record struct TileIndex(int Index)
 {
     public static TileIndex operator ++(TileIndex index) => new(index.Index + 1);
 
-
     public static IEnumerable<TileIndex> Span(TileIndex start, TileIndex end)
     {
         if (start.Index > end.Index)

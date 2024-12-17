@@ -1,23 +1,24 @@
 ﻿using Olve.Grids.Adjacencies;
+using Olve.Grids.Primitives;
 using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
 public class AdjacencyDirectionParser
 {
-    private static readonly Dictionary<string, AdjacencyDirection> DirectionLookup = new()
+    private static readonly Dictionary<string, Direction> DirectionLookup = new()
     {
-        ["up"] = AdjacencyDirection.Up,
-        ["u"] = AdjacencyDirection.Up,
-        ["down"] = AdjacencyDirection.Down,
-        ["d"] = AdjacencyDirection.Down,
-        ["left"] = AdjacencyDirection.Left,
-        ["l"] = AdjacencyDirection.Left,
-        ["right"] = AdjacencyDirection.Right,
-        ["r"] = AdjacencyDirection.Right,
+        ["up"] = Direction.Up,
+        ["u"] = Direction.Up,
+        ["down"] = Direction.Down,
+        ["d"] = Direction.Down,
+        ["left"] = Direction.Left,
+        ["l"] = Direction.Left,
+        ["right"] = Direction.Right,
+        ["r"] = Direction.Right,
     };
 
-    public OneOf<AdjacencyDirection, FileParsingError> ParseAdjacencyDirection(
+    public OneOf<Direction, FileParsingError> ParseAdjacencyDirection(
         string? direction,
         bool required
     )
@@ -29,7 +30,7 @@ public class AdjacencyDirectionParser
                 return FileParsingError.New("Direction is required.");
             }
 
-            return AdjacencyDirection.None;
+            return Direction.None;
         }
 
         var components = direction
@@ -49,7 +50,7 @@ public class AdjacencyDirectionParser
             .Aggregate((a, b) => a | b);
     }
 
-    private OneOf<AdjacencyDirection, FileParsingError> ParseAdjacencyDirectionInternal(
+    private OneOf<Direction, FileParsingError> ParseAdjacencyDirectionInternal(
         string? direction
     )
     {

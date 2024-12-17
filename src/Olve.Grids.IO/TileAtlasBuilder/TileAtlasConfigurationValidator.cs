@@ -41,7 +41,7 @@ internal class TileAtlasConfigurationValidator : AbstractValidator<TileAtlasConf
             .When(x => x.FallbackTileIndex is { })
             .WithMessage("{PropertyName} must be greater than or equal to 0.");
 
-        RuleFor(x => x.AdjacencyLookupBuilder)
+        RuleFor(x => x.AdjacencyLookup)
             .NotNull()
             .WithMessage("{PropertyName} must be specified.");
 

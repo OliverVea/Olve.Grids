@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using Olve.Grids.Brushes;
+﻿using Olve.Grids.Brushes;
 
 namespace Olve.Grids.Generation;
 
-public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
+public class BrushGrid
 {
-
     private readonly BrushId?[] _brushes;
 
     public BrushGrid(Size size, BrushId? initialBrush = null)
@@ -24,8 +22,7 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
     public Size Size { get; }
     public int Count { get; }
 
-
-    public IEnumerator<(Position position, OneOf<BrushId, Any>)> GetEnumerator()
+    public IEnumerable<(Position position, OneOf<BrushId, Any>)> GetPositions()
     {
         for (var y = 0; y < Size.Height; y++)
         {
@@ -38,8 +35,6 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
             }
         }
     }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public OneOf<BrushId, Any> GetBrush(Position position)
     {
@@ -66,11 +61,6 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
         }
     }
 
-    /// <summary>
-    ///     Verifies that the position is within the bounds of the grid.
-    /// </summary>
-    /// <param name="position">The position to verify.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the position is outside the bounds of the grid.</exception>
     private void VerifyPosition(Position position)
     {
         var (x, y) = position;
@@ -88,4 +78,5 @@ public class BrushGrid : IEnumerable<(Position position, OneOf<BrushId, Any>)>
 
     private static BrushId? GetBrushId(OneOf<BrushId, Any> brush) =>
         brush.TryPickT0(out var brushId, out _) ? brushId : null;
+
 }

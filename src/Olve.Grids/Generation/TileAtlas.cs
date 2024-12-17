@@ -8,15 +8,15 @@ namespace Olve.Grids.Generation;
 public class TileAtlas(
     string filePath,
     GridConfiguration gridConfiguration,
-    IBrushLookup brushLookup,
-    IAdjacencyLookup adjacencyLookup,
+    IReadOnlyBrushLookup readOnlyBrushLookup,
+    IReadOnlyAdjacencyLookup readOnlyAdjacencyLookup,
     IWeightLookup weightLookup
 )
 {
     public string FilePath { get; } = filePath;
     public GridConfiguration Grid { get; } = gridConfiguration;
-    public IAdjacencyLookup AdjacencyLookup { get; } = adjacencyLookup;
-    public IBrushLookup BrushLookup { get; } = brushLookup;
+    public IReadOnlyAdjacencyLookup ReadOnlyAdjacencyLookup { get; } = readOnlyAdjacencyLookup;
+    public IReadOnlyBrushLookup ReadOnlyBrushLookup { get; } = readOnlyBrushLookup;
     public IWeightLookup WeightLookup { get; } = weightLookup;
 
     public TileIndex FallbackTile { get; init; } = new(gridConfiguration.TileCount - 1);

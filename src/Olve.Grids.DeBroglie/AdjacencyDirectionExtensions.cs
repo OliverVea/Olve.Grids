@@ -1,31 +1,32 @@
 ﻿using DeBroglie.Topo;
 using Olve.Grids.Adjacencies;
+using Direction = Olve.Grids.Primitives.Direction;
 
 namespace Olve.Grids.DeBroglie;
 
 public static class AdjacencyDirectionExtensions
 {
 
-    public static IEnumerable<Direction> GetDeBroglieDirections(this AdjacencyDirection adjacencyDirection)
+    public static IEnumerable<global::DeBroglie.Topo.Direction> GetDeBroglieDirections(this Direction direction)
     {
-        if (adjacencyDirection.HasFlag(AdjacencyDirection.Up))
+        if (direction.HasFlag(Direction.Up))
         {
-            yield return Direction.YMinus;
+            yield return global::DeBroglie.Topo.Direction.YMinus;
         }
 
-        if (adjacencyDirection.HasFlag(AdjacencyDirection.Down))
+        if (direction.HasFlag(Direction.Down))
         {
-            yield return Direction.YPlus;
+            yield return global::DeBroglie.Topo.Direction.YPlus;
         }
 
-        if (adjacencyDirection.HasFlag(AdjacencyDirection.Left))
+        if (direction.HasFlag(Direction.Left))
         {
-            yield return Direction.XMinus;
+            yield return global::DeBroglie.Topo.Direction.XMinus;
         }
 
-        if (adjacencyDirection.HasFlag(AdjacencyDirection.Right))
+        if (direction.HasFlag(Direction.Right))
         {
-            yield return Direction.XPlus;
+            yield return global::DeBroglie.Topo.Direction.XPlus;
         }
     }
 }

@@ -6,9 +6,8 @@ namespace Olve.Grids.Weights;
 public class WeightLookup(
     IEnumerable<KeyValuePair<TileIndex, float>>? weights = null,
     float defaultWeight = 1f
-) : IWeightLookup, IWeightLookupBuilder, IEnumerable<KeyValuePair<TileIndex, float>>
+) : IWeightLookup, IWeightLookupBuilder
 {
-
     public WeightLookup(IEnumerable<TileIndex> tileIndices, float defaultWeight = 1f)
         : this(
             tileIndices.Select(x => new KeyValuePair<TileIndex, float>(x, defaultWeight)),

@@ -3,6 +3,7 @@ using DeBroglie.Constraints;
 using Olve.Grids.Brushes;
 using Olve.Grids.Generation;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 
 namespace Olve.Grids.DeBroglie;
 
@@ -58,7 +59,7 @@ public class BrushConstraint(TileAtlas tileAtlas, BrushGrid brushGrid) : ITileCo
             return allowedTiles;
         }
 
-        var tilesResult = tileAtlas.BrushLookup.GetTiles(brushId, corner.Opposite());
+        var tilesResult = tileAtlas.ReadOnlyBrushLookup.GetTiles(brushId, corner.Opposite());
         if (!tilesResult.TryPickT0(out var tileIds, out _))
         {
             return allowedTiles;

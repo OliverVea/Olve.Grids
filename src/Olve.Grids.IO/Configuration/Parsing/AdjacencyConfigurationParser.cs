@@ -1,5 +1,6 @@
 ﻿using Olve.Grids.Adjacencies;
 using Olve.Grids.IO.Configuration.Models;
+using Olve.Grids.Primitives;
 using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
@@ -99,12 +100,12 @@ public class AdjacencyConfigurationParser(
 
         var adjacencyDirection = overwriteDirections
             .OfT0()
-            .Aggregate(AdjacencyDirection.None, (acc, x) => acc | x);
+            .Aggregate(Direction.None, (acc, x) => acc | x);
 
         return new AdjacencyConfiguration.Adjacency
         {
             Tiles = tiles.ToArray(),
-            AdjacencyDirectionToOverwrite = adjacencyDirection,
+            DirectionToOverwrite = adjacencyDirection,
             Adjacents = adjacents
                 .OfT0()
                 .ToArray(),

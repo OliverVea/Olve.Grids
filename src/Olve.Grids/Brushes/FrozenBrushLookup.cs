@@ -1,16 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 using OneOf.Types;
 
 namespace Olve.Grids.Brushes;
 
-public class BrushLookup : IBrushLookup
+public class FrozenBrushLookup : IReadOnlyBrushLookup
 {
     private readonly FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> _brushCornerToTiles;
     private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
 
-    internal BrushLookup(
+    internal FrozenBrushLookup(
         FrozenSet<BrushId> allBrushIds,
         FrozenDictionary<(TileIndex, Corner), BrushId> tileCornerToBrush,
         FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> brushCornerToTiles
@@ -34,14 +34,13 @@ public class BrushLookup : IBrushLookup
             : new NotFound();
 
     public IEnumerable<BrushId> Brushes => AllBrushIds;
+    public IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> Entries => GetEntries();
 
-    public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()
+    private IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEntries()
     {
         foreach (var (tileCorner, brushId) in _tileCornerToBrush)
         {
             yield return (tileCorner.Item1, tileCorner.Item2, brushId);
         }
     }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

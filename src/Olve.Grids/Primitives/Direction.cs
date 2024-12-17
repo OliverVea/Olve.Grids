@@ -1,7 +1,7 @@
-﻿namespace Olve.Grids.Adjacencies;
+﻿namespace Olve.Grids.Primitives;
 
 [Flags]
-public enum AdjacencyDirection : byte
+public enum Direction : byte
 {
     None = 0,
     Up = 1,

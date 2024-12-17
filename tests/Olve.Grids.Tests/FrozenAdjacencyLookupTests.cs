@@ -1,15 +1,16 @@
 ﻿using Olve.Grids.Adjacencies;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Tests;
 
-public class AdjacencyLookupTests
+public class FrozenAdjacencyLookupTests
 {
     [Test]
     public async Task this_OnEmptyLookup_ReturnsNone()
     {
         // Arrange
-        var lookup = new AdjacencyLookup();
+        var lookup = new FrozenAdjacencyLookup();
 
         var (from, to) = GetTilePair();
 
@@ -19,15 +20,15 @@ public class AdjacencyLookupTests
         // Assert
         await Assert
             .That(result)
-            .IsEqualTo(AdjacencyDirection.None);
+            .IsEqualTo(Direction.None);
     }
 
     [Test]
     [MethodDataSource<AdjacencyDirectionGenerator>("GetDirections")]
-    public async Task this_SetFromAndTo_ReturnsSetDirection(AdjacencyDirection direction)
+    public async Task this_SetFromAndTo_ReturnsSetDirection(Direction direction)
     {
         // Arrange
-        var lookup = new AdjacencyLookup();
+        var lookup = new FrozenAdjacencyLookup();
         var (from, to) = GetTilePair();
         lookup.Set(from, to, direction);
 
@@ -42,10 +43,10 @@ public class AdjacencyLookupTests
 
     [Test]
     [MethodDataSource<AdjacencyDirectionGenerator>("GetDirectionsWithOpposites")]
-    public async Task this_SetFromAndTo_ReturnsOppositeDirection(AdjacencyDirection direction, AdjacencyDirection opposite)
+    public async Task this_SetFromAndTo_ReturnsOppositeDirection(Direction direction, Direction opposite)
     {
         // Arrange
-        var lookup = new AdjacencyLookup();
+        var lookup = new FrozenAdjacencyLookup();
         var (from, to) = GetTilePair();
         lookup.Set(from, to, direction);
 
@@ -62,10 +63,10 @@ public class AdjacencyLookupTests
     public async Task this_SetAndSetAgain_OverwritesDirection()
     {
         // Arrange
-        var lookup = new AdjacencyLookup();
+        var lookup = new FrozenAdjacencyLookup();
         var (from, to) = GetTilePair();
-        lookup.Set(from, to, AdjacencyDirection.Up);
-        lookup.Set(from, to, AdjacencyDirection.Down);
+        lookup.Set(from, to, Direction.Up);
+        lookup.Set(from, to, Direction.Down);
 
         // Act
         var result = lookup.Get(from, to);
@@ -73,16 +74,16 @@ public class AdjacencyLookupTests
         // Assert
         await Assert
             .That(result)
-            .IsEqualTo(AdjacencyDirection.Down);
+            .IsEqualTo(Direction.Down);
     }
 
     [Test]
     public async Task this_SetOnSameTile_DirectionAndOppositeIsWritten()
     {
         // Arrange
-        var lookup = new AdjacencyLookup();
+        var lookup = new FrozenAdjacencyLookup();
         var tile = new TileIndex(42);
-        var direction = AdjacencyDirection.Up;
+        var direction = Direction.Up;
         var opposite = direction.Opposite();
 
         lookup.Set(tile, tile, direction);
@@ -108,21 +109,21 @@ public class AdjacencyLookupTests
 
 public class AdjacencyDirectionGenerator
 {
-    private static readonly AdjacencyDirection[] AllDirections =
+    private static readonly Direction[] AllDirections =
         Enumerable
-            .Range(1, (int)AdjacencyDirection.All)
-            .Select(x => (AdjacencyDirection)x)
+            .Range(1, (int)Direction.All)
+            .Select(x => (Direction)x)
             .ToArray();
 
-    public static IEnumerable<Func<AdjacencyDirection>> GetDirections()
+    public static IEnumerable<Func<Direction>> GetDirections()
     {
-        return AllDirections.Select<AdjacencyDirection, Func<AdjacencyDirection>>(direction => () => direction);
+        return AllDirections.Select<Direction, Func<Direction>>(direction => () => direction);
     }
 
-    public static IEnumerable<Func<(AdjacencyDirection direction, AdjacencyDirection opposite)>>
+    public static IEnumerable<Func<(Direction direction, Direction opposite)>>
         GetDirectionsWithOpposites()
     {
-        return AllDirections.Select<AdjacencyDirection, Func<(AdjacencyDirection direction, AdjacencyDirection opposite)>>(
+        return AllDirections.Select<Direction, Func<(Direction direction, Direction opposite)>>(
             direction => () => (direction, direction.Opposite()));
     }
 }

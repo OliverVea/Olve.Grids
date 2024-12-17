@@ -1,9 +1,10 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Tests;
 
-public class BrushLookupTests
+public class FrozenBrushLookupTests
 {
     [Test]
     public async Task GetBrushId_NoBrushIdForTile_ReturnsNotFound()

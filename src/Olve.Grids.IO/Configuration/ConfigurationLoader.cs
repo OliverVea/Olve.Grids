@@ -3,6 +3,7 @@ using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.IO.Configuration.Parsing;
+using Olve.Grids.Primitives;
 using Olve.Grids.Weights;
 using OneOf.Types;
 
@@ -34,7 +35,7 @@ public class ConfigurationLoader(
 
 
     public OneOf<Success, FileParsingError> Load(string configurationFilePath,
-        IAdjacencyLookupBuilder adjacencyLookupBuilder,
+        IAdjacencyLookup adjacencyLookup,
         IWeightLookupBuilder weightLookupBuilder,
         IEnumerable<TileIndex> tileIndices,
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration)
@@ -47,7 +48,7 @@ public class ConfigurationLoader(
         }
 
         if (!adjacencyConfigurationLoader
-                .ConfigureAdjacencyLookupBuilder(configurationModel, adjacencyLookupBuilder, brushConfiguration)
+                .ConfigureAdjacencyLookupBuilder(configurationModel, adjacencyLookup, brushConfiguration)
                 .TryPickT0(out _, out error))
         {
             return error;

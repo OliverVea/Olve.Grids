@@ -1,62 +1,13 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Adjacencies;
-
-public enum Side
-{
-    Left,
-    Right,
-    Top,
-    Bottom,
-}
-
-public static class Sides
-{
-
-    public static readonly IReadOnlyList<Side> All = [ Side.Left, Side.Right, Side.Top, Side.Bottom, ];
-
-    public static (Corner, Corner) GetCorners(Side side)
-    {
-        return side switch
-        {
-            Side.Left => (Corner.UpperLeft, Corner.LowerLeft),
-            Side.Right => (Corner.UpperRight, Corner.LowerRight),
-            Side.Top => (Corner.UpperLeft, Corner.UpperRight),
-            Side.Bottom => (Corner.LowerLeft, Corner.LowerRight),
-            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
-        };
-    }
-
-    public static Side Opposite(this Side side)
-    {
-        return side switch
-        {
-            Side.Left => Side.Right,
-            Side.Right => Side.Left,
-            Side.Top => Side.Bottom,
-            Side.Bottom => Side.Top,
-            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
-        };
-    }
-
-    public static AdjacencyDirection ToAdjacencyDirection(this Side side)
-    {
-        return side switch
-        {
-            Side.Left => AdjacencyDirection.Left,
-            Side.Right => AdjacencyDirection.Right,
-            Side.Top => AdjacencyDirection.Up,
-            Side.Bottom => AdjacencyDirection.Down,
-            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
-        };
-    }
-}
 
 public class AdjacencyFromTileBrushEstimator
 {
     public void SetAdjacencies(
-        IAdjacencyLookupBuilder adjacencyLookup,
+        IAdjacencyLookup adjacencyLookup,
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
     )
     {
@@ -125,7 +76,7 @@ public class AdjacencyFromTileBrushEstimator
         }
     }
 
-    public AdjacencyLookup GetAdjacencyLookup(
+    public IAdjacencyLookup GetAdjacencyLookup(
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> tiles
     )
     {

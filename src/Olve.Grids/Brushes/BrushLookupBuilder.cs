@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Frozen;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 using OneOf.Types;
 
 namespace Olve.Grids.Brushes;
@@ -68,13 +69,13 @@ public class BrushLookupBuilder : IBrushLookupBuilder
         return this;
     }
 
-    public IBrushLookup Build()
+    public IReadOnlyBrushLookup Build()
     {
         var allBrushIds = GetAllBrushIds();
         var tileCornerToBrush = _tileCornerToBrush.ToFrozenDictionary();
         var brushCornerToTiles = GetBrushCornerToTiles(allBrushIds, tileCornerToBrush);
 
-        return new BrushLookup(allBrushIds, tileCornerToBrush, brushCornerToTiles);
+        return new FrozenBrushLookup(allBrushIds, tileCornerToBrush, brushCornerToTiles);
     }
 
     public IEnumerator<(TileIndex, Corner, OneOf<BrushId, Any>)> GetEnumerator()

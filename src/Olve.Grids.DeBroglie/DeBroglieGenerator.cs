@@ -4,6 +4,7 @@ using DeBroglie.Topo;
 using Olve.Grids.Adjacencies;
 using Olve.Grids.Generation;
 using OneOf.Types;
+using Direction = Olve.Grids.Primitives.Direction;
 
 namespace Olve.Grids.DeBroglie;
 
@@ -60,9 +61,6 @@ public class DeBroglieGenerator : IGenerator
         {
             Constraints = constraints.ToArray(),
             BacktrackType = BacktrackType.Backtrack,
-            MaxBacktrackDepth = 1000,
-            IndexPickerType = IndexPickerType.Default,
-            TilePickerType = TilePickerType.Default,
         };
 
         var propagator = new TilePropagator(model, topology, propagatorOptions);
@@ -109,7 +107,7 @@ public class DeBroglieGenerator : IGenerator
             .Select(x => x.ToTile())
             .ToArray();
 
-        foreach (var direction in AdjacencyDirection.All.GetDeBroglieDirections())
+        foreach (var direction in Direction.All.GetDeBroglieDirections())
         {
             model.AddAdjacency([ fallbackTile, ], allTiles, direction);
         }

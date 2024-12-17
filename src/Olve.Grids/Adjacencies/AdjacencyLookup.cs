@@ -1,53 +1,26 @@
-﻿using System.Collections;
-using Olve.Grids.Grids;
+﻿using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Adjacencies;
 
-public interface IAdjacencyLookup
+public class AdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values = null)
+    : IAdjacencyLookup
 {
-    AdjacencyDirection Get(TileIndex a, TileIndex b);
-    IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex);
+    private static readonly Dictionary<TileIndex, Direction> EmptyLookup = new();
 
-    IEnumerable<TileIndex> GetNeighborsInDirection(
-        TileIndex tileIndex,
-        AdjacencyDirection direction
-    );
-}
-
-public interface IAdjacencyLookupBuilder
-{
-    AdjacencyDirection Get(TileIndex a, TileIndex b);
-    void Set(TileIndex a, TileIndex b, AdjacencyDirection direction);
-    void Add(TileIndex a, TileIndex b, AdjacencyDirection direction);
-    void Remove(TileIndex a, TileIndex b, AdjacencyDirection direction);
-    void Clear(TileIndex a, TileIndex b);
-    void Clear(TileIndex adjacencyTile, AdjacencyDirection direction);
-
-    IAdjacencyLookup Build();
-}
-
-public class AdjacencyLookup(
-    IEnumerable<(TileIndex from, TileIndex to, AdjacencyDirection direction)>? values = null
-)
-    : IAdjacencyLookup,
-        IAdjacencyLookupBuilder,
-        IEnumerable<(TileIndex from, TileIndex to, AdjacencyDirection direction)>
-{
-    private static readonly Dictionary<TileIndex, AdjacencyDirection> EmptyLookup = new();
-
-    private Dictionary<TileIndex, Dictionary<TileIndex, AdjacencyDirection>> Lookup { get; } =
+    private Dictionary<TileIndex, Dictionary<TileIndex, Direction>> Lookup { get; } =
         values
             ?.GroupBy(pair => pair.from)
             .ToDictionary(
                 group => group.Key,
                 group => group.ToDictionary(pair => pair.to, pair => pair.direction)
             )
-        ?? new Dictionary<TileIndex, Dictionary<TileIndex, AdjacencyDirection>>();
+        ?? new Dictionary<TileIndex, Dictionary<TileIndex, Direction>>();
 
-    public AdjacencyDirection Get(TileIndex a, TileIndex b) =>
+    public Direction Get(TileIndex a, TileIndex b) =>
         Lookup
             .GetValueOrDefault(a, EmptyLookup)
-            .GetValueOrDefault(b, AdjacencyDirection.None);
+            .GetValueOrDefault(b, Direction.None);
 
     public IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex) =>
         Lookup.GetValueOrDefault(tileIndex, EmptyLookup)
@@ -55,7 +28,7 @@ public class AdjacencyLookup(
 
     public IEnumerable<TileIndex> GetNeighborsInDirection(
         TileIndex tileIndex,
-        AdjacencyDirection direction
+        Direction direction
     )
     {
         return Lookup
@@ -64,17 +37,24 @@ public class AdjacencyLookup(
             .Select(pair => pair.Key);
     }
 
-    public void Set(TileIndex a, TileIndex b, AdjacencyDirection direction)
+    public IEnumerable<(TileIndex from, TileIndex to, Direction direction)> Adjacencies =>
+        Lookup
+            .SelectMany(pair =>
+                pair.Value.Select(innerPair => (pair.Key, innerPair.Key, innerPair.Value))
+            )
+            .Distinct();
+
+    public void Set(TileIndex a, TileIndex b, Direction direction)
     {
         SetInternal(a, b, direction);
     }
 
-    public void Add(TileIndex a, TileIndex b, AdjacencyDirection direction)
+    public void Add(TileIndex a, TileIndex b, Direction direction)
     {
         Transform(a, b, x => x | direction);
     }
 
-    public void Remove(TileIndex a, TileIndex b, AdjacencyDirection direction)
+    public void Remove(TileIndex a, TileIndex b, Direction direction)
     {
         Transform(a, b, x => a != b ? x & ~direction : x & ~direction & ~direction.Opposite());
     }
@@ -89,35 +69,21 @@ public class AdjacencyLookup(
             .Remove(a);
     }
 
-    public void Clear(TileIndex adjacencyTile, AdjacencyDirection direction)
+    public void Clear(TileIndex tile, Direction direction)
     {
-        var neighbors = GetNeighborsInDirection(adjacencyTile, direction)
+        var neighbors = GetNeighborsInDirection(tile, direction)
             .ToList();
 
         foreach (var neighbor in neighbors)
         {
-            Remove(adjacencyTile, neighbor, direction);
+            Remove(tile, neighbor, direction);
         }
     }
-
-    public IAdjacencyLookup Build() => new AdjacencyLookup(this);
-
-    public IEnumerator<(TileIndex from, TileIndex to, AdjacencyDirection direction)> GetEnumerator()
-    {
-        return Lookup
-            .SelectMany(pair =>
-                pair.Value.Select(innerPair => (pair.Key, innerPair.Key, innerPair.Value))
-            )
-            .Distinct()
-            .GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     private void Transform(
         TileIndex a,
         TileIndex b,
-        Func<AdjacencyDirection, AdjacencyDirection> transform
+        Func<Direction, Direction> transform
     )
     {
         var value = Get(a, b);
@@ -127,9 +93,9 @@ public class AdjacencyLookup(
         SetInternal(a, b, result);
     }
 
-    private void SetInternal(TileIndex a, TileIndex b, AdjacencyDirection direction)
+    private void SetInternal(TileIndex a, TileIndex b, Direction direction)
     {
-        if (direction == AdjacencyDirection.None)
+        if (direction == Direction.None)
         {
             Clear(a, b);
             return;
@@ -139,7 +105,7 @@ public class AdjacencyLookup(
         {
             if (!Lookup.ContainsKey(a))
             {
-                Lookup[a] = new Dictionary<TileIndex, AdjacencyDirection>();
+                Lookup[a] = new Dictionary<TileIndex, Direction>();
             }
 
             Lookup[a][b] = direction | direction.Opposite();
@@ -149,14 +115,14 @@ public class AdjacencyLookup(
 
         if (!Lookup.ContainsKey(a))
         {
-            Lookup[a] = new Dictionary<TileIndex, AdjacencyDirection>();
+            Lookup[a] = new Dictionary<TileIndex, Direction>();
         }
 
         Lookup[a][b] = direction;
 
         if (!Lookup.ContainsKey(b))
         {
-            Lookup[b] = new Dictionary<TileIndex, AdjacencyDirection>();
+            Lookup[b] = new Dictionary<TileIndex, Direction>();
         }
 
         Lookup[b][a] = direction.Opposite();

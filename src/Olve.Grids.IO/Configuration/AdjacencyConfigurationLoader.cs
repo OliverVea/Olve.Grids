@@ -3,18 +3,19 @@ using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.IO.Configuration.Models;
 using Olve.Grids.IO.Configuration.Parsing;
+using Olve.Grids.Primitives;
 using OneOf.Types;
 
 namespace Olve.Grids.IO.Configuration;
 
 public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacencyConfigurationParser)
 {
-    public OneOf<IAdjacencyLookupBuilder, FileParsingError> LoadAdjacencyLookupBuilder(
+    public OneOf<IAdjacencyLookup, FileParsingError> LoadAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
     )
     {
-        var adjacencyLookupBuilder = new AdjacencyLookup();
+        var adjacencyLookupBuilder = new FrozenAdjacencyLookup();
 
         if (
             !ConfigureAdjacencyLookupBuilder(
@@ -33,7 +34,7 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
 
     public OneOf<Success, FileParsingError> ConfigureAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
-        IAdjacencyLookupBuilder adjacencyLookupBuilder,
+        IAdjacencyLookup adjacencyLookup,
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
     )
     {
@@ -47,41 +48,41 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
 
         if (adjacencyConfiguration.GenerateFromBrushes)
         {
-            GenerateFromBrushes(adjacencyLookupBuilder, brushConfiguration);
+            GenerateFromBrushes(adjacencyLookup, brushConfiguration);
         }
 
-        ClearAdjacenciesToOverwrite(adjacencyConfiguration, adjacencyLookupBuilder);
-        SetConfiguredAdjacencies(adjacencyConfiguration, adjacencyLookupBuilder);
+        ClearAdjacenciesToOverwrite(adjacencyConfiguration, adjacencyLookup);
+        SetConfiguredAdjacencies(adjacencyConfiguration, adjacencyLookup);
 
         return new Success();
     }
 
     private void GenerateFromBrushes(
-        IAdjacencyLookupBuilder adjacencyLookupBuilder,
+        IAdjacencyLookup adjacencyLookup,
         IEnumerable<(TileIndex, Corner, OneOf<BrushId, Any>)> brushConfiguration
     )
     {
         var b = new AdjacencyFromTileBrushEstimator();
-        b.SetAdjacencies(adjacencyLookupBuilder, brushConfiguration);
+        b.SetAdjacencies(adjacencyLookup, brushConfiguration);
     }
 
     private void ClearAdjacenciesToOverwrite(
         AdjacencyConfiguration adjacencyConfiguration,
-        IAdjacencyLookupBuilder adjacencyLookupBuilder
+        IAdjacencyLookup adjacencyLookup
     )
     {
         foreach (var adjacency in adjacencyConfiguration.Adjacencies)
         {
             foreach (var tile in adjacency.Tiles)
             {
-                adjacencyLookupBuilder.Clear(tile, adjacency.AdjacencyDirectionToOverwrite);
+                adjacencyLookup.Clear(tile, adjacency.DirectionToOverwrite);
             }
         }
     }
 
     private void SetConfiguredAdjacencies(
         AdjacencyConfiguration adjacencyConfiguration,
-        IAdjacencyLookupBuilder adjacencyLookupBuilder
+        IAdjacencyLookup adjacencyLookup
     )
     {
         foreach (var adjacency in adjacencyConfiguration.Adjacencies)
@@ -94,11 +95,11 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
                     {
                         if (adjacent.IsAdjacent)
                         {
-                            adjacencyLookupBuilder.Set(adjacencyTile, adjacentTile, adjacent.Direction);
+                            adjacencyLookup.Set(adjacencyTile, adjacentTile, adjacent.Direction);
                         }
                         else
                         {
-                            adjacencyLookupBuilder.Remove(
+                            adjacencyLookup.Remove(
                                 adjacencyTile,
                                 adjacentTile,
                                 adjacent.Direction
