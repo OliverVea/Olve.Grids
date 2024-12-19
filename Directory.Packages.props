@@ -5,20 +5,16 @@
         <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.13-20241219.317a544"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.1.0"/>
-
         <!-- Olve.Grids.Generation -->
         <PackageVersion Include="DeBroglie" Version="2.0.0"/>
-
         <!-- Olve.Grids.Serialization -->
         <PackageVersion Include="MemoryPack" Version="1.21.3"/>
-
         <!-- Olve.Grids.IO -->
         <PackageVersion Include="FluentValidation" Version="11.11.0"/>
         <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.6"/>
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0"/>
         <PackageVersion Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" Version="16.2.1"/>
         <PackageVersion Include="YamlDotNet" Version="16.2.1"/>
-
         <!-- Demo -->
         <PackageVersion Include="Spectre.Console" Version="0.49.1"/>
         <PackageVersion Include="Spectre.Console.CLI" Version="0.49.1"/>

@@ -1,8 +1,4 @@
-﻿using Olve.Grids.Grids;
-using Olve.Grids.IO.Configuration.Models;
-using Olve.Utilities.CollectionExtensions;
-
-namespace Olve.Grids.IO.Configuration.Parsing;
+﻿namespace Olve.Grids.IO.Configuration.Parsing;
 
 /*
 public class GroupParser(TileIndexParser tileIndexParser) : IParser<TileGroups>

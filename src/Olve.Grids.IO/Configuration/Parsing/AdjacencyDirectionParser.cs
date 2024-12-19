@@ -1,5 +1,4 @@
-﻿using Olve.Grids.Adjacencies;
-using Olve.Grids.Primitives;
+﻿using Olve.Grids.Primitives;
 using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
