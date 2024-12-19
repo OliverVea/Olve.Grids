@@ -1,8 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-    </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="../Olve.Grids/Olve.Grids.csproj"/>
     </ItemGroup>
