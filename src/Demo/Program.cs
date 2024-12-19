@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Demo.Commands;
 using Spectre.Console.Cli;
 
 namespace Demo;
@@ -33,7 +34,7 @@ public class Program
 
         var commandApp = new CommandApp();
 
-        commandApp.SetDefaultCommand<RunCommand>();
+        commandApp.Configure(c => { c.AddCommand<RunCommand>(RunCommand.Name); });
 
         return await commandApp.RunAsync(args);
     }
