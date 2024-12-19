@@ -22,8 +22,8 @@ public partial class SerializableBrushLookup
         };
 
 
-    public static IReadOnlyBrushLookup ToBrushLookup(SerializableBrushLookup serializableBrushLookup) =>
-        new FrozenBrushLookup(serializableBrushLookup.Entries.Select(x =>
+    public static FrozenBrushLookup ToBrushLookup(SerializableBrushLookup serializableBrushLookup) =>
+        new(serializableBrushLookup.Entries.Select(x =>
         (
             new TileIndex(x.TileIndex),
             (Corner)x.Corner,
