@@ -43,8 +43,13 @@ public class DeBroglieGenerator : IGenerator
             model.AddAdjacency(adjacency.Src, adjacency.Dest, adjacency.Direction);
         }
 
-        foreach (var (tileIndex, frequency) in request.TileAtlas.WeightLookup.Weights)
+        var tileIndices = request
+            .TileAtlas.Grid.GetTileIndices()
+            .ToArray();
+
+        foreach (var tileIndex in tileIndices)
         {
+            var frequency = request.TileAtlas.WeightLookup.GetWeight(tileIndex);
             model.SetFrequency(tileIndex.ToTile(), frequency);
         }
 

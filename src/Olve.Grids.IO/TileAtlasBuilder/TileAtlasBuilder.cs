@@ -106,8 +106,8 @@ public class TileAtlasBuilder
         ThrowIfNull(Configuration.AdjacencyLookup, "Adjacency lookup must be set.");
         var frozenAdjacencyLookup = new FrozenAdjacencyLookup(Configuration.AdjacencyLookup.Adjacencies);
 
-        ThrowIfNull(Configuration.WeightLookup, "Weight lookup builder must be set.");
-        var frozenWeightLookup = new FrozenWeightLookup(Configuration.WeightLookup.Weights);
+        var weightLookup = Configuration.WeightLookup ?? new WeightLookup();
+        var frozenWeightLookup = new FrozenWeightLookup(weightLookup.Weights, weightLookup.DefaultWeight);
 
         return new TileAtlas(
             filePath,

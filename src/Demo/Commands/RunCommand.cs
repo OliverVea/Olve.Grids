@@ -109,13 +109,13 @@ public class RunCommand : Command<RunCommandSettings>
         }
         else
         {
-            var builder = new AdjacencyLookup();
+            var adjacencyLookup = new AdjacencyLookup();
 
             var adjacencyEstimator = new AdjacencyFromTileBrushEstimator();
-            adjacencyEstimator.SetAdjacencies(builder,
+            adjacencyEstimator.SetAdjacencies(adjacencyLookup,
                 tileAtlasBuilder.Configuration.BrushLookup?.Entries ?? throw new Exception());
 
-            tileAtlasBuilder = tileAtlasBuilder.WithAdjacencyLookupBuilder(builder);
+            tileAtlasBuilder = tileAtlasBuilder.WithAdjacencyLookupBuilder(adjacencyLookup);
 
             AnsiConsole.MarkupLine(
                 "[bold yellow]No tile atlas configuration file specified. Using default configuration...[/]");

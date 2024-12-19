@@ -2,7 +2,6 @@
 
 /// <summary>
 ///     The model of the configuration file.
-///     Parsed into <see cref="IOConfiguration" />.
 /// </summary>
 public class ConfigurationModel
 {
