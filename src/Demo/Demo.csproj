@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Olve.SG.CopyProperties"/>
         <PackageReference Include="Spectre.Console"/>
         <PackageReference Include="Spectre.Console.CLI"/>
     </ItemGroup>

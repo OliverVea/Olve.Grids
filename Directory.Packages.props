@@ -1,7 +1,8 @@
 <Project>
     <ItemGroup>
         <!-- Olve.Grids -->
-        <PackageVersion Include="Olve.Utilities" Version="0.0.12gi"/>
+        <PackageVersion Include="Olve.Utilities" Version="0.0.13-20241219.317a544"/>
+        <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.13-20241219.317a544"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.1.0"/>
 
