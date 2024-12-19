@@ -8,6 +8,7 @@ namespace Demo;
 public class Program
 {
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RunCommand))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(PackCommand))]
     [DynamicDependency(
         DynamicallyAccessedMemberTypes.All,
         "Olve.Grids.IO.Readers.TileAtlasAdjacenciesFileReader",
@@ -34,7 +35,17 @@ public class Program
 
         var commandApp = new CommandApp();
 
-        commandApp.Configure(c => { c.AddCommand<RunCommand>(RunCommand.Name); });
+        commandApp.Configure(c =>
+        {
+            c.AddBranch(RunCommand.Name,
+                y =>
+                {
+                    y.SetDefaultCommand<RunCommand>();
+                    y.AddCommand<RunPackedCommand>(RunPackedCommand.Name);
+                });
+
+            c.AddCommand<PackCommand>(PackCommand.Name);
+        });
 
         return await commandApp.RunAsync(args);
     }

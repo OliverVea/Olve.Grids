@@ -18,6 +18,10 @@ public class RunCommandSettings : CommandSettings
     [CommandOption("-b|--tile-atlas-brushes")]
     public string TileAtlasBrushesFile { get; set; } = "assets/tile-atlas.brushes.txt";
 
+    [Description]
+    [CommandOption("-c|--tile-atlas-config")]
+    public string? TileAtlasConfigFile { get; set; }
+
     [Description("The input file containing brushes to generate. Defaults to 'assets/input.brushes.txt'")]
     [CommandOption("-i|--input")]
     public string InputBrushesFile { get; set; } = "assets/input.brushes.txt";
@@ -33,8 +37,4 @@ public class RunCommandSettings : CommandSettings
     [Description("Overwrite the output file if it already exists.")]
     [CommandOption("--overwrite")]
     public bool Overwrite { get; set; }
-
-    [Description]
-    [CommandOption("-c|--tile-atlas-config")]
-    public string? TileAtlasConfigFile { get; set; }
 }

@@ -17,6 +17,6 @@ public partial class SerializableAdjacencyLookup
         };
 
     public static IReadOnlyAdjacencyLookup ToAdjacencyLookup(SerializableAdjacencyLookup serializableAdjacencyLookup) =>
-        new AdjacencyLookup(serializableAdjacencyLookup.Adjacencies);
+        new FrozenAdjacencyLookup(serializableAdjacencyLookup.Adjacencies);
 
 }

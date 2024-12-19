@@ -31,9 +31,6 @@ weights:
     #   mode: add # This will add the weight to the existing weight
     #   mode: set # This will set the weight to the new value
 
-  - group: dark
-    weight: 2
-
   - group: full-dark
     weight: 4
 

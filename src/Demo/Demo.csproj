@@ -9,6 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Olve.Grids.DeBroglie\Olve.Grids.DeBroglie.csproj"/>
         <ProjectReference Include="..\..\src\Olve.Grids.IO\Olve.Grids.IO.csproj"/>
+        <ProjectReference Include="..\..\src\Olve.Grids.Serialization\Olve.Grids.Serialization.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

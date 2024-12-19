@@ -1,15 +1,9 @@
 ﻿using MemoryPack;
-using Olve.Grids.Adjacencies;
-using Olve.Grids.Brushes;
 using Olve.Grids.Generation;
-using Olve.Grids.Grids;
-using Olve.Grids.Primitives;
-using Olve.Grids.Weights;
-using Olve.Utilities.Assertions;
 
 namespace Olve.Grids.Serialization;
 
-public class TileAtlasSerializer
+public class TileAtlasSerializer : ITileAtlasSerializer
 {
     public byte[] Serialize(TileAtlas tileAtlas)
     {
