@@ -1,0 +1,81 @@
+﻿@page "/"
+@using Pagination = Olve.Utilities.Paginations.Pagination
+@inject ListProjectSummariesOperation ListProjectSummariesOperation
+@inject CreateNewProjectOperation CreateNewProjectOperation
+@inject LoggingService LoggingService
+
+<Column>
+    <!-- Title -->
+    <Heading>[GRIDS]</Heading>
+
+    <!-- Search Bar -->
+    <Divider/>
+
+    <Row>
+        <Icon Name="IconName.Search"/>
+        <TextEdit Placeholder="Search Projects"/>
+    </Row>
+
+    <Divider/>
+
+    <!-- Add project button -->
+    <Button>Add Project</Button>
+
+
+    <!-- Project overview -->
+    @foreach (var project in ProjectSummaries)
+    {
+        <Text>@project.Name.Value</Text>
+    }
+
+</Column>
+
+@code
+{
+    private int Page { get; set; } = 0;
+    private const int PageSize = 12;
+
+    private Pagination Pagination => new(Page, PageSize);
+
+    private ListProjectSummariesOperation.Response? Response { get; set; }
+    private IEnumerable<ProjectSummary> ProjectSummaries => Response?.Projects ?? Enumerable.Empty<ProjectSummary>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProjects();
+    }
+
+    private async Task LoadProjects()
+    {
+        var request = new ListProjectSummariesOperation.Request(Pagination);
+        var result = await ListProjectSummariesOperation.ExecuteAsync(request);
+        if (result.TryPickValue(out var response, out var problems))
+        {
+            Response = response;
+        }
+        else
+        {
+            foreach (var problem in problems)
+            {
+                LoggingService.Show(problem);
+            }
+        }
+    }
+
+    private async Task HandleNewProject()
+    {
+        var request = new CreateNewProjectOperation.Request("New Project");
+
+        var response = await CreateNewProjectOperation.ExecuteAsync(request);
+
+        if (response.TryPickProblems(out var problems))
+        {
+            foreach (var problem in problems)
+            {
+                LoggingService.Show(problem);
+            }
+        }
+
+        await LoadProjects();
+    }
+}

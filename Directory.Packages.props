@@ -1,8 +1,10 @@
 <Project>
     <ItemGroup>
         <!-- Olve.Grids -->
-        <PackageVersion Include="Olve.Utilities" Version="0.0.13-20241219.317a544"/>
-        <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.13-20241219.317a544"/>
+        <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="1.7.1"/>
+        <PackageVersion Include="Blazorise.Tailwind" Version="1.7.1"/>
+        <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.14-20241227022430.9fbe84e"/>
+        <PackageVersion Include="Olve.Utilities" Version="0.0.14-20241227040633.50d8622"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.1.0"/>
         <!-- Olve.Grids.Generation -->
@@ -11,12 +13,23 @@
         <PackageVersion Include="MemoryPack" Version="1.21.3"/>
         <!-- Olve.Grids.IO -->
         <PackageVersion Include="FluentValidation" Version="11.11.0"/>
-        <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.6"/>
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0"/>
-        <PackageVersion Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" Version="16.2.1"/>
-        <PackageVersion Include="YamlDotNet" Version="16.2.1"/>
+        <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.6"/>
+        <PackageVersion Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" Version="16.3.0"/>
+        <PackageVersion Include="YamlDotNet" Version="16.3.0"/>
         <!-- Demo -->
-        <PackageVersion Include="Spectre.Console" Version="0.49.1"/>
-        <PackageVersion Include="Spectre.Console.CLI" Version="0.49.1"/>
+        <PackageVersion Include="Spectre.Console" Version="0.49.2-preview.0.69"/>
+        <PackageVersion Include="Spectre.Console.CLI" Version="0.49.2-preview.0.69"/>
+        <!-- UI -->
+        <PackageVersion Include="Avalonia" Version="11.2.3"/>
+        <PackageVersion Include="Avalonia.Desktop" Version="11.2.3"/>
+        <PackageVersion Include="Avalonia.Diagnostics" Version="11.2.3"/>
+        <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.2.3"/>
+        <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.2.3"/>
+        <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="9.0.21"/>
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0"/>
+        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
+        <PackageVersion Include="MudBlazor" Version="8.0.0-preview.7"/>
     </ItemGroup>
 </Project>

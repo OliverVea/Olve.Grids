@@ -1,0 +1,55 @@
+<Window
+    x:Class="UI.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:blazorComponents="using:UI.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="clr-namespace:UI.Lib"
+    xmlns:viewModels="clr-namespace:UI.ViewModels"
+    Title="Avalonia Blazor Hybrid demo"
+    Width="700"
+    Height="500"
+    MinWidth="450"
+    MinHeight="300"
+    d:DesignHeight="300"
+    d:DesignWidth="450"
+    x:DataType="viewModels:MainWindowViewModel"
+    CanResize="True"
+    Icon="/Assets/avalonia-logo.ico"
+    SizeToContent="Manual"
+    mc:Ignorable="d">
+
+    <Design.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <Grid
+            Margin="2"
+            ClipToBounds="True"
+            ShowGridLines="False">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Panel
+                Name="PanelView"
+                Grid.Row="0"
+                Background="Black">
+                <lib:BlazorWebView
+                    Name="WebView"
+                    HostPage="index.html"
+                    Services="{DynamicResource services}"
+                    ZoomFactor="{CompiledBinding Zoom}">
+                    <lib:BlazorWebView.WrappedRootComponents>
+                        <lib:WrappedRootComponent ComponentType="{x:Type blazorComponents:Routes}" Selector="#app" />
+                    </lib:BlazorWebView.WrappedRootComponents>
+                </lib:BlazorWebView>
+            </Panel>
+
+        </Grid>
+    </DockPanel>
+</Window>

@@ -8,7 +8,6 @@
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <Nullable>enable</Nullable>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
-        <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
         <TargetFramework>net9.0</TargetFramework>
     </PropertyGroup>
 
