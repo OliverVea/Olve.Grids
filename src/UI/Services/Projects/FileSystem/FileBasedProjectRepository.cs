@@ -45,7 +45,7 @@ public class FileBasedProjectRepository : IProjectRepository
         var projectFilePathString = PathHelper.GetProjectPath(project);
         var projectFilePath = new ProjectPath(projectFilePathString);
 
-        var projectSummary = new ProjectSummary(project.Id, project.Name, projectFilePath);
+        var projectSummary = new ProjectSummary(project.Id, project.Name, projectFilePath, project.CreatedAt);
 
         var result = ProjectFileHelper.Save(project, projectSummary);
         if (result.TryPickProblems(out var problems))

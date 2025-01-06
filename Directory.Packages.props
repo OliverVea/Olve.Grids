@@ -1,12 +1,12 @@
 <Project>
     <ItemGroup>
         <!-- Olve.Grids -->
-        <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="1.7.1"/>
-        <PackageVersion Include="Blazorise.Tailwind" Version="1.7.1"/>
-        <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.14-20241227022430.9fbe84e"/>
-        <PackageVersion Include="Olve.Utilities" Version="0.0.14-20241227040633.50d8622"/>
+        <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="1.7.2"/>
+        <PackageVersion Include="Blazorise.Tailwind" Version="1.7.2"/>
+        <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.14-20250106071310.b4a6ac3"/>
+        <PackageVersion Include="Olve.Utilities" Version="0.0.14-20250106071310.b4a6ac3"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
-        <PackageVersion Include="StrictId" Version="1.1.0"/>
+        <PackageVersion Include="StrictId" Version="1.2.0"/>
         <!-- Olve.Grids.Generation -->
         <PackageVersion Include="DeBroglie" Version="2.0.0"/>
         <!-- Olve.Grids.Serialization -->

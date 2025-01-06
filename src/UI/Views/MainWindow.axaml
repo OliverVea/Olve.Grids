@@ -42,8 +42,7 @@
                 <lib:BlazorWebView
                     Name="WebView"
                     HostPage="index.html"
-                    Services="{DynamicResource services}"
-                    ZoomFactor="{CompiledBinding Zoom}">
+                    Services="{DynamicResource services}">
                     <lib:BlazorWebView.WrappedRootComponents>
                         <lib:WrappedRootComponent ComponentType="{x:Type blazorComponents:Routes}" Selector="#app" />
                     </lib:BlazorWebView.WrappedRootComponents>

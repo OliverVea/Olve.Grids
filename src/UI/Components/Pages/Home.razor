@@ -1,39 +1,82 @@
 ﻿@page "/"
+@using Olve.Utilities.StringFormatting
 @using Pagination = Olve.Utilities.Paginations.Pagination
 @inject ListProjectSummariesOperation ListProjectSummariesOperation
-@inject CreateNewProjectOperation CreateNewProjectOperation
 @inject LoggingService LoggingService
+@inject NavigationManager NavigationManager
 
-<Column>
+<div class="flex flex-col items-center justify-center max-w-[400px] gap-6 text-[@(Colors.Active.Text.Most)]">
+
     <!-- Title -->
-    <Heading>[GRIDS]</Heading>
+    <h1 class="text-8xl font-thin">[GRIDS]</h1>
 
     <!-- Search Bar -->
-    <Divider/>
+    <div class="border-y-2 border-[@(Colors.Active.Panels.More)] py-2 w-full">
+        <div class="flex flex-row items-center justify-center gap-2 text-[@(Colors.Active.Text.Ordinary)]">
+            <label class="flex-grow flex items-center gap-2">
+                <i class="fa fa-search"></i>
+                <input
+                    placeholder="Search Projects"
+                    class="bg-transparent w-full border-transparent text-[@(Colors.Active.Text.Ordinary)] focus:text-[@(Colors.Active.Text.More)] focus:outline-none placeholder:text-[@(Colors.Active.Text.Ordinary)]"
+                    type="text"
+                    @bind="SearchTerm"/>
+            </label>
+            <button
+                class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
+                @onclick="NavigateToCreateNewProject">
+                New Project
+            </button>
+        </div>
+    </div>
 
-    <Row>
-        <Icon Name="IconName.Search"/>
-        <TextEdit Placeholder="Search Projects"/>
-    </Row>
+    <!-- Project Overview -->
+    <div class="grid grid-cols-[25%,75%] gap-x-2 gap-y-4 break-words text-[@(Colors.Active.Text.Ordinary)]">
+        @foreach (var project in ProjectSummaries)
+        {
+            <!-- Row: Date -->
+            <div class="text-right" title="@project.CreatedAt.ToString()">
+                <span>@DateTimeFormatter.FormatTimeAgo(DateTimeOffset.Now, project.CreatedAt)</span>
+            </div>
 
-    <Divider/>
+            <!-- Row: Project -->
+            <div
+                class="text-left hover:underline cursor-pointer"
+                @onclick="() => NavigateToProjectDashboard(project.ProjectId)">
+                <span class="text-[@(Colors.Active.Text.More)] font-semibold">@project.Name.Value</span>
+                <br/>
+                <span>@project.Path.Value</span>
+            </div>
+        }
+    </div>
 
-    <!-- Add project button -->
-    <Button>Add Project</Button>
-
-
-    <!-- Project overview -->
-    @foreach (var project in ProjectSummaries)
+    <!-- Pagination -->
+    @if (Response?.Projects.TotalCount > PageSize)
     {
-        <Text>@project.Name.Value</Text>
+        <div class="flex flex-row items-center justify-center gap-2 text-[@(Colors.Active.Text.Ordinary)]">
+            <button
+                class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
+                @onclick="DecrementPage"
+                disabled="@(!HasPreviousPage)">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+
+            <span>@(Page + 1)</span>
+
+            <button
+                class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
+                @onclick="IncrementPage"
+                disabled="@(!HasNextPage)">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
     }
+</div>
 
-</Column>
+@code {
+    private string SearchTerm { get; set; } = string.Empty;
 
-@code
-{
-    private int Page { get; set; } = 0;
-    private const int PageSize = 12;
+    private int Page { get; set; }
+    private const int PageSize = 4;
 
     private Pagination Pagination => new(Page, PageSize);
 
@@ -62,20 +105,25 @@
         }
     }
 
-    private async Task HandleNewProject()
+    private bool HasPreviousPage => Page > 0;
+    private bool HasNextPage => Response?.Projects.HasNextPage ?? false;
+
+    private async Task IncrementPage()
     {
-        var request = new CreateNewProjectOperation.Request("New Project");
+        if (!HasNextPage) return;
 
-        var response = await CreateNewProjectOperation.ExecuteAsync(request);
-
-        if (response.TryPickProblems(out var problems))
-        {
-            foreach (var problem in problems)
-            {
-                LoggingService.Show(problem);
-            }
-        }
-
+        Page++;
         await LoadProjects();
     }
+
+    private async Task DecrementPage()
+    {
+        if (!HasPreviousPage) return;
+
+        Page--;
+        await LoadProjects();
+    }
+
+    private void NavigateToCreateNewProject() => NavigationManager.NavigateTo("create-project");
+    private void NavigateToProjectDashboard(Id<Project> projectId) => NavigationManager.NavigateTo($"project/{projectId}");
 }

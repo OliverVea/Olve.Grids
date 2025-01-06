@@ -14,8 +14,9 @@ public class CreateNewProjectOperation(IProjectRepository projectRepository) : I
     {
         var id = Id<Project>.NewId();
         var projectName = new ProjectName(request.Name);
+        var createdAt = DateTimeOffset.Now;
 
-        var project = new Project(id, projectName);
+        var project = new Project(id, projectName, createdAt);
 
         var createResult = await projectRepository.CreateProjectAsync(project, ct);
         if (createResult.TryPickProblems(out var problems, out var path))
@@ -23,7 +24,7 @@ public class CreateNewProjectOperation(IProjectRepository projectRepository) : I
             return Result<Response>.Failure(problems);
         }
 
-        var projectSummary = new ProjectSummary(id, projectName, path);
+        var projectSummary = new ProjectSummary(id, projectName, path, createdAt);
 
         return new Response(projectSummary);
     }
