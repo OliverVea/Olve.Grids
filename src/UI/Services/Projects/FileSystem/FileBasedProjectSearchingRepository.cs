@@ -1,15 +1,17 @@
 ﻿using Olve.Utilities.Paginations;
+using UI.Services.Projects.Repositories;
 
 namespace UI.Services.Projects.FileSystem;
 
-public class FileBasedProjectRepository : IProjectRepository
+public class FileBasedProjectRepository : IProjectSearchingRepository
 {
     public Task<Result<PaginatedResult<ProjectSummary>>> SearchProjectSummariesAsync(
         string searchPrompt,
         Pagination pagination,
         OrderKey orderKey = OrderKey.ProjectName,
         bool descending = false,
-        CancellationToken ct = default) => Task.FromResult(SearchProjectSummaries(searchPrompt, pagination, orderKey, descending, ct));
+        CancellationToken ct = default) =>
+        Task.FromResult(SearchProjectSummaries(searchPrompt, pagination, orderKey, descending, ct));
 
     private Result<PaginatedResult<ProjectSummary>> SearchProjectSummaries(string searchPrompt,
         Pagination pagination,
@@ -33,7 +35,7 @@ public class FileBasedProjectRepository : IProjectRepository
 
             return Result<PaginatedResult<ProjectSummary>>.Failure(problems);
         }
-        
+
         var projectSummaries = summaries.GetValues();
 
         projectSummaries = ApplySearchFiltering(projectSummaries, searchPrompt);
@@ -48,8 +50,10 @@ public class FileBasedProjectRepository : IProjectRepository
     private IEnumerable<ProjectSummary> ApplySearchFiltering(IEnumerable<ProjectSummary> projectSummaries,
         string searchPrompt)
     {
-        return projectSummaries.Where(x => 
-            x.ProjectId.ToString().StartsWith(searchPrompt, StringComparison.InvariantCultureIgnoreCase) 
+        return projectSummaries.Where(x =>
+            x
+                .ProjectId.ToString()
+                .StartsWith(searchPrompt, StringComparison.InvariantCultureIgnoreCase)
             || x.Name.Value.StartsWith(searchPrompt, StringComparison.InvariantCultureIgnoreCase));
     }
 
@@ -57,14 +61,17 @@ public class FileBasedProjectRepository : IProjectRepository
         OrderKey orderKey,
         bool descending)
     {
-        if (orderKey == OrderKey.None) return projectSummaries;
-        
+        if (orderKey == OrderKey.None)
+        {
+            return projectSummaries;
+        }
+
         IComparer<ProjectSummary> orderingFunc = orderKey switch
         {
             OrderKey.ProjectName => ProjectNameComparer.Shared,
             OrderKey.LastAccessedDate => LastAccessedComparer.Shared,
             OrderKey.None => throw new ApplicationException("Comparer not found for OrderKey.None"),
-            _ => throw new ArgumentOutOfRangeException(nameof(orderKey), orderKey, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(orderKey), orderKey, null),
         };
 
         return descending
@@ -72,12 +79,11 @@ public class FileBasedProjectRepository : IProjectRepository
             : projectSummaries.Order(orderingFunc);
     }
 
-    private IEnumerable<ProjectSummary> ApplyPagination(IEnumerable<ProjectSummary> projectSummaries, Pagination pagination)
-    {
-        return projectSummaries
+    private IEnumerable<ProjectSummary>
+        ApplyPagination(IEnumerable<ProjectSummary> projectSummaries, Pagination pagination) =>
+        projectSummaries
             .Skip(pagination.Page * pagination.PageSize)
             .Take(pagination.PageSize);
-    }
 
     public Task<Result> SetProjectAsync(Project project, CancellationToken ct = default) =>
         Task.FromResult(SetProject(project));
@@ -87,7 +93,7 @@ public class FileBasedProjectRepository : IProjectRepository
         var projectFilePathString = PathHelper.GetProjectPath(project);
         var projectFilePath = new ProjectPath(projectFilePathString);
 
-        var projectSummary = new ProjectSummary(project.Id, project.Name, projectFilePath, project.CreatedAt);
+        var projectSummary = new ProjectSummary(project.Id, project.Name, projectFilePath, project.LastAccessedAt);
 
         var result = ProjectFileHelper.Save(project, projectSummary);
         if (result.TryPickProblems(out var problems))
