@@ -36,6 +36,6 @@ public static class PathHelper
     public static string GetSummaryPath(ProjectSummary projectSummary) =>
         Path.Combine(ProjectsFolder, GetSummaryFileName(projectSummary));
 
-    public static IEnumerable<string> GetProjectSummaryFilePaths() =>
-        ProjectFolderHelper.Search($"{ProjectsFolderName}/*{ProjectSummaryFileExtension}");
+    public static IEnumerable<string> GetProjectSummaryFilePaths(string? searchString = null) =>
+        ProjectFolderHelper.Search($"{ProjectsFolderName}/{searchString ?? string.Empty}*{ProjectSummaryFileExtension}");
 }

@@ -17,7 +17,7 @@ public class CreateNewProjectOperation(IProjectRepository projectRepository) : I
 
         var project = new Project(id, projectName);
 
-        var createResult = await projectRepository.CreateProjectAsync(project, ct);
+        var createResult = await projectRepository.SetProjectAsync(project, ct);
         if (createResult.TryPickProblems(out var problems, out var path))
         {
             return Result<Response>.Failure(problems);

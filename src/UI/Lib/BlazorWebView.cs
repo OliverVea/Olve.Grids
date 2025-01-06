@@ -119,7 +119,6 @@ public class BlazorWebView : NativeControlHost
                 HostPage = _hostPage,
                 Services = _serviceProvider,
             };
-            _blazorWebView.WebView.ZoomFactor = Math.Clamp(_zoomFactor, 0.1, 4.0);
 
             foreach (var component in _rootComponents)
             {
