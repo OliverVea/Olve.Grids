@@ -7,13 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="clr-namespace:UI.Lib"
     xmlns:viewModels="clr-namespace:UI.ViewModels"
-    Title="Avalonia Blazor Hybrid demo"
-    Width="700"
-    Height="500"
-    MinWidth="450"
-    MinHeight="300"
-    d:DesignHeight="300"
-    d:DesignWidth="450"
+    Title="Grids UI"
+    Width="520"
+    Height="760"
+    MinWidth="520"
+    MinHeight="760"
     x:DataType="viewModels:MainWindowViewModel"
     CanResize="True"
     Icon="/Assets/avalonia-logo.ico"
@@ -48,7 +46,6 @@
                     </lib:BlazorWebView.WrappedRootComponents>
                 </lib:BlazorWebView>
             </Panel>
-
         </Grid>
     </DockPanel>
 </Window>

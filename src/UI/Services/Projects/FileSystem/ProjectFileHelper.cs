@@ -4,48 +4,57 @@ namespace UI.Services.Projects.FileSystem;
 
 public static class ProjectFileHelper
 {
-    public static Result Save(Project project, ProjectSummary projectSummary)
+    public static Result<Project> Load(string projectFile)
     {
-        var directoryResult = EnsureDirectoryExists();
+        if (!File.Exists(projectFile))
+        {
+            var problem = new ResultProblem("Project file not found: {0}", projectFile);
+            return Result<Project>.Failure(problem);
+        }
+
+        string json;
+        try
+        {
+            json = File.ReadAllText(projectFile);
+        }
+        // TODO: Handle specific exceptions
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to read project file: {0}", projectFile);
+            return Result<Project>.Failure(problem);
+        }
+
+        Project? project;
+
+        try
+        {
+            project = JsonSerializer.Deserialize<Project>(json, FileBasedJsonContext.Default.Project);
+        }
+        // TODO: Handle specific exceptions
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to deserialize project file: {0}", projectFile);
+            return Result<Project>.Failure(problem);
+        }
+
+        if (project is null)
+        {
+            var problem = new ResultProblem("Failed to deserialize project file: {0}", projectFile);
+            return Result<Project>.Failure(problem);
+        }
+
+        return Result<Project>.Success(project);
+    }
+
+
+    public static Result Save(Project project)
+    {
+        var directoryResult = ProjectDirectoryHelper.EnsureDirectoryExists();
         if (!directoryResult.Succeded)
         {
             return directoryResult;
         }
 
-        var projectResult = Save(project);
-        if (!projectResult.Succeded)
-        {
-            return projectResult;
-        }
-
-        var projectSummaryResult = Save(projectSummary);
-        if (projectSummaryResult.Succeded)
-        {
-            return projectSummaryResult;
-        }
-
-        return Result.Success();
-    }
-
-    private static Result EnsureDirectoryExists()
-    {
-        var directory = PathHelper.ProjectsFolder;
-
-        try
-        {
-            Directory.CreateDirectory(directory);
-        }
-        catch (Exception ex)
-        {
-            var problem = new ResultProblem(ex, "Failed to create directory: {0}", directory);
-            return Result.Failure(problem);
-        }
-
-        return Result.Success();
-    }
-
-    private static Result Save(Project project)
-    {
         var projectFilePath = PathHelper.GetProjectPath(project);
         string projectJson;
 
@@ -67,25 +76,6 @@ public static class ProjectFileHelper
         catch (Exception ex)
         {
             var problem = new ResultProblem(ex, "Failed to write project file: {0}", projectFilePath);
-            return Result.Failure(problem);
-        }
-
-        return Result.Success();
-    }
-
-    private static Result Save(ProjectSummary projectSummary)
-    {
-        var projectSummaryFilePath = PathHelper.GetSummaryPath(projectSummary);
-        var projectSummaryJson = JsonSerializer.Serialize(projectSummary, FileBasedJsonContext.Default.ProjectSummary);
-
-        try
-        {
-            File.WriteAllText(projectSummaryFilePath, projectSummaryJson);
-        }
-        // TODO: Handle specific exceptions
-        catch (Exception ex)
-        {
-            var problem = new ResultProblem(ex, "Failed to write project summary file: {0}", projectSummaryFilePath);
             return Result.Failure(problem);
         }
 

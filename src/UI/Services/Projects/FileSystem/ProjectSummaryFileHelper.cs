@@ -46,4 +46,39 @@ public static class ProjectSummaryFileHelper
 
         return Result<ProjectSummary>.Success(projectSummary);
     }
+
+    public static Result Save(ProjectSummary projectSummary)
+    {
+        var directoryResult = ProjectDirectoryHelper.EnsureDirectoryExists();
+        if (!directoryResult.Succeded)
+        {
+            return directoryResult;
+        }
+
+        var projectFilePath = PathHelper.GetSummaryPath(projectSummary);
+
+        string projectJson;
+
+        try
+        {
+            projectJson = JsonSerializer.Serialize(projectSummary, FileBasedJsonContext.Default.ProjectSummary);
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to serialize project summary: {0}", projectSummary);
+            return Result.Failure(problem);
+        }
+
+        try
+        {
+            File.WriteAllText(projectFilePath, projectJson);
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to write project summary file: {0}", projectFilePath);
+            return Result.Failure(problem);
+        }
+
+        return Result.Success();
+    }
 }

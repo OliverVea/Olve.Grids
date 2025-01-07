@@ -3,8 +3,8 @@
         <!-- Olve.Grids -->
         <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="1.7.2"/>
         <PackageVersion Include="Blazorise.Tailwind" Version="1.7.2"/>
-        <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.14-20250106071310.b4a6ac3"/>
-        <PackageVersion Include="Olve.Utilities" Version="0.0.14-20250106071310.b4a6ac3"/>
+        <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.14"/>
+        <PackageVersion Include="Olve.Utilities" Version="0.0.14"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.2.0"/>
         <!-- Olve.Grids.Generation -->

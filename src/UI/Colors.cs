@@ -8,6 +8,7 @@ public static class Colors
     {
         Text = new ColorSchemeText
         {
+            Less = "#585B59",
             Ordinary = "#6e7270",
             More = "#cccccc",
             Most = "#ffffff",
@@ -38,6 +39,7 @@ public class ColorSchemePanels
 
 public class ColorSchemeText
 {
+    public string Less { get; init; } = "pink";
     public string Ordinary { get; init; } = "pink";
     public string More { get; init; } = "pink";
     public string Most { get; init; } = "pink";

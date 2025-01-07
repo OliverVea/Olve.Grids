@@ -1,6 +1,4 @@
 ﻿@page "/"
-@using Olve.Utilities.StringFormatting
-@using Pagination = Olve.Utilities.Paginations.Pagination
 @inject ListProjectSummariesOperation ListProjectSummariesOperation
 @inject LoggingService LoggingService
 @inject NavigationManager NavigationManager
@@ -10,19 +8,23 @@
     <!-- Title -->
     <h1 class="text-8xl font-thin">[GRIDS]</h1>
 
+
     <!-- Search Bar -->
     <div class="border-y-2 border-[@(Colors.Active.Panels.More)] py-2 w-full">
         <div class="flex flex-row items-center justify-center gap-2 text-[@(Colors.Active.Text.Ordinary)]">
             <label class="flex-grow flex items-center gap-2">
                 <i class="fa fa-search"></i>
                 <input
+                    id="search"
                     placeholder="Search Projects"
                     class="bg-transparent w-full border-transparent text-[@(Colors.Active.Text.Ordinary)] focus:text-[@(Colors.Active.Text.More)] focus:outline-none placeholder:text-[@(Colors.Active.Text.Ordinary)]"
                     type="text"
-                    @bind="SearchTerm"/>
+                    @bind="SearchPrompt"
+                    @bind:event="oninput"
+                    @bind:after="HandleSearchPromptChange"/>
             </label>
             <button
-                class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
+                class="bg-[@(Colors.Active.Panels.More)] border-none py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] text-[@(Colors.Active.Text.Most)] transition duration-75 text-nowrap"
                 @onclick="NavigateToCreateNewProject">
                 New Project
             </button>
@@ -34,8 +36,8 @@
         @foreach (var project in ProjectSummaries)
         {
             <!-- Row: Date -->
-            <div class="text-right" title="@project.CreatedAt.ToString()">
-                <span>@DateTimeFormatter.FormatTimeAgo(DateTimeOffset.Now, project.CreatedAt)</span>
+            <div class="text-right" title="@project.LastAccessed.ToString()">
+                <span>@DateTimeFormatter.FormatTimeAgo(DateTimeOffset.Now, project.LastAccessed)</span>
             </div>
 
             <!-- Row: Project -->
@@ -50,30 +52,35 @@
     </div>
 
     <!-- Pagination -->
-    @if (Response?.Projects.TotalCount > PageSize)
+    @if (TotalPages > 1)
     {
         <div class="flex flex-row items-center justify-center gap-2 text-[@(Colors.Active.Text.Ordinary)]">
-            <button
-                class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
-                @onclick="DecrementPage"
-                disabled="@(!HasPreviousPage)">
-                <i class="fa fa-chevron-left"></i>
-            </button>
+            @if (HasPreviousPage)
+            {
+                <button
+                    class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
+                    @onclick="DecrementPage">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+            }
 
-            <span>@(Page + 1)</span>
+            <span>@(Page + 1) / @(TotalPages)</span>
 
-            <button
-                class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
-                @onclick="IncrementPage"
-                disabled="@(!HasNextPage)">
-                <i class="fa fa-chevron-right"></i>
-            </button>
+            @if (HasNextPage)
+            {
+                <button
+                    class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
+                    @onclick="IncrementPage">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+            }
+
         </div>
     }
 </div>
 
 @code {
-    private string SearchTerm { get; set; } = string.Empty;
+    private string SearchPrompt { get; set; } = string.Empty;
 
     private int Page { get; set; }
     private const int PageSize = 4;
@@ -90,7 +97,7 @@
 
     private async Task LoadProjects()
     {
-        var request = new ListProjectSummariesOperation.Request(Pagination);
+        var request = new ListProjectSummariesOperation.Request(SearchPrompt, Pagination);
         var result = await ListProjectSummariesOperation.ExecuteAsync(request);
         if (result.TryPickValue(out var response, out var problems))
         {
@@ -103,10 +110,13 @@
                 LoggingService.Show(problem);
             }
         }
+
+        StateHasChanged();
     }
 
     private bool HasPreviousPage => Page > 0;
     private bool HasNextPage => Response?.Projects.HasNextPage ?? false;
+    private int TotalPages => Response?.Projects.TotalPages ?? 0;
 
     private async Task IncrementPage()
     {
@@ -126,4 +136,11 @@
 
     private void NavigateToCreateNewProject() => NavigationManager.NavigateTo("create-project");
     private void NavigateToProjectDashboard(Id<Project> projectId) => NavigationManager.NavigateTo($"project/{projectId}");
+
+    private async Task HandleSearchPromptChange()
+    {
+        Page = 0;
+        await LoadProjects();
+    }
+
 }

@@ -3,7 +3,7 @@ using UI.Services.Projects.Repositories;
 
 namespace UI.Services.Projects.FileSystem;
 
-public class FileBasedProjectRepository : IProjectSearchingRepository
+public class FileBasedProjectSearchingRepository : IProjectSearchingRepository
 {
     public Task<Result<PaginatedResult<ProjectSummary>>> SearchProjectSummariesAsync(
         string searchPrompt,
@@ -11,13 +11,12 @@ public class FileBasedProjectRepository : IProjectSearchingRepository
         OrderKey orderKey = OrderKey.ProjectName,
         bool descending = false,
         CancellationToken ct = default) =>
-        Task.FromResult(SearchProjectSummaries(searchPrompt, pagination, orderKey, descending, ct));
+        Task.FromResult(SearchProjectSummaries(searchPrompt, pagination, orderKey, descending));
 
     private Result<PaginatedResult<ProjectSummary>> SearchProjectSummaries(string searchPrompt,
         Pagination pagination,
         OrderKey orderKey = OrderKey.ProjectName,
-        bool descending = false,
-        CancellationToken ct = default)
+        bool descending = false)
     {
         var files = PathHelper
             .GetProjectSummaryFilePaths()
@@ -85,22 +84,4 @@ public class FileBasedProjectRepository : IProjectSearchingRepository
             .Skip(pagination.Page * pagination.PageSize)
             .Take(pagination.PageSize);
 
-    public Task<Result> SetProjectAsync(Project project, CancellationToken ct = default) =>
-        Task.FromResult(SetProject(project));
-
-    private Result SetProject(Project project)
-    {
-        var projectFilePathString = PathHelper.GetProjectPath(project);
-        var projectFilePath = new ProjectPath(projectFilePathString);
-
-        var projectSummary = new ProjectSummary(project.Id, project.Name, projectFilePath, project.LastAccessedAt);
-
-        var result = ProjectFileHelper.Save(project, projectSummary);
-        if (result.TryPickProblems(out var problems))
-        {
-            return Result.Failure(problems);
-        }
-
-        return Result.Success();
-    }
 }

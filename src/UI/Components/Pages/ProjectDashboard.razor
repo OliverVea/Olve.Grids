@@ -1,0 +1,28 @@
+﻿@page "/project/{projectId}"
+
+<p>Project: @ProjectId</p>
+
+@code {
+    private const string ProjectIdParameterName = "projectId";
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Garbage { get; set; } = new();
+
+    private Id<Project> ProjectId { get; set; }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        await base.SetParametersAsync(parameters);
+
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case ProjectIdParameterName:
+                    ProjectId = Id<Project>.Parse((string)parameter.Value);
+                    break;
+            }
+        }
+    }
+
+}

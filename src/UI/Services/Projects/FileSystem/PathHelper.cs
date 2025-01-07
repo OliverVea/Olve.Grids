@@ -21,20 +21,31 @@ public static class PathHelper
 
     public static string ProjectsFolder => ProjectFolderHelper.GetSubfolder(ProjectsFolderName);
 
-    public static string GetProjectFileName(Project project) =>
-        ProjectFileNameHelper.GetFileName([ project.Id.ToString(), ]);
+    public static string GetProjectFileName(Id<Project> projectId) =>
+        ProjectFileNameHelper.GetFileName([ projectId.ToString(), ]);
 
-    public static string GetProjectPath(Project project) =>
-        Path.Combine(ProjectsFolder, GetProjectFileName(project));
+    public static string GetProjectPath(Id<Project> projectId) =>
+        Path.Combine(ProjectsFolder, GetProjectFileName(projectId));
+
+    public static string GetProjectFileName(Project project) => GetProjectFileName(project.Id);
+    public static string GetProjectPath(Project project) => GetProjectPath(project.Id);
+
+    public static string GetProjectFileName(ProjectSummary projectSummary) => GetProjectFileName(projectSummary.ProjectId);
+    public static string GetProjectPath(ProjectSummary projectSummary) => GetProjectPath(projectSummary.ProjectId);
 
     public static IEnumerable<string> GetProjectFilePaths() =>
         ProjectFolderHelper.Search($"{ProjectsFolderName}/*{ProjectFileExtension}");
 
-    public static string GetSummaryFileName(ProjectSummary projectSummary) =>
-        ProjectSummaryFileNameHelper.GetFileName([ projectSummary.ProjectId.ToString(), ]);
 
-    public static string GetSummaryPath(ProjectSummary projectSummary) =>
-        Path.Combine(ProjectsFolder, GetSummaryFileName(projectSummary));
+    public static string GetSummaryFileName(Id<Project> projectId) =>
+        ProjectSummaryFileNameHelper.GetFileName([ projectId.ToString(), ]);
+
+    public static string GetSummaryPath(Id<Project> projectId) =>
+        Path.Combine(ProjectsFolder, GetSummaryFileName(projectId));
+
+    public static string GetSummaryFileName(ProjectSummary projectSummary) => GetSummaryFileName(projectSummary.ProjectId);
+
+    public static string GetSummaryPath(ProjectSummary projectSummary) => GetSummaryPath(projectSummary.ProjectId);
 
     public static IEnumerable<string> GetProjectSummaryFilePaths(string? searchString = null) =>
         ProjectFolderHelper.Search($"{ProjectsFolderName}/{searchString ?? string.Empty}*{ProjectSummaryFileExtension}");
