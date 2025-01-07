@@ -1,6 +1,4 @@
-﻿using Blazorise;
-
-namespace UI;
+﻿namespace UI;
 
 public class IconDescriptor
 {

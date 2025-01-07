@@ -29,8 +29,6 @@
         <PackageReference Include="Avalonia.Desktop"/>
         <PackageReference Include="Avalonia.Themes.Fluent"/>
         <PackageReference Include="Avalonia.Fonts.Inter"/>
-        <PackageReference Include="Blazorise.Icons.FontAwesome"/>
-        <PackageReference Include="Blazorise.Tailwind"/>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>

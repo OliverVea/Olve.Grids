@@ -1,9 +1,9 @@
 ﻿@typeparam TValue
 
-<label class="@Tw.ClassString(Tw.FlexGrow,
-                  Tw.Flex,
-                  Tw.ItemsCenter,
-                  Tw.Gap("2"))">
+<label class="@ClassString(FlexGrow,
+                  Flex,
+                  ItemsCenter,
+                  Gap("2"))">
     @if (IconDescriptor is { } iconDescriptor)
     {
         <Icon IconDescriptor="iconDescriptor"/>
@@ -27,12 +27,12 @@
     [Parameter] public EventCallback<WheelChange> WheelChanged { get; set; }
     [Parameter] public IconDescriptor? IconDescriptor { get; set; }
 
-    private readonly string _inputClass = Tw.ClassString(Tw.Bg(Colors.Transparent),
-        Tw.WFull,
-        Tw.Border(Colors.Transparent),
-        Tw.Text(Colors.Active.Text.Ordinary),
-        Tw.Focus(Tw.Text(Colors.Active.Text.More), Tw.OutlineNone),
-        Tw.Placeholder(Tw.Text(Colors.Active.Text.Ordinary)));
+    private readonly string _inputClass = ClassString(Bg(Colors.Transparent),
+        WFull,
+        Border(Colors.Transparent),
+        Text(Colors.Active.Text.Ordinary),
+        Focus(Text(Colors.Active.Text.More), OutlineNone),
+        Tw.Placeholder(Text(Colors.Active.Text.Ordinary)));
 
     private void OnValueChanged() => ValueChanged.InvokeAsync(Value);
 

@@ -2,9 +2,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Blazorise;
-using Blazorise.Icons.FontAwesome;
-using Blazorise.Tailwind;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -47,12 +44,6 @@ public partial class App : Application
         appBuilder.Services.AddBlazorWebViewDeveloperTools();
 
         appBuilder.Services.AddServices();
-
-        appBuilder
-            .Services
-            .AddBlazorise()
-            .AddTailwindProviders()
-            .AddFontAwesomeIcons();
 
         AppHost = appBuilder.Build();
 

@@ -4,7 +4,13 @@
 @inject NavigationManager NavigationManager
 
 <div
-    class="@Tw.ClassString(Tw.Flex, Tw.FlexCol, Tw.ItemsCenter, Tw.JustifyCenter, Tw.MaxW("440"), Tw.Gap("6"), Tw.Text(Colors.Active.Text.Most))">
+    class="@ClassString(Flex,
+               FlexCol,
+               ItemsCenter,
+               JustifyCenter,
+               MaxW("440"),
+               Gap("6"),
+               Text(Colors.Active.Text.Most))">
 
     <!-- Title -->
     <Title>[GRIDS]</Title>
@@ -18,26 +24,28 @@
 
     <!-- Project Overview -->
     <div
-        class="@Tw.ClassString(Tw.Grid,
-                   Tw.GridCols("[25%,75%]"),
-                   Tw.GapX("2"),
-                   Tw.GapY("4"),
-                   Tw.BreakWords,
-                   Tw.Text(Colors.Active.Text.Ordinary))">
+        class="@ClassString(Grid,
+                   GridCols("[25%,75%]"),
+                   GapX("2"),
+                   GapY("4"),
+                   BreakWords,
+                   Text(Colors.Active.Text.Ordinary))">
         @foreach (var project in ProjectSummaries)
         {
             <!-- Row: Date -->
-            <TimeAgo Then="@project.LastAccessed"/>
+            <div class="@ClassString(FlexGrow, Flex, JustifyEnd)">
+                <TimeAgo Then="@project.LastAccessed"/>
+            </div>
 
             <!-- Row: Project -->
             <div
-                class="@Tw.ClassString(Tw.TextLeft,
-                           Tw.Hover(Tw.Underline),
-                           Tw.CursorPointer)"
+                class="@ClassString(TextLeft,
+                           Hover(Underline),
+                           CursorPointer)"
                 @onclick="() => NavigateToProjectDashboard(project.ProjectId)">
                 <span
-                    class="@Tw.ClassString(Tw.Text(Colors.Active.Text.More),
-                               Tw.FontSemibold)">@project.Name.Value</span>
+                    class="@ClassString(Text(Colors.Active.Text.More),
+                               FontSemibold)">@project.Name.Value</span>
                 <br/>
                 <span title="@project.Path.Value">@(new FileInfo(project.Path.Value).Name)</span>
             </div>
@@ -47,7 +55,12 @@
     <!-- Pagination -->
     @if (TotalPages > 1)
     {
-        <div class="flex flex-row items-center justify-center gap-2 text-[@(Colors.Active.Text.Ordinary)]">
+        <div class="@ClassString(Flex,
+                        FlexGrow,
+                        ItemsCenter,
+                        JustifyCenter,
+                        Gap("2"),
+                        Text(Colors.Active.Text.Ordinary))">
             @if (HasPreviousPage)
             {
                 <Button OnClick="DecrementPage">

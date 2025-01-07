@@ -2,22 +2,22 @@
 @using Olve.Grids.IO.TileAtlasBuilder
 
 <div
-    class="@Tw.ClassString(Tw.Flex,
-               Tw.FlexCol,
-               Tw.ItemsCenter,
-               Tw.JustifyCenter,
-               Tw.MaxW("440px"),
-               Tw.Gap("6"),
-               Tw.Text(Colors.Active.Text.Most))">
+    class="@ClassString(Flex,
+               FlexCol,
+               ItemsCenter,
+               JustifyCenter,
+               MaxW("440px"),
+               Gap("6"),
+               Text(Colors.Active.Text.Most))">
 
     <div
-        class="@Tw.ClassString(Tw.Grid,
-                   Tw.GridCols("[25%,75%"),
-                   Tw.GapX("2"),
-                   Tw.GapY("4"),
-                   Tw.ItemsStart,
-                   Tw.BreakWords,
-                   Tw.Text(Colors.Active.Text.Ordinary))">
+        class="@ClassString(Grid,
+                   GridCols("[25%,75%"),
+                   GapX("2"),
+                   GapY("4"),
+                   ItemsStart,
+                   BreakWords,
+                   Text(Colors.Active.Text.Ordinary))">
         @foreach (var (left, right) in
                       new (RenderFragment, RenderFragment)[]
                       {
@@ -28,17 +28,17 @@
                                                 OnSizeChanged="OnTileSizeChanged"/>),
                       })
         {
-            <div class="@(Tw.ClassString(Tw.Flex,
-                            Tw.FlexGrow,
-                            Tw.JustifyEnd,
-                            Tw.ItemsCenter))">
+            <div class="@ClassString(Flex,
+                            FlexGrow,
+                            JustifyEnd,
+                            ItemsCenter)">
                 @left
             </div>
             <div
-                class="@Tw.ClassString(Tw.Flex,
-                           Tw.FlexGrow,
-                           Tw.JustifyStart,
-                           Tw.ItemsCenter) flex-grow justify-start items-center">
+                class="@ClassString(Flex,
+                           FlexGrow,
+                           JustifyStart,
+                           ItemsCenter) flex-grow justify-start items-center">
                 @right
             </div>
         }
