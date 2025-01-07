@@ -1,0 +1,29 @@
+﻿<div class="@Tw.ClassString(Tw.Flex,
+                Tw.FlexRow,
+                Tw.ItemsCenter,
+                Tw.JustifyCenter,
+                Tw.Gap("2"),
+                Tw.Text(Colors.Active.Text.Ordinary))">
+    
+    <IntegerInputField
+        Placeholder="Tile width"
+        Value="Size.Width"
+        Min="1"
+        IconDescriptor="IconDescriptor.HorizontalRule"
+        ValueChanged="OnWidthChanged"/>
+
+    <IntegerInputField
+        Placeholder="Tile height"
+        Value="Size.Height"
+        Min="1"
+        IconDescriptor="IconDescriptor.VerticalRule"
+        ValueChanged="OnHeightChanged"/>
+</div>
+
+@code {
+    [Parameter] public Size Size { get; set; }
+    [Parameter] public EventCallback<Size> OnSizeChanged { get; set; }
+
+    private void OnWidthChanged(int width) => OnSizeChanged.InvokeAsync(new Size(width, Size.Height));
+    private void OnHeightChanged(int height) => OnSizeChanged.InvokeAsync(new Size(Size.Width, height));
+}

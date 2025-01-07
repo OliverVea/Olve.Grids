@@ -1,6 +1,11 @@
 ﻿@inherits LayoutComponentBase
 
 <div
-    class="flex items-center justify-center min-h-screen bg-[@(Colors.Active.Panels.Ordinary)] text-[@(Colors.Active.Text.Most)]">
+    class="@Tw.ClassString(Tw.Flex,
+               Tw.ItemsCenter,
+               Tw.JustifyCenter,
+               Tw.MinHScreen,
+               Tw.Bg(Colors.Active.Panels.Ordinary),
+               Tw.Text(Colors.Active.Text.Most))">
     @Body
 </div>

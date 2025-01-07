@@ -1,0 +1,6 @@
+﻿<span title="@Then.ToString()">@DateTimeFormatter.FormatTimeAgo(Now, Then)</span>
+
+@code {
+    [Parameter] [EditorRequired] public DateTimeOffset Then { get; set; }
+    [Parameter] public DateTimeOffset Now { get; set; } = DateTimeOffset.Now;
+}

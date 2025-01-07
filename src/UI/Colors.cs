@@ -2,22 +2,22 @@
 
 public static class Colors
 {
-    public const string Transparent = "transparent";
+    public static readonly ColorString Transparent = new("transparent");
 
-    public static readonly ColorScheme Dark = new()
+    private static readonly ColorScheme Dark = new()
     {
         Text = new ColorSchemeText
         {
-            Less = "#585B59",
-            Ordinary = "#6e7270",
-            More = "#cccccc",
-            Most = "#ffffff",
+            Less = new ColorString("#585B59"),
+            Ordinary = new ColorString("#6e7270"),
+            More = new ColorString("#cccccc"),
+            Most = new ColorString("#ffffff"),
         },
         Panels = new ColorSchemePanels
         {
-            Ordinary = "#1e1f22",
-            More = "#2b2d30",
-            Most = "#3c3f41",
+            Ordinary = new ColorString("#1e1f22"),
+            More = new ColorString("#2b2d30"),
+            Most = new ColorString("#3c3f41"),
         },
     };
 
@@ -32,15 +32,20 @@ public class ColorScheme
 
 public class ColorSchemePanels
 {
-    public string Ordinary { get; init; } = "pink";
-    public string More { get; init; } = "pink";
-    public string Most { get; init; } = "pink";
+    public ColorString Ordinary { get; init; } = ColorString.NotSet;
+    public ColorString More { get; init; } = ColorString.NotSet;
+    public ColorString Most { get; init; } = ColorString.NotSet;
 }
 
 public class ColorSchemeText
 {
-    public string Less { get; init; } = "pink";
-    public string Ordinary { get; init; } = "pink";
-    public string More { get; init; } = "pink";
-    public string Most { get; init; } = "pink";
+    public ColorString Less { get; init; } = ColorString.NotSet;
+    public ColorString Ordinary { get; init; } = ColorString.NotSet;
+    public ColorString More { get; init; } = ColorString.NotSet;
+    public ColorString Most { get; init; } = ColorString.NotSet;
+}
+
+public readonly record struct ColorString(string Value)
+{
+    public static readonly ColorString NotSet = new("pink");
 }

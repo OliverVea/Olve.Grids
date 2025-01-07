@@ -1,0 +1,20 @@
+﻿<button
+    class="@Tw.ClassString(Tw.Bg(Colors.Active.Panels.More),
+               Tw.BorderNone,
+               Tw.Py("2"),
+               Tw.Px("4"),
+               Tw.RoundedMd,
+               Tw.Hover(Tw.Bg(Colors.Active.Panels.Most)),
+               Tw.Text(Colors.Active.Text.Most),
+               Tw.Transition,
+               Tw.Duration("75"),
+               Tw.TextNoWrap)"
+    @onclick="OnClick">
+    @ChildContent
+</button>
+
+
+@code {
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

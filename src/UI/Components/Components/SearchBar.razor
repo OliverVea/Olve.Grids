@@ -1,0 +1,24 @@
+﻿<div class="@Tw.ClassString(Tw.BorderY("2"),
+                Tw.Border(Colors.Active.Panels.More),
+                Tw.Py("2"),
+                Tw.WFull)">
+    <div
+        class="@Tw.ClassString(Tw.Flex,
+                   Tw.FlexRow,
+                   Tw.ItemsCenter,
+                   Tw.JustifyCenter,
+                   Tw.Gap("2"),
+                   Tw.Text(Colors.Active.Text.Ordinary))">
+        <TextInputField
+            Placeholder="Search Projects"
+            Immediate="true"
+            IconDescriptor="@IconDescriptor.Search"
+            ValueChanged="OnSearchPromptChange"/>
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<string> OnSearchPromptChange { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
+}

@@ -3,47 +3,41 @@
 @inject LoggingService LoggingService
 @inject NavigationManager NavigationManager
 
-<div class="flex flex-col items-center justify-center max-w-[440px] gap-6 text-[@(Colors.Active.Text.Most)]">
+<div
+    class="@Tw.ClassString(Tw.Flex, Tw.FlexCol, Tw.ItemsCenter, Tw.JustifyCenter, Tw.MaxW("440"), Tw.Gap("6"), Tw.Text(Colors.Active.Text.Most))">
 
     <!-- Title -->
-    <h1 class="text-8xl font-thin">[GRIDS]</h1>
+    <Title>[GRIDS]</Title>
 
     <!-- Search Bar -->
-    <div class="border-y-2 border-[@(Colors.Active.Panels.More)] py-2 w-full">
-        <div class="flex flex-row items-center justify-center gap-2 text-[@(Colors.Active.Text.Ordinary)]">
-            <label class="flex-grow flex items-center gap-2">
-                <i class="fa fa-search"></i>
-                <input
-                    id="search"
-                    placeholder="Search Projects"
-                    class="bg-transparent w-full border-transparent text-[@(Colors.Active.Text.Ordinary)] focus:text-[@(Colors.Active.Text.More)] focus:outline-none placeholder:text-[@(Colors.Active.Text.Ordinary)]"
-                    type="text"
-                    @bind="SearchPrompt"
-                    @bind:event="oninput"
-                    @bind:after="HandleSearchPromptChange"/>
-            </label>
-            <button
-                class="bg-[@(Colors.Active.Panels.More)] border-none py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] text-[@(Colors.Active.Text.Most)] transition duration-75 text-nowrap"
-                @onclick="NavigateToCreateNewProject">
-                New Project
-            </button>
-        </div>
-    </div>
+    <SearchBar OnSearchPromptChange="HandleSearchPromptChange">
+        <Button OnClick="NavigateToCreateNewProject">
+            New Project
+        </Button>
+    </SearchBar>
 
     <!-- Project Overview -->
-    <div class="grid grid-cols-[25%,75%] gap-x-2 gap-y-4 break-words text-[@(Colors.Active.Text.Ordinary)]">
+    <div
+        class="@Tw.ClassString(Tw.Grid,
+                   Tw.GridCols("[25%,75%]"),
+                   Tw.GapX("2"),
+                   Tw.GapY("4"),
+                   Tw.BreakWords,
+                   Tw.Text(Colors.Active.Text.Ordinary))">
         @foreach (var project in ProjectSummaries)
         {
             <!-- Row: Date -->
-            <div class="text-right" title="@project.LastAccessed.ToString()">
-                <span>@DateTimeFormatter.FormatTimeAgo(DateTimeOffset.Now, project.LastAccessed)</span>
-            </div>
+            <TimeAgo Then="@project.LastAccessed"/>
 
             <!-- Row: Project -->
             <div
-                class="text-left hover:underline cursor-pointer"
+                class="@Tw.ClassString(Tw.TextLeft,
+                           Tw.Hover(Tw.Underline),
+                           Tw.CursorPointer)"
                 @onclick="() => NavigateToProjectDashboard(project.ProjectId)">
-                <span class="text-[@(Colors.Active.Text.More)] font-semibold">@project.Name.Value</span>
+                <span
+                    class="@Tw.ClassString(Tw.Text(Colors.Active.Text.More),
+                               Tw.FontSemibold)">@project.Name.Value</span>
                 <br/>
                 <span title="@project.Path.Value">@(new FileInfo(project.Path.Value).Name)</span>
             </div>
@@ -56,24 +50,19 @@
         <div class="flex flex-row items-center justify-center gap-2 text-[@(Colors.Active.Text.Ordinary)]">
             @if (HasPreviousPage)
             {
-                <button
-                    class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
-                    @onclick="DecrementPage">
-                    <i class="fa fa-chevron-left"></i>
-                </button>
+                <Button OnClick="DecrementPage">
+                    <Icon IconDescriptor="@IconDescriptor.ChevronLeft"/>
+                </Button>
             }
 
             <span>@(Page + 1) / @(TotalPages)</span>
 
             @if (HasNextPage)
             {
-                <button
-                    class="bg-[@(Colors.Active.Panels.More)] py-2 px-4 rounded-md hover:bg-[@(Colors.Active.Panels.Most)] transition duration-75 text-nowrap"
-                    @onclick="IncrementPage">
-                    <i class="fa fa-chevron-right"></i>
-                </button>
+                <Button OnClick="IncrementPage">
+                    <Icon IconDescriptor="@IconDescriptor.ChevronRight"/>
+                </Button>
             }
-
         </div>
     }
 </div>
@@ -136,8 +125,9 @@
     private void NavigateToCreateNewProject() => NavigationManager.NavigateTo("create-project");
     private void NavigateToProjectDashboard(Id<Project> projectId) => NavigationManager.NavigateTo($"project/{projectId}");
 
-    private async Task HandleSearchPromptChange()
+    private async Task HandleSearchPromptChange(string s)
     {
+        SearchPrompt = s;
         Page = 0;
         await LoadProjects();
     }

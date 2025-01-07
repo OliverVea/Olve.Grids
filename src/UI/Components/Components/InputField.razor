@@ -1,0 +1,51 @@
+﻿@typeparam TValue
+
+<label class="@Tw.ClassString(Tw.FlexGrow,
+                  Tw.Flex,
+                  Tw.ItemsCenter,
+                  Tw.Gap("2"))">
+    @if (IconDescriptor is { } iconDescriptor)
+    {
+        <Icon IconDescriptor="iconDescriptor"/>
+    }
+    <input
+        placeholder="@Placeholder"
+        class="@_inputClass"
+        type="@InputType"
+        @onwheel="OnWheel"
+        @bind="Value"
+        @bind:event="@(Immediate ? "oninput" : "onchange")"
+        @bind:after="OnValueChanged"/>
+</label>
+
+@code {
+    [Parameter] [EditorRequired] public required string InputType { get; set; }
+    [Parameter] [EditorRequired] public required TValue Value { get; set; }
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public bool Immediate { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public EventCallback<WheelChange> WheelChanged { get; set; }
+    [Parameter] public IconDescriptor? IconDescriptor { get; set; }
+
+    private readonly string _inputClass = Tw.ClassString(Tw.Bg(Colors.Transparent),
+        Tw.WFull,
+        Tw.Border(Colors.Transparent),
+        Tw.Text(Colors.Active.Text.Ordinary),
+        Tw.Focus(Tw.Text(Colors.Active.Text.More), Tw.OutlineNone),
+        Tw.Placeholder(Tw.Text(Colors.Active.Text.Ordinary)));
+
+    private void OnValueChanged() => ValueChanged.InvokeAsync(Value);
+
+    private void OnWheel(WheelEventArgs args)
+    {
+        if (args.DeltaY > 0)
+        {
+            WheelChanged.InvokeAsync(new WheelChange(WheelDirection.Down));
+        }
+        else if (args.DeltaY < 0)
+        {
+            WheelChanged.InvokeAsync(new WheelChange(WheelDirection.Up));
+        }
+    }
+
+}

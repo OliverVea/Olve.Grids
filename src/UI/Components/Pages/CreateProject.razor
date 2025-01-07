@@ -1,6 +1,70 @@
 ﻿@page "/create-project"
-<h3>CreateProject</h3>
+@using Olve.Grids.IO.TileAtlasBuilder
+
+<div
+    class="@Tw.ClassString(Tw.Flex,
+               Tw.FlexCol,
+               Tw.ItemsCenter,
+               Tw.JustifyCenter,
+               Tw.MaxW("440px"),
+               Tw.Gap("6"),
+               Tw.Text(Colors.Active.Text.Most))">
+
+    <div
+        class="@Tw.ClassString(Tw.Grid,
+                   Tw.GridCols("[25%,75%"),
+                   Tw.GapX("2"),
+                   Tw.GapY("4"),
+                   Tw.ItemsStart,
+                   Tw.BreakWords,
+                   Tw.Text(Colors.Active.Text.Ordinary))">
+        @foreach (var (left, right) in
+                      new (RenderFragment, RenderFragment)[]
+                      {
+                          (@<span>Project Name</span>,
+                              @<TextInputField @bind-Value="ProjectName" Placeholder="Project name"/>),
+                          (@<span>Tile Size</span>,
+                              @<SizeInputFields Size="TileAtlasBuilder.Configuration.TileSize ?? DefaultTileSize"
+                                                OnSizeChanged="OnTileSizeChanged"/>),
+                      })
+        {
+            <div class="@(Tw.ClassString(Tw.Flex,
+                            Tw.FlexGrow,
+                            Tw.JustifyEnd,
+                            Tw.ItemsCenter))">
+                @left
+            </div>
+            <div
+                class="@Tw.ClassString(Tw.Flex,
+                           Tw.FlexGrow,
+                           Tw.JustifyStart,
+                           Tw.ItemsCenter) flex-grow justify-start items-center">
+                @right
+            </div>
+        }
+    </div>
+
+    <Button>
+        Create project
+    </Button>
+</div>
 
 @code {
+    private const int DefaultGridSize = 8;
+    private static readonly Size DefaultTileSize = new(DefaultGridSize, DefaultGridSize);
+
+    private string ProjectName { get; set; } = string.Empty;
+
+    private TileAtlasBuilder TileAtlasBuilder { get; } = new();
+
+    protected override void OnInitialized()
+    {
+        TileAtlasBuilder.WithTileSize(DefaultTileSize);
+    }
+
+    private void OnTileSizeChanged(Size newSize)
+    {
+        TileAtlasBuilder.WithTileSize(newSize);
+    }
 
 }
