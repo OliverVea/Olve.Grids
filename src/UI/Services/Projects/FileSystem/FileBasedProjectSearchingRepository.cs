@@ -37,26 +37,28 @@ public class FileBasedProjectSearchingRepository : IProjectSearchingRepository
 
         var projectSummaries = summaries.GetValues();
 
-        projectSummaries = ApplySearchFiltering(projectSummaries, searchPrompt);
+        projectSummaries = ApplySearchFiltering(projectSummaries, searchPrompt)
+            .ToArray();
+
+        var totalCount = projectSummaries.Count();
+
         projectSummaries = ApplyOrdering(projectSummaries, orderKey, descending);
         projectSummaries = ApplyPagination(projectSummaries, pagination);
-
-        var totalCount = files.Length;
 
         return new PaginatedResult<ProjectSummary>(projectSummaries.ToArray(), pagination, totalCount);
     }
 
-    private IEnumerable<ProjectSummary> ApplySearchFiltering(IEnumerable<ProjectSummary> projectSummaries,
+    private static IEnumerable<ProjectSummary> ApplySearchFiltering(IEnumerable<ProjectSummary> projectSummaries,
         string searchPrompt)
     {
         return projectSummaries.Where(x =>
             x
                 .ProjectId.ToString()
                 .StartsWith(searchPrompt, StringComparison.InvariantCultureIgnoreCase)
-            || x.Name.Value.StartsWith(searchPrompt, StringComparison.InvariantCultureIgnoreCase));
+            || x.Name.Value.Contains(searchPrompt, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private IEnumerable<ProjectSummary> ApplyOrdering(IEnumerable<ProjectSummary> projectSummaries,
+    private static IEnumerable<ProjectSummary> ApplyOrdering(IEnumerable<ProjectSummary> projectSummaries,
         OrderKey orderKey,
         bool descending)
     {
@@ -78,8 +80,8 @@ public class FileBasedProjectSearchingRepository : IProjectSearchingRepository
             : projectSummaries.Order(orderingFunc);
     }
 
-    private IEnumerable<ProjectSummary>
-        ApplyPagination(IEnumerable<ProjectSummary> projectSummaries, Pagination pagination) =>
+    private static IEnumerable<ProjectSummary> ApplyPagination(IEnumerable<ProjectSummary> projectSummaries,
+        Pagination pagination) =>
         projectSummaries
             .Skip(pagination.Page * pagination.PageSize)
             .Take(pagination.PageSize);

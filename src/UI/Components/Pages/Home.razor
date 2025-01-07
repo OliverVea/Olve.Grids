@@ -3,11 +3,10 @@
 @inject LoggingService LoggingService
 @inject NavigationManager NavigationManager
 
-<div class="flex flex-col items-center justify-center max-w-[400px] gap-6 text-[@(Colors.Active.Text.Most)]">
+<div class="flex flex-col items-center justify-center max-w-[440px] gap-6 text-[@(Colors.Active.Text.Most)]">
 
     <!-- Title -->
     <h1 class="text-8xl font-thin">[GRIDS]</h1>
-
 
     <!-- Search Bar -->
     <div class="border-y-2 border-[@(Colors.Active.Panels.More)] py-2 w-full">
@@ -46,7 +45,7 @@
                 @onclick="() => NavigateToProjectDashboard(project.ProjectId)">
                 <span class="text-[@(Colors.Active.Text.More)] font-semibold">@project.Name.Value</span>
                 <br/>
-                <span>@project.Path.Value</span>
+                <span title="@project.Path.Value">@(new FileInfo(project.Path.Value).Name)</span>
             </div>
         }
     </div>
