@@ -1,6 +1,6 @@
 ﻿namespace UI;
 
-public static class Tw
+public static class TailwindExtensions
 {
     public static readonly TailwindClass Flex = new("flex");
     public static readonly TailwindClass FlexGrow = new("flex-grow");
@@ -74,7 +74,7 @@ public static class Tw
 
     public readonly record struct TailwindClass(string Value);
 
-    public static string ClassString(params IEnumerable<TailwindClass> tailwindClasses)
+    public static string TW(params IEnumerable<TailwindClass> tailwindClasses)
     {
         var s = string.Join(" ", tailwindClasses.Select(tc => tc.Value));
         return s;

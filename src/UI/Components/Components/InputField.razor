@@ -1,6 +1,6 @@
 ﻿@typeparam TValue
 
-<label class="@ClassString(FlexGrow,
+<label class="@TW(FlexGrow,
                   Flex,
                   ItemsCenter,
                   Gap("2"))">
@@ -27,12 +27,12 @@
     [Parameter] public EventCallback<WheelChange> WheelChanged { get; set; }
     [Parameter] public IconDescriptor? IconDescriptor { get; set; }
 
-    private readonly string _inputClass = ClassString(Bg(Colors.Transparent),
+    private readonly string _inputClass = TW(Bg(Colors.Transparent),
         WFull,
         Border(Colors.Transparent),
         Text(Colors.Active.Text.Ordinary),
         Focus(Text(Colors.Active.Text.More), OutlineNone),
-        Tw.Placeholder(Text(Colors.Active.Text.Ordinary)));
+        TailwindExtensions.Placeholder(Text(Colors.Active.Text.Ordinary)));
 
     private void OnValueChanged() => ValueChanged.InvokeAsync(Value);
 

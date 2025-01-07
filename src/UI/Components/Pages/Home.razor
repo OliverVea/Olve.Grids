@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 
 <div
-    class="@ClassString(Flex,
+    class="@TW(Flex,
                FlexCol,
                ItemsCenter,
                JustifyCenter,
@@ -24,7 +24,7 @@
 
     <!-- Project Overview -->
     <div
-        class="@ClassString(Grid,
+        class="@TW(Grid,
                    GridCols("[25%,75%]"),
                    GapX("2"),
                    GapY("4"),
@@ -33,18 +33,18 @@
         @foreach (var project in ProjectSummaries)
         {
             <!-- Row: Date -->
-            <div class="@ClassString(FlexGrow, Flex, JustifyEnd)">
+            <div class="@TW(FlexGrow, Flex, JustifyEnd)">
                 <TimeAgo Then="@project.LastAccessed"/>
             </div>
 
             <!-- Row: Project -->
             <div
-                class="@ClassString(TextLeft,
+                class="@TW(TextLeft,
                            Hover(Underline),
                            CursorPointer)"
                 @onclick="() => NavigateToProjectDashboard(project.ProjectId)">
                 <span
-                    class="@ClassString(Text(Colors.Active.Text.More),
+                    class="@TW(Text(Colors.Active.Text.More),
                                FontSemibold)">@project.Name.Value</span>
                 <br/>
                 <span title="@project.Path.Value">@(new FileInfo(project.Path.Value).Name)</span>
@@ -55,7 +55,7 @@
     <!-- Pagination -->
     @if (TotalPages > 1)
     {
-        <div class="@ClassString(Flex,
+        <div class="@TW(Flex,
                         FlexGrow,
                         ItemsCenter,
                         JustifyCenter,
