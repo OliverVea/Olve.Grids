@@ -19,7 +19,7 @@ public partial class SerializableProject
     public static (SerializableProject Project, byte[] ImageBytes) FromProject(Project project) =>
         (new SerializableProject
         {
-            Id = project.Id.ToBase64(),
+            Id = project.Id.ToString(),
             Name = project.Name.Value,
             CreatedAt = project.CreatedAt.ToUnixTimeSeconds(),
             LastAccessedAt = project.CreatedAt.ToUnixTimeSeconds(),

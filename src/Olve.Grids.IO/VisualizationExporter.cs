@@ -8,7 +8,7 @@ namespace Olve.Grids.IO;
 
 public class VisualizationExporter
 {
-    public void ExportAsPng(GenerationResult generationResult, string path)
+    public void ExportAsPng(GenerationResult generationResult, string path, Image tileAtlasImage)
     {
         var tileAtlas = generationResult.Request.TileAtlas;
         var (outputTilesX, outputTilesY) = generationResult.Request.OutputSize;
@@ -16,7 +16,6 @@ public class VisualizationExporter
         var outputWidth = outputTilesX * tileAtlas.Grid.TileSize.Width;
         var outputHeight = outputTilesY * tileAtlas.Grid.TileSize.Height;
 
-        var tileAtlasImage = Image.Load(tileAtlas.FilePath);
         var outputImage = new Image<Rgba32>(outputWidth, outputHeight);
 
         for (var y = 0; y < outputTilesY; y++)

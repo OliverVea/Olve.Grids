@@ -10,7 +10,6 @@ namespace Olve.Grids.IO.TileAtlasBuilder;
 [MemoryPackable]
 public partial class SerializableTileAtlasConfiguration
 {
-    public string? FilePath { get; init; }
     public Size? TileSize { get; init; }
     public int? Columns { get; init; }
     public int? Rows { get; init; }
@@ -24,7 +23,6 @@ public partial class SerializableTileAtlasConfiguration
         TileAtlasConfiguration tileAtlasConfiguration) =>
         new()
         {
-            FilePath = tileAtlasConfiguration.FilePath,
             TileSize = tileAtlasConfiguration.TileSize,
             Columns = tileAtlasConfiguration.Columns,
             Rows = tileAtlasConfiguration.Rows,
@@ -40,7 +38,6 @@ public partial class SerializableTileAtlasConfiguration
     public TileAtlasConfiguration ToTileAtlasConfiguration() =>
         new()
         {
-            FilePath = FilePath,
             TileSize = TileSize,
             Columns = Columns,
             Rows = Rows,

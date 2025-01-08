@@ -8,16 +8,6 @@ internal class TileAtlasConfigurationValidator : AbstractValidator<TileAtlasConf
     {
         Size imageSize = new();
 
-        RuleFor(x => x.FilePath)
-            .NotEmpty()
-            .WithMessage("{PropertyName} must not be empty.")
-            .Must(filePath => filePath!.EndsWith(".png"))
-            .WithMessage("{PropertyName} must be a PNG file.")
-            .Must(File.Exists)
-            .WithMessage("{PropertyName} must exist.")
-            .Must(filePath => ImageSizeHelper.TryGetImageSize(filePath!, out imageSize))
-            .WithMessage("{PropertyName} must be a valid image file.");
-
         RuleFor(x => x.TileSize)
             .NotNull()
             .WithMessage("{PropertyName} must not be null.")
@@ -25,6 +15,22 @@ internal class TileAtlasConfigurationValidator : AbstractValidator<TileAtlasConf
             .WithMessage("{PropertyName} must be greater than 0.")
             .Must(x => x!.Value.Width <= imageSize.Width && x.Value.Height <= imageSize.Height)
             .WithMessage("{PropertyName} must be less than or equal to the image size.");
+
+        RuleFor(x => new
+            {
+                x.Columns,
+                x.ImageSize,
+            })
+            .Must(x => x.Columns is { } || x.ImageSize is { })
+            .WithMessage("Either Columns or ImageSize must be specified.");
+
+        RuleFor(x => new
+            {
+                x.Rows,
+                x.ImageSize,
+            })
+            .Must(x => x.Rows is { } || x.ImageSize is { })
+            .WithMessage("Either Rows or ImageSize must be specified.");
 
         RuleFor(x => x.Columns)
             .GreaterThan(0)

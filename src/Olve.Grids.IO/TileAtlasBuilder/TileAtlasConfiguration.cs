@@ -7,8 +7,8 @@ namespace Olve.Grids.IO.TileAtlasBuilder;
 
 public class TileAtlasConfiguration
 {
-    public string? FilePath { get; internal set; }
     public Size? TileSize { get; internal set; }
+    public Size? ImageSize { get; internal set; }
     public int? Columns { get; internal set; }
     public int? Rows { get; internal set; }
     public TileIndex? FallbackTileIndex { get; internal set; }

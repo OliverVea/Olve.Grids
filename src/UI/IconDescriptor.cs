@@ -16,4 +16,5 @@ public class IconDescriptor
     public static readonly IconDescriptor VerticalRule = new("fa fa-vertical-rule");
     public static readonly IconDescriptor Plus = new("fa fa-plus");
     public static readonly IconDescriptor Minus = new("fa fa-minus");
+    public static readonly IconDescriptor Trash = new("fa fa-trash");
 }

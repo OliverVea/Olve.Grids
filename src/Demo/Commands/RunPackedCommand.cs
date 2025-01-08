@@ -11,6 +11,10 @@ namespace Demo.Commands;
 
 public class RunPackedSettings : CommandSettings
 {
+    [Description("The tile atlas file. Defaults to 'assets/tile-atlas.png'")]
+    [CommandOption("-a|--tile-atlas")]
+    public string TileAtlasFile { get; set; } = string.Empty;
+
     [Description("The packed tile atlas file ending in .grids.")]
     [CommandArgument(0, "<packed-tile-atlas>")]
     public string PackedTileAtlasFile { get; set; } = string.Empty;
@@ -65,6 +69,15 @@ public class RunPackedCommand : Command<RunPackedSettings>
             return Error;
         }
 
+        var imageLoader = new ImageLoader();
+        if (!imageLoader
+                .LoadImage(settings.TileAtlasFile)
+                .TryPickValue(out var tileAtlasImage, out var imageLoaderError))
+        {
+            AnsiConsole.MarkupLine($"[bold red]Error:[/] {imageLoaderError}");
+            return Error;
+        }
+
         AnsiConsole.MarkupLine("[bold yellow]Packed tile atlas information:[/]");
 
         AnsiConsole.MarkupLine($"Tile size: [bold]{tileAtlas.Grid.TileSize.Width}x{tileAtlas.Grid.TileSize.Height}[/]");
@@ -77,7 +90,7 @@ public class RunPackedCommand : Command<RunPackedSettings>
         var generationResult = generator.Execute(generationRequest);
 
         var visualizationExporter = new VisualizationExporter();
-        visualizationExporter.ExportAsPng(generationResult, settings.OutputFile);
+        visualizationExporter.ExportAsPng(generationResult, settings.OutputFile, tileAtlasImage);
 
         if (generationResult.Status.IsT2)
         {

@@ -1,6 +1,30 @@
 ﻿@page "/project/{projectId}"
+@using Olve.Grids.Grids
+@inject LoadProjectOperation LoadProjectOperation
+@inject LoggingService Logger
+@inject NavigationManager NavigationManager
 
-<p>Project: @ProjectId</p>
+<div
+    class="@TW(Absolute, Top(0), Right(0), Left(0), Bg(Colors.Active.Panels.More), Flex, FlexRow, JustifyBetween, ItemsCenter)">
+    <div>
+        <Button OnClick="HandleBack">
+            <Icon IconDescriptor="IconDescriptor.ChevronLeft"/>
+        </Button>
+    </div>
+
+    <h1 class="@TW(Text(Colors.Active.Text.Ordinary))">
+        @(Project?.Name.Value ?? "Not Found")
+    </h1>
+
+    <div>
+    </div>
+
+</div>
+
+@foreach (var tileIndex in GridConfiguration.GetTileIndices())
+{
+    <Tile TileIndex="@tileIndex"/>
+}
 
 @code {
     private const string ProjectIdParameterName = "projectId";
@@ -9,11 +33,12 @@
     public Dictionary<string, object> Garbage { get; set; } = new();
 
     private Id<Project> ProjectId { get; set; }
+    private Project Project { get; set; } = null!;
+
+    private GridConfiguration GridConfiguration { get; set; }
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
-        await base.SetParametersAsync(parameters);
-
         foreach (var parameter in parameters)
         {
             switch (parameter.Name)
@@ -23,6 +48,68 @@
                     break;
             }
         }
+
+        await base.SetParametersAsync(parameters);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        LoadProjectOperation.Request request = new(ProjectId);
+        var result = await LoadProjectOperation.ExecuteAsync(request);
+
+        if (result.TryPickProblems(out var problems, out var response))
+        {
+            Logger.Show(problems);
+            HandleBack();
+            return;
+        }
+
+        Project = response.Project;
+
+        var gridConfigurationResult = GetGridConfiguration(Project);
+        if (gridConfigurationResult.TryPickProblems(out problems, out var gridConfiguration))
+        {
+            Logger.Show(problems);
+            HandleBack();
+            return;
+        }
+
+        GridConfiguration = gridConfiguration;
+    }
+
+    private void HandleBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private Result<GridConfiguration> GetGridConfiguration(Project project)
+    {
+        var config = project.TileAtlasBuilder.Configuration;
+        if (!config.Columns.HasValue)
+        {
+            return Result<GridConfiguration>.Failure(new ResultProblem("No columns defined")
+            {
+                Source = nameof(ProjectDashboard),
+            });
+        }
+
+        if (!config.Rows.HasValue)
+        {
+            return Result<GridConfiguration>.Failure(new ResultProblem("No rows defined")
+            {
+                Source = nameof(ProjectDashboard),
+            });
+        }
+
+        if (!config.TileSize.HasValue)
+        {
+            return Result<GridConfiguration>.Failure(new ResultProblem("No rows defined")
+            {
+                Source = nameof(ProjectDashboard),
+            });
+        }
+
+        return new GridConfiguration(config.TileSize.Value, config.Rows.Value, config.Columns.Value);
     }
 
 }

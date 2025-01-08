@@ -15,13 +15,12 @@ namespace Demo;
 public class TileAtlasLoader
 {
     public OneOf<TileAtlas, FileParsingError> LoadTileAtlas(
-        string tileAtlasFile,
+        Size imageSize,
         Size tileSize,
         string tileAtlasBrushesFile,
         string? tileAtlasConfigFile)
     {
         var tileAtlasBuilder = new TileAtlasBuilder()
-            .WithFilePath(tileAtlasFile)
             .WithTileSize(tileSize);
 
         var tileAtlasBrushesReader = new TileAtlasBrushesFileReader(tileAtlasBrushesFile);
@@ -47,6 +46,7 @@ public class TileAtlasLoader
         var (adjacencyLookup, weightLookup) = adjacencyAndWeightLookup;
 
         tileAtlasBuilder = tileAtlasBuilder
+            .WithImageSize(imageSize)
             .WithBrushLookupBuilder(tileAtlasBrushes)
             .WithAdjacencyLookupBuilder(adjacencyLookup);
 

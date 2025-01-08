@@ -81,4 +81,21 @@ public static class ProjectSummaryFileHelper
 
         return Result.Success();
     }
+
+    public static Result Delete(ProjectSummary projectSummary)
+    {
+        var projectFilePath = PathHelper.GetSummaryPath(projectSummary);
+
+        try
+        {
+            File.Delete(projectFilePath);
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to delete project summary file: {0}", projectFilePath);
+            return Result.Failure(problem);
+        }
+
+        return Result.Success();
+    }
 }

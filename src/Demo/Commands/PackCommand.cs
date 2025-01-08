@@ -29,9 +29,20 @@ public class PackCommand : Command<PackCommandSettings>
             return Error;
         }
 
+        var imageLoader = new ImageLoader();
+        if (!imageLoader
+                .LoadImage(settings.TileAtlasFile)
+                .TryPickValue(out var tileAtlasImage, out var imageLoaderError))
+        {
+            AnsiConsole.MarkupLine($"[bold red]Error:[/] {imageLoaderError}");
+            return Error;
+        }
+
+        var tileAtlasSize = new Size(tileAtlasImage.Width, tileAtlasImage.Height);
+
         var tileAtlasLoader = new TileAtlasLoader();
         if (!tileAtlasLoader
-                .LoadTileAtlas(settings.TileAtlasFile,
+                .LoadTileAtlas(tileAtlasSize,
                     tileSize,
                     settings.TileAtlasBrushesFile,
                     settings.TileAtlasConfigFile)

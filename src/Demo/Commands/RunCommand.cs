@@ -3,6 +3,7 @@ using Olve.Grids.DeBroglie;
 using Olve.Grids.Generation;
 using Olve.Grids.IO;
 using Olve.Grids.IO.Readers;
+using SixLabors.ImageSharp;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -63,9 +64,21 @@ public class RunCommand : Command<RunCommandSettings>
             AnsiConsole.MarkupLine($"Output file: [bold]{settings.OutputFile}[/]");
         }
 
+        var imageLoader = new ImageLoader();
+        if (!imageLoader
+                .LoadImage(settings.TileAtlasFile)
+                .TryPickValue(out var tileAtlasImage, out var imageLoaderError))
+        {
+            AnsiConsole.MarkupLine($"[bold red]Error:[/] {imageLoaderError}");
+            return Error;
+        }
+
+        var tileAtlasSize = new Size(tileAtlasImage.Width, tileAtlasImage.Height);
+
         var tileAtlasLoader = new TileAtlasLoader();
         if (!tileAtlasLoader
-                .LoadTileAtlas(settings.TileAtlasFile,
+                .LoadTileAtlas(
+                    tileAtlasSize,
                     tileSize,
                     settings.TileAtlasBrushesFile,
                     settings.TileAtlasConfigFile)
@@ -101,7 +114,7 @@ public class RunCommand : Command<RunCommandSettings>
         }
 
         var visualizationExporter = new VisualizationExporter();
-        visualizationExporter.ExportAsPng(result, settings.OutputFile);
+        visualizationExporter.ExportAsPng(result, settings.OutputFile, tileAtlasImage);
 
         if (verbosityLevel.IsNormal)
         {

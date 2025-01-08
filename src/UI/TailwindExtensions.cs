@@ -36,6 +36,7 @@ public static class TailwindExtensions
     public static readonly TailwindClass TextNoWrap = new("text-no-wrap");
     public static readonly TailwindClass TextLeft = new("text-left");
     public static readonly TailwindClass TextRight = new("text-right");
+    public static readonly TailwindClass TextCenter = new("text-center");
 
     public static readonly TailwindClass Underline = new("underline");
 
@@ -44,13 +45,25 @@ public static class TailwindExtensions
     public static readonly TailwindClass MinHScreen = new("min-h-screen");
     public static readonly TailwindClass MinWScreen = new("min-w-screen");
 
+    public static readonly TailwindClass TextXs = new("text-xs");
+    public static readonly TailwindClass TextSm = new("text-sm");
+    public static readonly TailwindClass TextBase = new("text-base");
+    public static readonly TailwindClass TextLg = new("text-lg");
+    public static readonly TailwindClass TextXl = new("text-xl");
+    public static readonly TailwindClass Text2Xl = new("text-2xl");
+    public static readonly TailwindClass Text3Xl = new("text-3xl");
+    public static readonly TailwindClass Text4Xl = new("text-4xl");
+    public static readonly TailwindClass Text5Xl = new("text-5xl");
+    public static readonly TailwindClass Text6Xl = new("text-6xl");
+    public static readonly TailwindClass Text7Xl = new("text-7xl");
+    public static readonly TailwindClass Text8Xl = new("text-8xl");
+
     public static readonly TailwindClass FontThin = new("font-thin");
     public static readonly TailwindClass FontLight = new("font-light");
     public static readonly TailwindClass FontNormal = new("font-normal");
     public static readonly TailwindClass FontMedium = new("font-medium");
     public static readonly TailwindClass FontSemibold = new("font-semibold");
     public static readonly TailwindClass FontBold = new("font-bold");
-    public static readonly TailwindClass Text8Xl = new("text-8xl");
 
     public static readonly TailwindClass OutlineNone = new("outline-none");
     public static readonly TailwindClass ItemsStart = new("items-start");

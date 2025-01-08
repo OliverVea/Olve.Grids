@@ -1,10 +1,11 @@
 ﻿@page "/"
 @inject ListProjectSummariesOperation ListProjectSummariesOperation
+@inject DeleteProjectOperation DeleteProjectOperation
 @inject LoggingService LoggingService
 @inject NavigationManager NavigationManager
 
 <div
-    class="@TW(Flex, FlexCol, ItemsCenter, JustifyCenter, MaxW("440px"), Gap(6), Text(Colors.Active.Text.Most))">
+    class="@TW(Flex, FlexCol, ItemsCenter, JustifyCenter, W("440px"), Gap(6), Text(Colors.Active.Text.Most))">
 
     <!-- Title -->
     <Title>[GRIDS]</Title>
@@ -18,25 +19,32 @@
 
     <!-- Project Overview -->
     <div
-        class="@TW(Grid, GridCols("30%,70%"), GapX(2), GapY(4), BreakWords, Text(Colors.Active.Text.Ordinary))">
+        class="@TW(Grid, WFull, GridCols("30%,70%"), GapX(2), GapY(4), BreakWords, Text(Colors.Active.Text.Ordinary))">
         @foreach (var project in ProjectSummaries)
         {
             <!-- Row: Date -->
-            <div class="@TW(FlexGrow, Flex, JustifyEnd)">
+            <div class="@TW(TextRight, FlexGrow, Flex, JustifyEnd, FontLight, TextXs)">
                 <TimeAgo Then="@project.LastAccessed"/>
             </div>
 
             <!-- Row: Project -->
-            <div
-                class="@TW(TextLeft,
-                           Hover(Underline),
-                           CursorPointer)"
-                @onclick="() => NavigateToProjectDashboard(project.ProjectId)">
-                <span
-                    class="@TW(Text(Colors.Active.Text.More),
-                               FontSemibold)">@project.Name.Value</span>
-                <br/>
-                <span title="@project.Path.Value">@(new FileInfo(project.Path.Value).Name)</span>
+            <div class="@TW(TextLeft, Flex, FlexCol)">
+                <div class="@TW(Flex,
+                                FlexRow,
+                                JustifyBetween)">
+                    <span @onclick="() => NavigateToProjectDashboard(project.ProjectId)"
+                          class="@TW(Text(Colors.Active.Text.More),
+                                     FlexGrow,
+                                     Hover(Underline),
+                                     CursorPointer,
+                                     FontSemibold)">@project.Name.Value</span>
+                    <Icon @onclick="() => HandleDelete(project.ProjectId)"
+                          Class="@TW(Hover(Text(Colors.Active.Text.Most)), CursorPointer)"
+                          IconDescriptor="@IconDescriptor.Trash"/>
+                </div>
+                <span title="@project.Path.Value" class="@TW(FontLight, TextXs)">
+                    @(new FileInfo(project.Path.Value).Name)
+                </span>
             </div>
         }
     </div>
@@ -82,11 +90,14 @@
 
     private async Task LoadProjects()
     {
+        Response = null;
+
         var request = new ListProjectSummariesOperation.Request(SearchPrompt, Pagination);
         var result = await ListProjectSummariesOperation.ExecuteAsync(request);
         if (result.TryPickValue(out var response, out var problems))
         {
             Response = response;
+            StateHasChanged();
         }
         else
         {
@@ -95,8 +106,6 @@
                 LoggingService.Show(problem);
             }
         }
-
-        StateHasChanged();
     }
 
     private bool HasPreviousPage => Page > 0;
@@ -126,6 +135,21 @@
     {
         SearchPrompt = s;
         Page = 0;
+        await LoadProjects();
+    }
+
+    private async Task HandleDelete(Id<Project> projectProjectId)
+    {
+        DeleteProjectOperation.Request request = new(projectProjectId);
+        var result = await DeleteProjectOperation.ExecuteAsync(request);
+        if (result.TryPickProblems(out var problems))
+        {
+            foreach (var problem in problems)
+            {
+                LoggingService.Show(problem);
+            }
+        }
+
         await LoadProjects();
     }
 

@@ -136,4 +136,32 @@ public static class ProjectFileHelper
 
         return Result.Success();
     }
+
+    public static Result Delete(Project project)
+    {
+        var projectFilePath = PathHelper.GetProjectPath(project);
+        try
+        {
+            File.Delete(projectFilePath);
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to delete project file: {0}", projectFilePath);
+            return Result.Failure(problem);
+        }
+
+        var tileSheetExtension = Path.GetExtension(project.TileSheetImage.Name);
+        var imageFilePath = PathHelper.GetTileSheetPath(project.Id, tileSheetExtension);
+        try
+        {
+            File.Delete(imageFilePath);
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to delete tile sheet image file: {0}", imageFilePath);
+            return Result.Failure(problem);
+        }
+
+        return Result.Success();
+    }
 }

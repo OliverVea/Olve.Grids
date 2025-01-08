@@ -7,7 +7,6 @@ namespace Olve.Grids.Serialization.Models;
 [MemoryPackable]
 public partial class SerializableTileAtlas
 {
-    public string FilePath { get; set; } = string.Empty;
     public SerializableGridConfiguration Grid { get; set; } = new();
     public SerializableAdjacencyLookup AdjacencyLookup { get; set; } = new();
     public SerializableBrushLookup BrushLookup { get; set; } = new();
@@ -18,7 +17,6 @@ public partial class SerializableTileAtlas
     public static SerializableTileAtlas FromTileAtlas(TileAtlas tileAtlas) =>
         new()
         {
-            FilePath = tileAtlas.FilePath,
             Grid = SerializableGridConfiguration.FromGridConfiguration(tileAtlas.Grid),
             AdjacencyLookup = SerializableAdjacencyLookup.FromAdjacencyLookup(tileAtlas.AdjacencyLookup),
             BrushLookup = SerializableBrushLookup.FromBrushLookup(tileAtlas.BrushLookup),
@@ -27,8 +25,7 @@ public partial class SerializableTileAtlas
         };
 
     public static TileAtlas ToTileAtlas(SerializableTileAtlas serializableTileAtlas) =>
-        new(serializableTileAtlas.FilePath,
-            SerializableGridConfiguration.ToGridConfiguration(serializableTileAtlas.Grid),
+        new(SerializableGridConfiguration.ToGridConfiguration(serializableTileAtlas.Grid),
             SerializableBrushLookup.ToFrozenBrushLookup(serializableTileAtlas.BrushLookup),
             SerializableAdjacencyLookup.ToFrozenAdjacencyLookup(serializableTileAtlas.AdjacencyLookup),
             SerializableWeightLookup.ToFrozenWeightLookup(serializableTileAtlas.WeightLookup))

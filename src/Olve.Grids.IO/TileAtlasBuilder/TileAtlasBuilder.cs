@@ -19,11 +19,6 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
     public ValidationResult ValidationResult =>
         _validationResult ??= _validator.Validate(Configuration);
 
-    public TileAtlasBuilder WithFilePath(string filePath)
-    {
-        return Modify(config => config.FilePath = filePath);
-    }
-
     public TileAtlasBuilder WithTileSize(Size tileSize)
     {
         return Modify(config => config.TileSize = tileSize);
@@ -37,6 +32,11 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
     public TileAtlasBuilder WithRows(int rows)
     {
         return Modify(config => config.Rows = rows);
+    }
+
+    public TileAtlasBuilder WithImageSize(Size imageSize)
+    {
+        return Modify(config => config.ImageSize = imageSize);
     }
 
     public TileAtlasBuilder WithFallbackTileIndex(TileIndex fallbackTileIndex)
@@ -89,15 +89,12 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
             throw new InvalidOperationException("Cannot build a tile atlas with invalid configuration.");
         }
 
-        var filePath = Configuration.FilePath ?? throw new InvalidOperationException("File path must be set.");
-
-        var imageSize = ImageSizeHelper.GetImageSize(filePath);
         var tileSize = Configuration.TileSize ?? throw new InvalidOperationException("Tile size must be set.");
 
         var gridConfiguration = new GridConfiguration(
             tileSize,
-            Configuration.Rows ?? imageSize.Height / tileSize.Height,
-            Configuration.Columns ?? imageSize.Width / tileSize.Width
+            Configuration.Rows ?? Configuration.ImageSize!.Value.Height / tileSize.Height,
+            Configuration.Columns ?? Configuration.ImageSize!.Value.Width / tileSize.Width
         );
 
         ThrowIfNull(Configuration.BrushLookup, "Brush lookup builder must be set.");
@@ -110,7 +107,6 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
         var frozenWeightLookup = new FrozenWeightLookup(weightLookup.Weights, weightLookup.DefaultWeight);
 
         return new TileAtlas(
-            filePath,
             gridConfiguration,
             frozenBrushLookup,
             frozenAdjacencyLookup,
