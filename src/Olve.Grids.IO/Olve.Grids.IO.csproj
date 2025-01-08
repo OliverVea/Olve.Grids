@@ -20,6 +20,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../Olve.Grids/Olve.Grids.csproj"/>
+        <ProjectReference Include="../Olve.Grids.Serialization/Olve.Grids.Serialization.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -28,6 +29,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator"/>
         <PackageReference Include="YamlDotNet"/>
+        <PackageReference Include="MemoryPack"/>
     </ItemGroup>
 
 </Project>

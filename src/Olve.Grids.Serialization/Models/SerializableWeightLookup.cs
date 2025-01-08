@@ -17,7 +17,9 @@ public partial class SerializableWeightLookup
             Weights = weightLookup.Weights,
         };
 
-    public static FrozenWeightLookup ToWeightLookup(SerializableWeightLookup serializableWeightLookup) =>
+    public static FrozenWeightLookup ToFrozenWeightLookup(SerializableWeightLookup serializableWeightLookup) =>
         new(serializableWeightLookup.Weights, serializableWeightLookup.DefaultWeight);
 
+    public static WeightLookup ToWeightLookup(SerializableWeightLookup serializableWeightLookup) =>
+        new(serializableWeightLookup.Weights, serializableWeightLookup.DefaultWeight);
 }

@@ -14,4 +14,6 @@ public class IconDescriptor
     public static readonly IconDescriptor ChevronRight = new("fa fa-chevron-right");
     public static readonly IconDescriptor HorizontalRule = new("fa fa-horizontal-rule");
     public static readonly IconDescriptor VerticalRule = new("fa fa-vertical-rule");
+    public static readonly IconDescriptor Plus = new("fa fa-plus");
+    public static readonly IconDescriptor Minus = new("fa fa-minus");
 }

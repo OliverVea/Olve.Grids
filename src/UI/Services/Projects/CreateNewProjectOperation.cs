@@ -1,4 +1,5 @@
-﻿using Olve.Utilities.Operations;
+﻿using Olve.Grids.IO.TileAtlasBuilder;
+using Olve.Utilities.Operations;
 using UI.Services.Projects.Repositories;
 
 namespace UI.Services.Projects;
@@ -10,7 +11,7 @@ public class CreateNewProjectOperation(
         CreateNewProjectOperation.Request,
         Result<CreateNewProjectOperation.Response>>
 {
-    public record Request(string Name);
+    public record Request(string Name, FileContent TileSheetImage, Size TileSize);
 
     public record Response(ProjectSummary ProjectSummary);
 
@@ -21,7 +22,10 @@ public class CreateNewProjectOperation(
         var createdAt = DateTimeOffset.Now;
         var lastAccessedAt = createdAt;
 
-        var project = new Project(id, projectName, createdAt, lastAccessedAt);
+        var tileAtlasBuilder = new TileAtlasBuilder()
+            .WithTileSize(request.TileSize);
+
+        var project = new Project(id, projectName, createdAt, lastAccessedAt, request.TileSheetImage, tileAtlasBuilder);
 
         var createResult = await projectSettingRepository.SetProjectAsync(project, ct);
         if (createResult.TryPickProblems(out var problems))

@@ -1,27 +1,44 @@
-﻿namespace UI;
+﻿using Wacton.Unicolour;
+
+namespace UI;
 
 public static class Colors
 {
     public static readonly ColorString Transparent = new("transparent");
 
+    // https://m2.material.io/design/color/dark-theme.html#properties
+    private static readonly ColorString Background = new("#181818");
+    private static readonly ColorString White = new("#ffffff");
+    private static readonly ColorString BrandColor = new("#624E88");
+    private static readonly ColorString BrandedBackground = Overlay(BrandColor, Background, 0.08f);
+
     private static readonly ColorScheme Dark = new()
     {
         Text = new ColorSchemeText
         {
-            Less = new ColorString("#585B59"),
-            Ordinary = new ColorString("#6e7270"),
-            More = new ColorString("#cccccc"),
-            Most = new ColorString("#ffffff"),
+            Less = Overlay(White, BrandedBackground, 0.38f),
+            Ordinary = Overlay(White, BrandedBackground, 0.60f),
+            More = Overlay(White, BrandedBackground, 0.87f),
+            Most = Overlay(White, BrandedBackground, 1f),
         },
         Panels = new ColorSchemePanels
         {
-            Ordinary = new ColorString("#1e1f22"),
-            More = new ColorString("#2b2d30"),
-            Most = new ColorString("#3c3f41"),
+            Ordinary = BrandedBackground,
+            More = Overlay(White, BrandedBackground, 0.05f),
+            Most = Overlay(White, BrandedBackground, 0.07f),
         },
     };
 
     public static ColorScheme Active = Dark;
+
+    private static ColorString Overlay(ColorString foreground, ColorString background, float alpha)
+    {
+        Unicolour foregroundColor = (Unicolour)foreground, backgroundColor = (Unicolour)background;
+
+        var overlay = backgroundColor.Mix(foregroundColor, ColourSpace.Rgb, alpha);
+
+        return (ColorString)overlay;
+    }
 }
 
 public class ColorScheme
@@ -47,5 +64,8 @@ public class ColorSchemeText
 
 public readonly record struct ColorString(string Value)
 {
-    public static readonly ColorString NotSet = new("pink");
+    public static readonly ColorString NotSet = new("#FFC0CB");
+
+    public static explicit operator Unicolour(ColorString colorString) => new(colorString.Value);
+    public static explicit operator ColorString(Unicolour unicolour) => new(unicolour.Hex);
 }

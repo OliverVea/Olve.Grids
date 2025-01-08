@@ -1,20 +1,22 @@
-﻿<div class="@TW(Flex,
-                FlexRow,
-                ItemsCenter,
-                JustifyCenter,
-                Gap("2"),
-                Text(Colors.Active.Text.Ordinary))">
-    
+﻿<div class="@TW(Flex, FlexRow, ItemsCenter, JustifyCenter, Text(Colors.Active.Text.Ordinary))">
+
     <IntegerInputField
         Placeholder="Tile width"
         Value="Size.Width"
+        Immediate="true"
         Min="1"
+        FitContent="true"
+        AlignRight="true"
         IconDescriptor="IconDescriptor.HorizontalRule"
         ValueChanged="OnWidthChanged"/>
+
+    <span>x</span>
 
     <IntegerInputField
         Placeholder="Tile height"
         Value="Size.Height"
+        Immediate="true"
+        FitContent="true"
         Min="1"
         IconDescriptor="IconDescriptor.VerticalRule"
         ValueChanged="OnHeightChanged"/>

@@ -1,70 +1,131 @@
 ﻿@page "/create-project"
-@using Olve.Grids.IO.TileAtlasBuilder
+@inject NavigationManager NavigationManager
+@inject LoggingService LoggingService
+@inject CreateNewProjectOperation CreateNewProjectOperation
 
-<div
-    class="@TW(Flex,
-               FlexCol,
-               ItemsCenter,
-               JustifyCenter,
-               MaxW("440px"),
-               Gap("6"),
-               Text(Colors.Active.Text.Most))">
-
+<div class="@TW(Flex, FlexRow, Gap(2), ItemsCenter, JustifyCenter, MinHScreen, MinWScreen)">
     <div
-        class="@TW(Grid,
-                   GridCols("[25%,75%"),
-                   GapX("2"),
-                   GapY("4"),
-                   ItemsStart,
-                   BreakWords,
-                   Text(Colors.Active.Text.Ordinary))">
-        @foreach (var (left, right) in
-                      new (RenderFragment, RenderFragment)[]
-                      {
-                          (@<span>Project Name</span>,
-                              @<TextInputField @bind-Value="ProjectName" Placeholder="Project name"/>),
-                          (@<span>Tile Size</span>,
-                              @<SizeInputFields Size="TileAtlasBuilder.Configuration.TileSize ?? DefaultTileSize"
-                                                OnSizeChanged="OnTileSizeChanged"/>),
-                      })
-        {
-            <div class="@TW(Flex,
-                            FlexGrow,
-                            JustifyEnd,
-                            ItemsCenter)">
-                @left
-            </div>
-            <div
-                class="@TW(Flex,
-                           FlexGrow,
-                           JustifyStart,
-                           ItemsCenter) flex-grow justify-start items-center">
-                @right
-            </div>
-        }
+        class="@TW(Flex, FlexCol, ItemsCenter, JustifyCenter, MinHScreen, MinW("320px"))">
+        <div class="@TW(Grid,
+                        GridCols("auto,auto"),
+                        GapX(2),
+                        GapY(4),
+                        ItemsStart,
+                        BreakWords,
+                        Text(Colors.Active.Text.Ordinary))">
+            @foreach (var (left, right) in
+                          new (RenderFragment, RenderFragment)[]
+                          {
+                              (@<span>Project Name:</span>,
+                                  @<TextInputField @bind-Value="ProjectName" Placeholder="Project name"/>),
+                              (@<span>Tile Size:</span>,
+                                  @<SizeInputFields
+                                      Size="TileSize"
+                                      OnSizeChanged="OnTileSizeChanged"/>),
+                              (@<span>Tile Sheet:</span>,
+                                  @<FileInputField OnFileChanged="OnTileSheetFileChanged" Accept="image/png"/>),
+                          })
+            {
+                <div class="@TW(Flex,
+                                FlexGrow,
+                                JustifyEnd,
+                                ItemsCenter,
+                                Text(Colors.Active.Text.Most))">
+                    @left
+                </div>
+                <div
+                    class="@TW(Flex,
+                               FlexGrow,
+                               JustifyStart,
+                               ItemsCenter)">
+                    @right
+                </div>
+            }
+        </div>
+
+        <HorizontalDivider/>
+
+        <div class="@TW(Flex, FlexRow, ItemsCenter, JustifyCenter, Gap(2), Text(Colors.Active.Text.Ordinary))">
+            <Button OnClick="HandleBack">
+                Back
+            </Button>
+
+            <Button OnClick="HandleCreate">
+                Create
+            </Button>
+        </div>
     </div>
 
-    <Button>
-        Create project
-    </Button>
+    <VerticalDivider/>
+
+    <div class="@TW(Relative, W("30vw"), H("80vh"))">
+        @if (TileSheetFile.HasValue)
+        {
+            <ImageWithGrid TileSize="@(TileSize)"
+                           TileSheetFile="@TileSheetFile.Value"/>
+        }
+    </div>
 </div>
 
+
 @code {
-    private const int DefaultGridSize = 8;
-    private static readonly Size DefaultTileSize = new(DefaultGridSize, DefaultGridSize);
+
+    private const int DefaultTileLength = 32;
+    private static readonly Size DefaultTileSize = new(DefaultTileLength, DefaultTileLength);
 
     private string ProjectName { get; set; } = string.Empty;
+    private FileContent? TileSheetFile { get; set; }
 
-    private TileAtlasBuilder TileAtlasBuilder { get; } = new();
-
-    protected override void OnInitialized()
-    {
-        TileAtlasBuilder.WithTileSize(DefaultTileSize);
-    }
+    private Size TileSize { get; set; } = DefaultTileSize;
 
     private void OnTileSizeChanged(Size newSize)
     {
-        TileAtlasBuilder.WithTileSize(newSize);
+        TileSize = newSize;
+    }
+
+    private void HandleBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void OnTileSheetFileChanged(FileContent tileSheetFile)
+    {
+        TileSheetFile = tileSheetFile;
+    }
+
+    private async Task HandleCreate()
+    {
+        var result = await CreateProjectAsync();
+        if (result.TryPickProblems(out var problems, out var projectId))
+        {
+            LoggingService.Show(problems);
+            return;
+        }
+
+        NavigationManager.NavigateTo($"project/{projectId}");
+    }
+
+    private async Task<Result<Id<Project>>> CreateProjectAsync()
+    {
+        if (string.IsNullOrWhiteSpace(ProjectName))
+        {
+            return Result<Id<Project>>.Failure(new ResultProblem("Project name is required."));
+        }
+
+        if (!TileSheetFile.HasValue)
+        {
+            return Result<Id<Project>>.Failure(new ResultProblem("Tile sheet is required."));
+        }
+
+        CreateNewProjectOperation.Request request = new(ProjectName, TileSheetFile.Value, TileSize);
+
+        var result = await CreateNewProjectOperation.ExecuteAsync(request);
+        if (result.TryPickProblems(out var problems, out var newProjectResponse))
+        {
+            return Result<Id<Project>>.Failure(problems);
+        }
+
+        return newProjectResponse.ProjectSummary.ProjectId;
     }
 
 }

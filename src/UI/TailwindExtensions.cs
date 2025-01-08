@@ -7,6 +7,17 @@ public static class TailwindExtensions
     public static readonly TailwindClass FlexRow = new("flex-row");
     public static readonly TailwindClass FlexCol = new("flex-col");
 
+    public static readonly TailwindClass Hidden = new("hidden");
+
+    public static readonly TailwindClass Absolute = new("absolute");
+    public static readonly TailwindClass Relative = new("relative");
+    public static readonly TailwindClass Fixed = new("fixed");
+
+    public static readonly TailwindClass OverflowHidden = new("overflow-hidden");
+    public static readonly TailwindClass OverflowAuto = new("overflow-auto");
+
+    public static readonly TailwindClass border = new("border");
+
     public static readonly TailwindClass Grid = new("grid");
 
     public static readonly TailwindClass ItemsCenter = new("items-center");
@@ -24,12 +35,14 @@ public static class TailwindExtensions
 
     public static readonly TailwindClass TextNoWrap = new("text-no-wrap");
     public static readonly TailwindClass TextLeft = new("text-left");
+    public static readonly TailwindClass TextRight = new("text-right");
 
     public static readonly TailwindClass Underline = new("underline");
 
     public static readonly TailwindClass Transition = new("transition");
 
     public static readonly TailwindClass MinHScreen = new("min-h-screen");
+    public static readonly TailwindClass MinWScreen = new("min-w-screen");
 
     public static readonly TailwindClass FontThin = new("font-thin");
     public static readonly TailwindClass FontLight = new("font-light");
@@ -45,21 +58,48 @@ public static class TailwindExtensions
 
     public static readonly TailwindClass CursorPointer = new("cursor-pointer");
 
-    public static TailwindClass GridCols(string value) => new($"grid-cols-{value}");
+    public static TailwindClass GridCols(string value) => new($"grid-cols-[{value}]");
+
+    public static TailwindClass Top(int value) => new($"top-{value}");
+    public static TailwindClass Left(int value) => new($"left-{value}");
+    public static TailwindClass Right(int value) => new($"right-{value}");
+    public static TailwindClass Bottom(int value) => new($"bottom-{value}");
+
+    public static TailwindClass Z(int value) => new($"z-{value}");
+    public static TailwindClass H(int value) => new($"h-{value}");
+    public static TailwindClass H(string value) => new($"h-[{value}]");
+    public static TailwindClass W(int value) => new($"w-{value}");
+    public static TailwindClass W(string value) => new($"w-[{value}]");
+
 
     public static TailwindClass Text(ColorString color) => new($"text-[{color.Value}]");
     public static TailwindClass Bg(ColorString color) => new($"bg-[{color.Value}]");
     public static TailwindClass Border(ColorString color) => new($"border-[{color.Value}]");
-    public static TailwindClass BorderY(string value) => new($"border-y-{value}");
+    public static TailwindClass BorderY(int value) => new($"border-y-{value}");
 
-    public static TailwindClass MaxW(string value) => new($"max-w-{value}");
-    public static TailwindClass Gap(string value) => new($"gap-{value}");
-    public static TailwindClass GapX(string value) => new($"gap-x-{value}");
-    public static TailwindClass GapY(string value) => new($"gap-y-{value}");
+    public static TailwindClass MaxW(string value) => new($"max-w-[{value}]");
+    public static TailwindClass MaxH(string value) => new($"max-h-[{value}]");
+    public static TailwindClass MinW(string value) => new($"min-w-[{value}]");
+    public static TailwindClass MinH(string value) => new($"min-h-[{value}]");
+    public static TailwindClass Gap(int value) => new($"gap-{value}");
+    public static TailwindClass GapX(int value) => new($"gap-x-{value}");
+    public static TailwindClass GapY(int value) => new($"gap-y-{value}");
 
-    public static TailwindClass P(string value) => new($"p-{value}");
-    public static TailwindClass Px(string value) => new($"px-{value}");
-    public static TailwindClass Py(string value) => new($"py-{value}");
+    public static TailwindClass P(int value) => new($"p-{value}");
+    public static TailwindClass Px(int value) => new($"px-{value}");
+    public static TailwindClass Py(int value) => new($"py-{value}");
+    public static TailwindClass Pl(int value) => new($"pl-{value}");
+    public static TailwindClass Pr(int value) => new($"pr-{value}");
+
+    public static TailwindClass M(int value) => new($"m-{value}");
+    public static TailwindClass Mx(int value) => new($"mx-{value}");
+    public static TailwindClass My(int value) => new($"my-{value}");
+    public static TailwindClass Ml(int value) => new($"ml-{value}");
+    public static TailwindClass Mr(int value) => new($"mr-{value}");
+    public static TailwindClass Mt(int value) => new($"mt-{value}");
+    public static TailwindClass Mb(int value) => new($"mb-{value}");
+
+    public static TailwindClass PointerEvents(string value) => new($"pointer-events-{value}");
 
     public static TailwindClass Duration(string value) => new($"duration-{value}");
 
@@ -71,6 +111,9 @@ public static class TailwindExtensions
 
     public static TailwindClass Placeholder(params IEnumerable<TailwindClass> tailwindClasses) =>
         new(string.Join(" ", tailwindClasses.Select(x => "placeholder:" + x.Value)));
+
+    public static TailwindClass File(params IEnumerable<TailwindClass> tailwindClasses) =>
+        new(string.Join(" ", tailwindClasses.Select(x => "file:" + x.Value)));
 
     public readonly record struct TailwindClass(string Value);
 

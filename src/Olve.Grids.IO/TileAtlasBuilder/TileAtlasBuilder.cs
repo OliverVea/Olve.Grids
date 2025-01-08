@@ -8,13 +8,13 @@ using Olve.Grids.Weights;
 
 namespace Olve.Grids.IO.TileAtlasBuilder;
 
-public class TileAtlasBuilder
+public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
 {
     private readonly TileAtlasConfigurationValidator _validator = new();
 
     private ValidationResult? _validationResult;
 
-    public TileAtlasConfiguration Configuration { get; } = new();
+    public TileAtlasConfiguration Configuration { get; } = configuration ?? new TileAtlasConfiguration();
 
     public ValidationResult ValidationResult =>
         _validationResult ??= _validator.Validate(Configuration);

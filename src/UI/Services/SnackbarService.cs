@@ -16,6 +16,7 @@ public class LoggingService
     {
         var logLevel = LogSeverities.ToAvaloniaLogEventLevel(problem.Severity);
 
+        Console.WriteLine(problem.Message, problem.Args);
         Logger.Sink?.Log(logLevel, string.Empty, problem.Source, problem.Message, problem.Args);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using MemoryPack;
 
 namespace UI.Services.Projects.FileSystem;
 
@@ -12,10 +12,10 @@ public static class ProjectFileHelper
             return Result<Project>.Failure(problem);
         }
 
-        string json;
+        byte[] projectBytes;
         try
         {
-            json = File.ReadAllText(projectFile);
+            projectBytes = File.ReadAllBytes(projectFile);
         }
         // TODO: Handle specific exceptions
         catch (Exception ex)
@@ -24,11 +24,11 @@ public static class ProjectFileHelper
             return Result<Project>.Failure(problem);
         }
 
-        Project? project;
+        SerializableProject? serializableProject;
 
         try
         {
-            project = JsonSerializer.Deserialize<Project>(json, FileBasedJsonContext.Default.Project);
+            serializableProject = MemoryPackSerializer.Deserialize<SerializableProject>(projectBytes);
         }
         // TODO: Handle specific exceptions
         catch (Exception ex)
@@ -37,11 +37,39 @@ public static class ProjectFileHelper
             return Result<Project>.Failure(problem);
         }
 
-        if (project is null)
+        if (serializableProject is null)
         {
             var problem = new ResultProblem("Failed to deserialize project file: {0}", projectFile);
             return Result<Project>.Failure(problem);
         }
+
+        var projectId = Id<Project>.Parse(serializableProject.Id);
+        var tileSheetImageExtension = Path.GetExtension(serializableProject.TileSheetImage.Name);
+        byte[] tileSheetBytes;
+        try
+        {
+            tileSheetBytes = File.ReadAllBytes(PathHelper.GetTileSheetPath(projectId, tileSheetImageExtension));
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to read tile sheet image file: {0}", projectFile);
+            return Result<Project>.Failure(problem);
+        }
+
+        Project project;
+
+        try
+        {
+            project = serializableProject.ToProject(tileSheetBytes);
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex,
+                "Failed to convert serializable project to project: {0}",
+                serializableProject);
+            return Result<Project>.Failure(problem);
+        }
+
 
         return Result<Project>.Success(project);
     }
@@ -55,12 +83,26 @@ public static class ProjectFileHelper
             return directoryResult;
         }
 
-        var projectFilePath = PathHelper.GetProjectPath(project);
-        string projectJson;
+        SerializableProject serializableProject;
+        byte[] tileSheetBytes;
 
         try
         {
-            projectJson = JsonSerializer.Serialize(project, FileBasedJsonContext.Default.Project);
+            var result = SerializableProject.FromProject(project);
+            serializableProject = result.Project;
+            tileSheetBytes = result.ImageBytes;
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to convert project to serializable project: {0}", project);
+            return Result.Failure(problem);
+        }
+
+        byte[] projectBytes;
+
+        try
+        {
+            projectBytes = MemoryPackSerializer.Serialize(serializableProject);
         }
         catch (Exception ex)
         {
@@ -68,14 +110,27 @@ public static class ProjectFileHelper
             return Result.Failure(problem);
         }
 
+        var projectFilePath = PathHelper.GetProjectPath(project);
         try
         {
-            File.WriteAllText(projectFilePath, projectJson);
+            File.WriteAllBytes(projectFilePath, projectBytes);
         }
         // TODO: Handle specific exceptions
         catch (Exception ex)
         {
             var problem = new ResultProblem(ex, "Failed to write project file: {0}", projectFilePath);
+            return Result.Failure(problem);
+        }
+
+        var tileSheetExtension = Path.GetExtension(project.TileSheetImage.Name);
+        var imageFilePath = PathHelper.GetTileSheetPath(project.Id, tileSheetExtension);
+        try
+        {
+            File.WriteAllBytes(imageFilePath, tileSheetBytes);
+        }
+        catch (Exception ex)
+        {
+            var problem = new ResultProblem(ex, "Failed to write tile sheet image file: {0}", imageFilePath);
             return Result.Failure(problem);
         }
 

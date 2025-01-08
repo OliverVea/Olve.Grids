@@ -29,9 +29,9 @@ public partial class SerializableTileAtlas
     public static TileAtlas ToTileAtlas(SerializableTileAtlas serializableTileAtlas) =>
         new(serializableTileAtlas.FilePath,
             SerializableGridConfiguration.ToGridConfiguration(serializableTileAtlas.Grid),
-            SerializableBrushLookup.ToBrushLookup(serializableTileAtlas.BrushLookup),
-            SerializableAdjacencyLookup.ToAdjacencyLookup(serializableTileAtlas.AdjacencyLookup),
-            SerializableWeightLookup.ToWeightLookup(serializableTileAtlas.WeightLookup))
+            SerializableBrushLookup.ToFrozenBrushLookup(serializableTileAtlas.BrushLookup),
+            SerializableAdjacencyLookup.ToFrozenAdjacencyLookup(serializableTileAtlas.AdjacencyLookup),
+            SerializableWeightLookup.ToFrozenWeightLookup(serializableTileAtlas.WeightLookup))
         {
             FallbackTile = new TileIndex(serializableTileAtlas.FallbackTile),
         };

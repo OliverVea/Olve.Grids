@@ -16,26 +16,39 @@ public static class ImageSizeHelper
         }
     }
 
+    private const int ImageHeaderStart = 16;
+
     public static Size GetImageSize(string fileName)
     {
         var br = new BinaryReader(File.OpenRead(fileName));
 
-        br.BaseStream.Position = 16;
-        var widthBytes = new byte[sizeof(int)];
-        for (var i = 0; i < sizeof(int); i++)
+        br.BaseStream.Position = ImageHeaderStart;
+        Span<byte> span = stackalloc byte[sizeof(int) * 2];
+
+        for (var i = 0; i < sizeof(int) * 2; i++)
         {
-            widthBytes[sizeof(int) - 1 - i] = br.ReadByte();
+            span[sizeof(int) * 2 - 1 - i] = br.ReadByte();
         }
 
-        var width = BitConverter.ToInt32(widthBytes, 0);
+        return GetSizeFromSpan(span);
+    }
 
-        var heightBytes = new byte[sizeof(int)];
-        for (var i = 0; i < sizeof(int); i++)
+    public static Size GetImageSize(byte[] data)
+    {
+        Span<byte> span = stackalloc byte[sizeof(int) * 2];
+
+        for (var i = 0; i < sizeof(int) * 2; i++)
         {
-            heightBytes[sizeof(int) - 1 - i] = br.ReadByte();
+            span[sizeof(int) * 2 - 1 - i] = data[i + ImageHeaderStart];
         }
 
-        var height = BitConverter.ToInt32(heightBytes, 0);
+        return GetSizeFromSpan(span);
+    }
+
+    private static Size GetSizeFromSpan(ReadOnlySpan<byte> span)
+    {
+        var height = BitConverter.ToInt32(span[..sizeof(int)]);
+        var width = BitConverter.ToInt32(span.Slice(sizeof(int), sizeof(int)));
 
         return new Size(width, height);
     }

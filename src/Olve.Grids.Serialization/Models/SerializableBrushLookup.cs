@@ -21,12 +21,17 @@ public partial class SerializableBrushLookup
                     x.Brush.DisplayName))),
         };
 
+    private IEnumerable<(TileIndex, Corner, BrushId)> Items => Entries.Select(x =>
+    (
+        new TileIndex(x.TileIndex),
+        (Corner)x.Corner,
+        new BrushId(new Id(x.Brush.Id), x.Brush.DisplayName)
+    ));
 
-    public static FrozenBrushLookup ToBrushLookup(SerializableBrushLookup serializableBrushLookup) =>
-        new(serializableBrushLookup.Entries.Select(x =>
-        (
-            new TileIndex(x.TileIndex),
-            (Corner)x.Corner,
-            new BrushId(new Id(x.Brush.Id), x.Brush.DisplayName)
-        )));
+
+    public static FrozenBrushLookup ToFrozenBrushLookup(SerializableBrushLookup serializableBrushLookup) =>
+        new(serializableBrushLookup.Items);
+
+    public static BrushLookup ToBrushLookup(SerializableBrushLookup serializableBrushLookup) =>
+        new(serializableBrushLookup.Items);
 }
