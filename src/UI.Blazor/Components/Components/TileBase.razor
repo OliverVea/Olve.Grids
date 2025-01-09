@@ -1,0 +1,32 @@
+﻿@using Olve.Grids.Grids
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats.Png
+@using UI.Core
+
+<div class="transparency-background @Classes">
+    <img src="@Image.ToBase64String(PngFormat.Instance)" alt="Tile" class="@TW(WFull, HFull)"/>
+
+    @if (TileIndex.HasValue)
+    {
+        <span class="@TW(Absolute, Bottom(0), Right(0), Text(TextColor), P(1), FontLight)">
+            @TileIndex.Value.Index
+        </span>
+    }
+
+    <div class="@TW(Absolute, Bottom(0), Right(0), Flex, FlexRow, Gap(2), P(2))">
+        @ChildContent
+    </div>
+
+</div>
+
+
+@code {
+    [Parameter] [EditorRequired] public Image Image { get; set; } = null!;
+    [Parameter] public TileIndex? TileIndex { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
+    [Parameter] public string Classes { get; set; } = string.Empty;
+    [Parameter] public ColorString TextColor { get; set; } = Colors.Active.Text.Ordinary;
+}
+
+
+

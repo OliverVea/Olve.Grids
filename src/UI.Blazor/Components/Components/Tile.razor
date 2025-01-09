@@ -1,0 +1,13 @@
+﻿@using UI.Core
+@if (TileInformation.Active)
+{
+    <ActiveTile TileInformation="@TileInformation"/>
+}
+else
+{
+    <InactiveTile TileInformation="@TileInformation"/>
+}
+
+@code {
+    [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
+}

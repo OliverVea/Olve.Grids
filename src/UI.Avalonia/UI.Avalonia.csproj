@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <AssemblyName>grids-ui</AssemblyName>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <TrimMode>copyused</TrimMode>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <IsAotCompatible>false</IsAotCompatible>
+        <IsTrimmable>false</IsTrimmable>
+        <PublishAot>false</PublishAot>
+        <PublishTrimmed>false</PublishTrimmed>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\UI.Blazor\UI.Blazor.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Lib\"/>
+        <AvaloniaResource Include="Assets\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia"/>
+        <PackageReference Include="Avalonia.Desktop"/>
+        <PackageReference Include="Avalonia.Themes.Fluent"/>
+        <PackageReference Include="Avalonia.Fonts.Inter"/>
+        <PackageReference Include="CommunityToolkit.Mvvm"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\app.css"/>
+        <_ContentIncludedByDefault Remove="wwwroot\favicon.png"/>
+        <_ContentIncludedByDefault Remove="wwwroot\index.html"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <UpToDateCheckInput Remove="Components\Components\ActiveTile.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\Button.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\Dot.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\FileInputField.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\HorizontalDivider.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\Icon.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\ImageWithGrid.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\InactiveTile.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\InputField.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\IntegerInputField.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\SearchBar.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\SizeInputFields.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\TextInputField.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\Tile.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\TileBase.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\TimeAgo.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\Title.razor"/>
+        <UpToDateCheckInput Remove="Components\Components\VerticalDivider.razor"/>
+        <UpToDateCheckInput Remove="Components\Layout\MainLayout.razor"/>
+        <UpToDateCheckInput Remove="Components\Pages\CreateProject.razor"/>
+        <UpToDateCheckInput Remove="Components\Pages\Home.razor"/>
+        <UpToDateCheckInput Remove="Components\Pages\ProjectDashboard.razor"/>
+        <UpToDateCheckInput Remove="Components\Routes.razor"/>
+        <UpToDateCheckInput Remove="Components\_Imports.razor"/>
+    </ItemGroup>
+</Project>

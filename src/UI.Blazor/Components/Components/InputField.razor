@@ -1,0 +1,61 @@
+﻿@using UI.Core
+@typeparam TValue
+
+<label class="@TW(FlexGrow, Flex, FlexRow, ItemsCenter, Gap(2))">
+    @if (IconDescriptor is { } iconDescriptor)
+    {
+        <Icon IconDescriptor="iconDescriptor"/>
+    }
+    <input
+        @ref="Input"
+        placeholder="@Placeholder"
+        class="@TW(Bg(Colors.Transparent),
+                   FlexGrow,
+                   Border(Colors.Transparent),
+                   Text(Colors.Active.Text.More),
+                   Focus(Text(Colors.Active.Text.Most), OutlineNone),
+                   AlignRight ? TextRight : TextLeft,
+                   Pr(2),
+                   M(0),
+                   Placeholder(Text(Colors.Active.Text.Ordinary)))"
+        style="@Style"
+        type="@InputType"
+        @onwheel="OnWheel"
+        @bind="Value"
+        @bind:event="@(Immediate ? "oninput" : "onchange")"
+        @bind:after="OnValueChanged"/>
+</label>
+
+@code {
+    private ElementReference Input { get; set; }
+
+    private string Width { get; set; } = "100%";
+
+    [Parameter] [EditorRequired] public required string InputType { get; set; }
+    [Parameter] [EditorRequired] public required TValue Value { get; set; }
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public bool Immediate { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public EventCallback<WheelChange> WheelChanged { get; set; }
+    [Parameter] public IconDescriptor? IconDescriptor { get; set; }
+    [Parameter] public bool AlignRight { get; set; }
+    [Parameter] public string Style { get; set; } = string.Empty;
+
+    private void OnValueChanged()
+    {
+        ValueChanged.InvokeAsync(Value);
+    }
+
+    private void OnWheel(WheelEventArgs args)
+    {
+        if (args.DeltaY > 0)
+        {
+            WheelChanged.InvokeAsync(new WheelChange(WheelDirection.Down));
+        }
+        else if (args.DeltaY < 0)
+        {
+            WheelChanged.InvokeAsync(new WheelChange(WheelDirection.Up));
+        }
+    }
+
+}

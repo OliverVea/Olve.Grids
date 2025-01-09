@@ -1,0 +1,75 @@
+﻿@using System.Globalization
+@using Olve.Grids.Grids
+@using UI.Core
+
+<div class="@TW(Relative, WFull, HFull, border)">
+    <div class="@TW(Relative, OverflowAuto, WFull, HFull)">
+        <div class="@TW(Relative, W, H)">
+            <img src="@TileSheetContent" alt="Tile Sheet" class="@TW(WFull, Absolute, Top(0), Left(0))"/>
+
+            <svg class="@TW(WFull, Absolute, Top(0), Left(0))"
+                 xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 @ScaledImageWidthString @ScaledImageHeightString">
+
+                @foreach (var gridLine in GridLines)
+                {
+                    <line x1="@ToString(gridLine.From.X)"
+                          y1="@ToString(gridLine.From.Y)"
+                          x2="@ToString(gridLine.To.X)"
+                          y2="@ToString(gridLine.To.Y)"
+                          stroke="#ffffff"
+                          stroke-width="0.5"/>
+                }
+            </svg>
+        </div>
+    </div>
+    <!-- Toolbar -->
+    <div class="@TW(Absolute, Top(0), Right(2), Flex, FlexRow, Gap(2), P(2))">
+        <Button OnClick="@ZoomIn">
+            <Icon IconDescriptor="@IconDescriptor.Plus"/>
+        </Button>
+        <Button OnClick="@ZoomOut">
+            <Icon IconDescriptor="@IconDescriptor.Minus"/>
+        </Button>
+        <Button OnClick="@ResetZoom">Reset</Button>
+    </div>
+</div>
+
+@code {
+    [Parameter] [EditorRequired] public Size TileSize { get; set; }
+    [Parameter] public FileContent TileSheetFile { get; set; }
+    [Parameter] public float InitialScale { get; set; } = 1f;
+
+    private float Scale { get; set; }
+
+    private string TileSheetContent => $"data:image/png;base64,{Convert.ToBase64String(TileSheetFile.Content)}";
+
+    private int ImageWidth => TileSheetFile.Size.Width;
+    private int ImageHeight => TileSheetFile.Size.Height;
+
+    private int Columns => ImageWidth / TileSize.Width;
+    private int Rows => ImageHeight / TileSize.Height;
+
+    private float ScaledImageWidth => ImageWidth * Scale;
+    private float ScaledImageHeight => ImageHeight * Scale;
+
+    private string ScaleString => ToString(Scale);
+    private string ScaledImageWidthString => ToString(ScaledImageWidth);
+    private string ScaledImageHeightString => ToString(ScaledImageHeight);
+
+    private TailwindClass W => W($"{ScaledImageWidthString}px");
+    private TailwindClass H => H($"{ScaledImageHeightString}px");
+
+    private string ToString(float d) => d.ToString(CultureInfo.InvariantCulture);
+
+    private IEnumerable<GridLine> GridLines => GridGeometryHelper.GetGridLines(TileSize, Rows, Columns, Scale);
+
+    private const float ZoomFactor = 1.5f;
+
+    private void ZoomOut() => Scale /= ZoomFactor;
+    private void ZoomIn() => Scale *= ZoomFactor;
+    private void ResetZoom() => Scale = InitialScale;
+
+    protected override void OnInitialized() => ResetZoom();
+
+}

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Olve.Grids.DeBroglie\Olve.Grids.DeBroglie.csproj"/>
+        <ProjectReference Include="..\..\src\Olve.Grids.IO\Olve.Grids.IO.csproj"/>
+        <ProjectReference Include="..\..\src\Olve.Grids.Serialization\Olve.Grids.Serialization.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
+        <PackageReference Include="OneOf.SourceGenerator"/>
+        <PackageReference Include="Wacton.Unicolour"/>
+    </ItemGroup>
+    
+</Project>

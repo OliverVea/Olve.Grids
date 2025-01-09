@@ -1,0 +1,13 @@
+﻿@using UI.Core
+<i @attributes="AdditionalAttributes" class="@AllClasses"></i>
+
+@code {
+    [Parameter] [EditorRequired] public required IconDescriptor IconDescriptor { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private string AllClasses => Class is null ? IconDescriptor.Class : $"{IconDescriptor.Class} {Class}";
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
+
+}
