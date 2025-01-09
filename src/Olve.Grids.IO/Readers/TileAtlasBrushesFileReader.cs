@@ -70,7 +70,13 @@ public class TileAtlasBrushesFileReader(string filePath)
 
                 builder.SetCornerBrushes(
                     tileIndex,
-                    new CornerBrushes(upperLeft, upperRight, lowerLeft, lowerRight)
+                    new CornerBrushes
+                    {
+                        UpperLeft = upperLeft,
+                        UpperRight = upperRight,
+                        LowerLeft = lowerLeft,
+                        LowerRight = lowerRight,
+                    }
                 );
 
                 tileIndex++;

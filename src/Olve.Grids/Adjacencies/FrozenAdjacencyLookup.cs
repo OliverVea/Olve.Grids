@@ -21,9 +21,10 @@ public class FrozenAdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Di
             .GetValueOrDefault(a, Empty)
             .GetValueOrDefault(b, Direction.None);
 
-    public IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex) =>
-        _adjacencies.GetValueOrDefault(tileIndex, Empty)
-            .Keys;
+    public IEnumerable<(TileIndex tileIndex, Direction direction)> GetNeighbors(TileIndex tileIndex) =>
+        _adjacencies
+            .GetValueOrDefault(tileIndex, Empty)
+            .Select(pair => (pair.Key, pair.Value));
 
     public IEnumerable<TileIndex> GetNeighborsInDirection(TileIndex tileIndex, Direction direction)
         => _adjacencies

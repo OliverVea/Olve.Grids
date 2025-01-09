@@ -11,6 +11,7 @@ namespace Olve.Grids.IO.TileAtlasBuilder;
 public partial class SerializableTileAtlasConfiguration
 {
     public Size? TileSize { get; init; }
+    public Size? ImageSize { get; init; }
     public int? Columns { get; init; }
     public int? Rows { get; init; }
     public TileIndex? FallbackTileIndex { get; init; }
@@ -24,6 +25,7 @@ public partial class SerializableTileAtlasConfiguration
         new()
         {
             TileSize = tileAtlasConfiguration.TileSize,
+            ImageSize = tileAtlasConfiguration.ImageSize,
             Columns = tileAtlasConfiguration.Columns,
             Rows = tileAtlasConfiguration.Rows,
             FallbackTileIndex = tileAtlasConfiguration.FallbackTileIndex,
@@ -39,6 +41,7 @@ public partial class SerializableTileAtlasConfiguration
         new()
         {
             TileSize = TileSize,
+            ImageSize = ImageSize,
             Columns = Columns,
             Rows = Rows,
             FallbackTileIndex = FallbackTileIndex,

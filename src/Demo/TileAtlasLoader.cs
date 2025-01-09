@@ -47,12 +47,12 @@ public class TileAtlasLoader
 
         tileAtlasBuilder = tileAtlasBuilder
             .WithImageSize(imageSize)
-            .WithBrushLookupBuilder(tileAtlasBrushes)
-            .WithAdjacencyLookupBuilder(adjacencyLookup);
+            .WithBrushLookup(tileAtlasBrushes)
+            .WithAdjacencyLookup(adjacencyLookup);
 
         if (weightLookup is { })
         {
-            tileAtlasBuilder = tileAtlasBuilder.WithWeightLookupBuilder(weightLookup);
+            tileAtlasBuilder = tileAtlasBuilder.WithWeightLookup(weightLookup);
         }
 
         return tileAtlasBuilder.Build();

@@ -14,7 +14,6 @@ public class TileAtlasAdjacencyBuilder
             var neighbors = tileAtlas
                 .AdjacencyLookup
                 .GetNeighbors(tileIndex)
-                .Select(x => (tileIndex: x, direction: tileAtlas.AdjacencyLookup.Get(tileIndex, x)))
                 .ToArray();
 
             if (neighbors.Length == 0)

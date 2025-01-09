@@ -22,9 +22,10 @@ public class AdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Directio
             .GetValueOrDefault(a, EmptyLookup)
             .GetValueOrDefault(b, Direction.None);
 
-    public IEnumerable<TileIndex> GetNeighbors(TileIndex tileIndex) =>
-        Lookup.GetValueOrDefault(tileIndex, EmptyLookup)
-            .Keys;
+    public IEnumerable<(TileIndex tileIndex, Direction direction)> GetNeighbors(TileIndex tileIndex) =>
+        Lookup
+            .GetValueOrDefault(tileIndex, EmptyLookup)
+            .Select(pair => (pair.Key, pair.Value));
 
     public IEnumerable<TileIndex> GetNeighborsInDirection(
         TileIndex tileIndex,

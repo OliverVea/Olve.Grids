@@ -7,6 +7,7 @@
         <PackageVersion Include="Olve.SG.CopyProperties" Version="0.0.14-20250106121408.6078069"/>
         <PackageVersion Include="Olve.Utilities" Version="0.0.14"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
+        <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.2.0"/>
         <!-- Olve.Grids.Generation -->
         <PackageVersion Include="DeBroglie" Version="2.0.0"/>
@@ -29,7 +30,7 @@
         <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.2.3"/>
         <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.2.3"/>
         <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="9.0.21"/>
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="9.0.22"/>
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0"/>
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
         <PackageVersion Include="MudBlazor" Version="8.0.0-preview.7"/>

@@ -12,6 +12,23 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
 
     public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct();
 
+    public OneOf<CornerBrushes, NotFound> GetBrushes(TileIndex tileIndex)
+    {
+        var cornerBrushes = new CornerBrushes();
+
+        foreach (var corner in Corners.All)
+        {
+            var brush = GetBrushId(tileIndex, corner);
+
+            if (brush.TryPickT0(out var actualBrushId, out _))
+            {
+                cornerBrushes[corner] = actualBrushId;
+            }
+        }
+
+        return cornerBrushes;
+    }
+
     public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner) =>
         _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
             ? brushId

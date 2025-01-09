@@ -23,7 +23,8 @@ public class CreateNewProjectOperation(
         var lastAccessedAt = createdAt;
 
         var tileAtlasBuilder = new TileAtlasBuilder()
-            .WithTileSize(request.TileSize);
+            .WithTileSize(request.TileSize)
+            .WithImageSize(request.TileSheetImage.Size);
 
         var project = new Project(id, projectName, createdAt, lastAccessedAt, request.TileSheetImage, tileAtlasBuilder);
 

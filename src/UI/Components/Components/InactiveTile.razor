@@ -1,0 +1,17 @@
+﻿@using Olve.Grids.Grids
+@using SixLabors.ImageSharp
+
+<Tile
+    Image="@Image"
+    TileIndex="@TileIndex"
+    TextColor="@Colors.Active.Text.Less"
+    Classes="@TW(Relative, WFull, ShadowXl, TransitionTransform, Transform, Hover(Z(10)), Opacity(50))"/>
+
+
+
+@code {
+    [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
+
+    private TileIndex TileIndex => TileInformation.TileIndex;
+    private Image Image => TileInformation.Image;
+}

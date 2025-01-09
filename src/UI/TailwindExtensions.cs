@@ -1,4 +1,6 @@
-﻿namespace UI;
+﻿using System.Globalization;
+
+namespace UI;
 
 public static class TailwindExtensions
 {
@@ -15,6 +17,12 @@ public static class TailwindExtensions
 
     public static readonly TailwindClass OverflowHidden = new("overflow-hidden");
     public static readonly TailwindClass OverflowAuto = new("overflow-auto");
+
+    public static readonly TailwindClass OverflowXAuto = new("overflow-x-auto");
+    public static readonly TailwindClass OverflowYAuto = new("overflow-y-auto");
+
+    public static readonly TailwindClass OverflowXHidden = new("overflow-x-hidden");
+    public static readonly TailwindClass OverflowYHidden = new("overflow-y-hidden");
 
     public static readonly TailwindClass border = new("border");
 
@@ -37,6 +45,13 @@ public static class TailwindExtensions
     public static readonly TailwindClass TextLeft = new("text-left");
     public static readonly TailwindClass TextRight = new("text-right");
     public static readonly TailwindClass TextCenter = new("text-center");
+
+
+    public static readonly TailwindClass Shadow = new("shadow");
+    public static readonly TailwindClass ShadowMd = new("shadow-md");
+    public static readonly TailwindClass ShadowLg = new("shadow-lg");
+    public static readonly TailwindClass ShadowXl = new("shadow-xl");
+
 
     public static readonly TailwindClass Underline = new("underline");
 
@@ -71,12 +86,26 @@ public static class TailwindExtensions
 
     public static readonly TailwindClass CursorPointer = new("cursor-pointer");
 
+    public static TailwindClass RoundedFull = new("rounded-full");
+
+    public static TailwindClass TransitionTransform = new("transition-transform");
+    public static TailwindClass Transform => new("transform");
+
+
     public static TailwindClass GridCols(string value) => new($"grid-cols-[{value}]");
+    public static TailwindClass GridCols(int value) => new($"grid-cols-{value}");
+
+    public static TailwindClass Opacity(int value) => new($"opacity-{value}");
+    public static TailwindClass Scale(int value) => new($"scale-{value}");
 
     public static TailwindClass Top(int value) => new($"top-{value}");
+    public static TailwindClass Top(string value) => new($"top-[{value}]");
     public static TailwindClass Left(int value) => new($"left-{value}");
+    public static TailwindClass Left(string value) => new($"left-[{value}]");
     public static TailwindClass Right(int value) => new($"right-{value}");
+    public static TailwindClass Right(string value) => new($"right-[{value}]");
     public static TailwindClass Bottom(int value) => new($"bottom-{value}");
+    public static TailwindClass Bottom(string value) => new($"bottom-[{value}]");
 
     public static TailwindClass Z(int value) => new($"z-{value}");
     public static TailwindClass H(int value) => new($"h-{value}");
@@ -84,8 +113,11 @@ public static class TailwindExtensions
     public static TailwindClass W(int value) => new($"w-{value}");
     public static TailwindClass W(string value) => new($"w-[{value}]");
 
+    public static Pixels px(int value) => new(value);
+    public static Percent pct(float value) => new(value);
 
     public static TailwindClass Text(ColorString color) => new($"text-[{color.Value}]");
+
     public static TailwindClass Bg(ColorString color) => new($"bg-[{color.Value}]");
     public static TailwindClass Border(ColorString color) => new($"border-[{color.Value}]");
     public static TailwindClass BorderY(int value) => new($"border-y-{value}");
@@ -128,11 +160,23 @@ public static class TailwindExtensions
     public static TailwindClass File(params IEnumerable<TailwindClass> tailwindClasses) =>
         new(string.Join(" ", tailwindClasses.Select(x => "file:" + x.Value)));
 
-    public readonly record struct TailwindClass(string Value);
 
     public static string TW(params IEnumerable<TailwindClass> tailwindClasses)
     {
         var s = string.Join(" ", tailwindClasses.Select(tc => tc.Value));
         return s;
     }
+
+    public readonly record struct Pixels(int Value)
+    {
+        public static implicit operator string(Pixels pixels) => $"{pixels.Value}px";
+    }
+
+    public readonly record struct Percent(float Value)
+    {
+        public static implicit operator string(Percent percent) =>
+            $"{percent.Value.ToString(CultureInfo.InvariantCulture)}%";
+    }
+
+    public readonly record struct TailwindClass(string Value);
 }

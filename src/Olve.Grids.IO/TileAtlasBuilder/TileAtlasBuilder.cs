@@ -44,7 +44,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
         return Modify(config => config.FallbackTileIndex = fallbackTileIndex);
     }
 
-    public TileAtlasBuilder WithAdjacencyLookupBuilder(
+    public TileAtlasBuilder WithAdjacencyLookup(
         IAdjacencyLookup adjacencyLookup
     )
     {
@@ -58,7 +58,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
         return Modify(config => configurationAction(config.AdjacencyLookup));
     }
 
-    public TileAtlasBuilder WithBrushLookupBuilder(IBrushLookup brushLookup)
+    public TileAtlasBuilder WithBrushLookup(IBrushLookup brushLookup)
     {
         return Modify(config => config.BrushLookup = brushLookup);
     }
@@ -70,7 +70,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
         return Modify(config => configurationAction(config.BrushLookup));
     }
 
-    public TileAtlasBuilder WithWeightLookupBuilder(IWeightLookup weightLookup)
+    public TileAtlasBuilder WithWeightLookup(IWeightLookup weightLookup)
     {
         return Modify(config => config.WeightLookup = weightLookup);
     }
