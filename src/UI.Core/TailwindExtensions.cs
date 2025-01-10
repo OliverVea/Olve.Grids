@@ -106,6 +106,7 @@ public static class TailwindExtensions
     public static TailwindClass Right(string value) => new($"right-[{value}]");
     public static TailwindClass Bottom(int value) => new($"bottom-{value}");
     public static TailwindClass Bottom(string value) => new($"bottom-[{value}]");
+    public static TailwindClass Inset(int value) => new($"inset-{value}");
 
     public static TailwindClass Z(int value) => new($"z-{value}");
     public static TailwindClass H(int value) => new($"h-{value}");
@@ -120,6 +121,9 @@ public static class TailwindExtensions
 
     public static TailwindClass Bg(ColorString color) => new($"bg-[{color.Value}]");
     public static TailwindClass Border(ColorString color) => new($"border-[{color.Value}]");
+    public static TailwindClass Border(int value) => new($"border-{value}");
+
+    public static TailwindClass BorderOpacity(int value) => new($"border-opacity-{value}");
     public static TailwindClass BorderY(int value) => new($"border-y-{value}");
 
     public static TailwindClass MaxW(string value) => new($"max-w-[{value}]");
@@ -131,10 +135,13 @@ public static class TailwindExtensions
     public static TailwindClass GapY(int value) => new($"gap-y-{value}");
 
     public static TailwindClass P(int value) => new($"p-{value}");
+    public static TailwindClass P(string value) => new($"p-[{value}]");
     public static TailwindClass Px(int value) => new($"px-{value}");
     public static TailwindClass Py(int value) => new($"py-{value}");
     public static TailwindClass Pl(int value) => new($"pl-{value}");
     public static TailwindClass Pr(int value) => new($"pr-{value}");
+    public static TailwindClass Pt(int value) => new($"pt-{value}");
+    public static TailwindClass Pb(int value) => new($"pb-{value}");
 
     public static TailwindClass M(int value) => new($"m-{value}");
     public static TailwindClass Mx(int value) => new($"mx-{value}");

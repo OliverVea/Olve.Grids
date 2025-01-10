@@ -1,4 +1,5 @@
 ﻿using MemoryPack;
+using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.IO.TileAtlasBuilder;
 
@@ -17,6 +18,7 @@ public partial class SerializableProject
     public required SerializedFileContent TileSheetImage { get; init; }
     public required SerializableTileAtlasConfiguration TileAtlasBuilder { get; init; }
     public int[]? ActiveTileIds { get; init; }
+    public SerializedBrushId[]? Brushes { get; init; }
 
     public static (SerializableProject Project, byte[] ImageBytes) FromProject(Project project) =>
         (new SerializableProject
@@ -30,6 +32,9 @@ public partial class SerializableProject
                 SerializableTileAtlasConfiguration.FromTileAtlasConfiguration(project.TileAtlasBuilder.Configuration),
             ActiveTileIds = project
                 .ActiveTiles.Select(x => x.Index)
+                .ToArray(),
+            Brushes = project
+                .Brushes.Select(SerializedBrushId.FromBrushId)
                 .ToArray(),
         }, project.TileSheetImage.Content);
 
@@ -52,8 +57,29 @@ public partial class SerializableProject
                 .Select(x => new TileIndex(x))
                 .ToHashSet()
             ?? [ ],
+            Brushes
+                ?
+                .Select(x => x.ToBrushId())
+                .ToHashSet()
+            ?? [ ],
             new TileAtlasBuilder(TileAtlasBuilder.ToTileAtlasConfiguration()));
     }
+}
+
+[MemoryPackable]
+public partial class SerializedBrushId
+{
+    public required string Id { get; init; }
+    public required string DisplayName { get; init; }
+
+    public static SerializedBrushId FromBrushId(BrushId brushId) =>
+        new()
+        {
+            Id = brushId.Id.ToString(),
+            DisplayName = brushId.DisplayName,
+        };
+
+    public BrushId ToBrushId() => new(StrictId.Id.Parse(Id), DisplayName);
 }
 
 [MemoryPackable]
@@ -73,14 +99,4 @@ public partial class SerializedFileContent
 
     public FileContent ToFileContent(byte[] content) =>
         new(Name, content, new Size(Width, Height));
-}
-
-[MemoryPackable]
-public partial class SerializedTileAtlasBuilder
-{
-    public static SerializedTileAtlasBuilder FromTileAtlasBuilder(TileAtlasBuilder tileAtlasBuilder) =>
-        new();
-
-    public TileAtlasBuilder ToTileAtlasBuilder() =>
-        new();
 }

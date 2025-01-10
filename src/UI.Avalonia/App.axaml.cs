@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UI.Avalonia.ViewModels;
 using UI.Avalonia.Views;
-using UI.Core.Services;
+using UI.Core;
 
 namespace UI.Avalonia;
 

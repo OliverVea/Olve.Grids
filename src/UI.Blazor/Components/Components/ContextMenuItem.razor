@@ -1,0 +1,21 @@
+﻿@inject ContextMenuService ContextMenuService
+
+<li @onclick="HandleOnClick"
+    class="@Class @TW(CursorPointer, P(2), Hover(Bg(Colors.Active.Panels.Most)))">
+    @ChildContent
+</li>
+
+@code {
+    [Parameter] public IconDescriptor? IconDescriptor { get; set; }
+    [Parameter] public string Text { get; set; } = string.Empty;
+    [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private async Task HandleOnClick(MouseEventArgs e)
+    {
+        await OnClick.InvokeAsync();
+        await ContextMenuService.HideAsync();
+    }
+
+}

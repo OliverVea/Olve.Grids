@@ -1,4 +1,5 @@
-﻿using Olve.Grids.Grids;
+﻿using Olve.Grids.Brushes;
+using Olve.Grids.Grids;
 using Olve.Grids.IO.TileAtlasBuilder;
 using Olve.Utilities.Lookup;
 
@@ -11,5 +12,6 @@ public record Project(
     DateTimeOffset LastAccessedAt,
     FileContent TileSheetImage,
     HashSet<TileIndex> ActiveTiles,
+    HashSet<BrushId> Brushes,
     TileAtlasBuilder TileAtlasBuilder)
     : IHasId<Id<Project>>;

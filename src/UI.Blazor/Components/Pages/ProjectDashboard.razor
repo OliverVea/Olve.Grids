@@ -1,16 +1,16 @@
 ﻿@page "/project/{projectId}"
 @using Olve.Grids.Adjacencies
-@using Olve.Grids.Brushes
 @using Olve.Grids.Grids
 @using Olve.Grids.Weights
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Processing
-@using UI.Core
 @inject LoadProjectOperation LoadProjectOperation
 @inject LoggingService Logger
 @inject NavigationManager NavigationManager
+@inject SetCurrentProjectOperation SetCurrentProjectOperation
+@inject ICurrentProjectRepository CurrentProjectRepository
 
-<div class="@TW(Flex, FlexCol, WFull, HFull)">
+<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
     <div
         class="@TW(WFull, Bg(Colors.Active.Panels.More), Flex, FlexRow, JustifyBetween, ItemsCenter)">
         <div>
@@ -28,7 +28,7 @@
 
     </div>
 
-    <div class="@TW(FlexGrow, WFull, OverflowYHidden, P(4))">
+    <div class="@TW(FlexGrow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
         <div class="@TW(Grid, GridCols($"repeat({GridConfiguration.Columns},auto)"), Gap(2))">
             @foreach (var tileInformation in GetTileInformation())
             {
@@ -69,6 +69,15 @@
         await base.SetParametersAsync(parameters);
     }
 
+    protected override void OnInitialized()
+    {
+        CurrentProjectRepository.OnCurrentProjectChanged.Add(async project =>
+        {
+            Project = project;
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         LoadProjectOperation.Request request = new(ProjectId);
@@ -82,6 +91,14 @@
         }
 
         Project = response.Project;
+        SetCurrentProjectOperation.Request setCurrentProjectRequest = new(Project);
+        var setCurrentProjectResult = await SetCurrentProjectOperation.ExecuteAsync(setCurrentProjectRequest);
+        if (setCurrentProjectResult.TryPickProblems(out var setCurrentProjectProblems))
+        {
+            Logger.Show(setCurrentProjectProblems);
+            HandleBack();
+            return;
+        }
 
         var gridConfigurationResult = GetGridConfiguration(Project);
         if (gridConfigurationResult.TryPickProblems(out problems, out var gridConfiguration))
@@ -109,7 +126,8 @@
         NavigationManager.NavigateTo("/");
     }
 
-    private Result<GridConfiguration> GetGridConfiguration(Project project)
+    private Result
+        <GridConfiguration> GetGridConfiguration(Project project)
     {
         var config = project.TileAtlasBuilder.Configuration;
         var columns = config.Columns;
@@ -118,7 +136,8 @@
         {
             if (!config.ImageSize.HasValue || !config.TileSize.HasValue)
             {
-                return Result<GridConfiguration>.Failure(new ResultProblem("No columns defined and image size or tile size not defined")
+                return Result
+                    <GridConfiguration>.Failure(new ResultProblem("No columns defined and image size or tile size not defined")
                 {
                     Source = nameof(ProjectDashboard),
                 });
@@ -133,7 +152,8 @@
         {
             if (!config.ImageSize.HasValue || !config.TileSize.HasValue)
             {
-                return Result<GridConfiguration>.Failure(new ResultProblem("No rows defined and image size or tile size not defined")
+                return Result
+                    <GridConfiguration>.Failure(new ResultProblem("No rows defined and image size or tile size not defined")
                 {
                     Source = nameof(ProjectDashboard),
                 });
@@ -144,7 +164,8 @@
 
         if (!config.TileSize.HasValue)
         {
-            return Result<GridConfiguration>.Failure(new ResultProblem("No rows defined")
+            return Result
+                <GridConfiguration>.Failure(new ResultProblem("No rows defined")
             {
                 Source = nameof(ProjectDashboard),
             });
@@ -153,7 +174,8 @@
         return new GridConfiguration(config.TileSize.Value, rows.Value, columns.Value);
     }
 
-    private IEnumerable<TileInformation> GetTileInformation()
+    private IEnumerable
+        <TileInformation> GetTileInformation()
     {
         var tileIndices = GridConfiguration.GetTileIndices();
 

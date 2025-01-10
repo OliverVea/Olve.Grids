@@ -8,14 +8,14 @@ public class FileBasedProjectSearchingRepository : IProjectSearchingRepository
     public Task<Result<PaginatedResult<ProjectSummary>>> SearchProjectSummariesAsync(
         string searchPrompt,
         Pagination pagination,
-        OrderKey orderKey = OrderKey.ProjectName,
+        ProjectOrderKey projectOrderKey = ProjectOrderKey.ProjectName,
         bool descending = false,
         CancellationToken ct = default) =>
-        Task.FromResult(SearchProjectSummaries(searchPrompt, pagination, orderKey, descending));
+        Task.FromResult(SearchProjectSummaries(searchPrompt, pagination, projectOrderKey, descending));
 
     private Result<PaginatedResult<ProjectSummary>> SearchProjectSummaries(string searchPrompt,
         Pagination pagination,
-        OrderKey orderKey = OrderKey.ProjectName,
+        ProjectOrderKey projectOrderKey = ProjectOrderKey.ProjectName,
         bool descending = false)
     {
         var files = PathHelper
@@ -42,7 +42,7 @@ public class FileBasedProjectSearchingRepository : IProjectSearchingRepository
 
         var totalCount = projectSummaries.Count();
 
-        projectSummaries = ApplyOrdering(projectSummaries, orderKey, descending);
+        projectSummaries = ApplyOrdering(projectSummaries, projectOrderKey, descending);
         projectSummaries = ApplyPagination(projectSummaries, pagination);
 
         return new PaginatedResult<ProjectSummary>(projectSummaries.ToArray(), pagination, totalCount);
@@ -59,20 +59,20 @@ public class FileBasedProjectSearchingRepository : IProjectSearchingRepository
     }
 
     private static IEnumerable<ProjectSummary> ApplyOrdering(IEnumerable<ProjectSummary> projectSummaries,
-        OrderKey orderKey,
+        ProjectOrderKey projectOrderKey,
         bool descending)
     {
-        if (orderKey == OrderKey.None)
+        if (projectOrderKey == ProjectOrderKey.None)
         {
             return projectSummaries;
         }
 
-        IComparer<ProjectSummary> orderingFunc = orderKey switch
+        IComparer<ProjectSummary> orderingFunc = projectOrderKey switch
         {
-            OrderKey.ProjectName => ProjectNameComparer.Shared,
-            OrderKey.LastAccessedDate => LastAccessedComparer.Shared,
-            OrderKey.None => throw new ApplicationException("Comparer not found for OrderKey.None"),
-            _ => throw new ArgumentOutOfRangeException(nameof(orderKey), orderKey, null),
+            ProjectOrderKey.ProjectName => ProjectNameComparer.Shared,
+            ProjectOrderKey.LastAccessedDate => LastAccessedComparer.Shared,
+            ProjectOrderKey.None => throw new ApplicationException("Comparer not found for OrderKey.None"),
+            _ => throw new ArgumentOutOfRangeException(nameof(projectOrderKey), projectOrderKey, null),
         };
 
         return descending

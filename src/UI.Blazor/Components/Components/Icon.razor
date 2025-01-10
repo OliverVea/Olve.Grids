@@ -1,9 +1,13 @@
-﻿@using UI.Core
-<i @attributes="AdditionalAttributes" class="@AllClasses"></i>
+﻿<i @onclick="OnClick"
+   @onclick:stopPropagation="StopPropagation"
+   @attributes="AdditionalAttributes"
+   class="@AllClasses"></i>
 
 @code {
     [Parameter] [EditorRequired] public required IconDescriptor IconDescriptor { get; set; }
     [Parameter] public string? Class { get; set; }
+    [Parameter] public bool StopPropagation { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     private string AllClasses => Class is null ? IconDescriptor.Class : $"{IconDescriptor.Class} {Class}";
 

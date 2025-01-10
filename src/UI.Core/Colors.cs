@@ -8,7 +8,8 @@ public static class Colors
 
     // https://m2.material.io/design/color/dark-theme.html#properties
     private static readonly ColorString Background = new("#181818");
-    private static readonly ColorString White = new("#ffffff");
+    public static readonly ColorString White = new("#ffffff");
+    public static readonly ColorString Red = new("#FF0000");
     private static readonly ColorString BrandColor = new("#624E88");
     private static readonly ColorString BrandedBackground = Overlay(BrandColor, Background, 0.08f);
 
@@ -16,6 +17,7 @@ public static class Colors
     {
         Text = new ColorSchemeText
         {
+            Danger = Overlay(Red, Background, 0.87f),
             Less = Overlay(White, BrandedBackground, 0.38f),
             Ordinary = Overlay(White, BrandedBackground, 0.60f),
             More = Overlay(White, BrandedBackground, 0.87f),
@@ -56,6 +58,7 @@ public class ColorSchemePanels
 
 public class ColorSchemeText
 {
+    public ColorString Danger { get; init; } = ColorString.NotSet;
     public ColorString Less { get; init; } = ColorString.NotSet;
     public ColorString Ordinary { get; init; } = ColorString.NotSet;
     public ColorString More { get; init; } = ColorString.NotSet;

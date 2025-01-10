@@ -1,13 +1,9 @@
-﻿@using UI.Core
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
-<div
-    class="@TW(Flex,
-               ItemsCenter,
-               JustifyCenter,
-               MinHScreen,
-               MinWScreen,
-               Bg(Colors.Active.Panels.Ordinary),
-               Text(Colors.Active.Text.Most))">
+<div class="@TW(MinHScreen,
+                MinWScreen,
+                Bg(Colors.Active.Panels.Ordinary),
+                Text(Colors.Active.Text.Most))">
     @Body
+    <ContextMenuProvider/>
 </div>

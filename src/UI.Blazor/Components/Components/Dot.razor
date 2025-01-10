@@ -1,15 +1,105 @@
-﻿@using UI.Core
-<div class="@Classes">
+﻿@using Olve.Grids.Grids
+@using Olve.Grids.Primitives
+@using UI.Core.Services.Brushes
+@inject ContextMenuService ContextMenuService
+@inject ListBrushesOperation ListBrushesOperation
+@inject CreateNewBrushOperation CreateNewBrushOperation
+@inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
+@inject LoggingService LoggingService
+
+<div @onclick="HandleClick"
+     class="@TW(CurrentBrushId.IsT1 ? border : Bg(Color),
+                W(Radius),
+                H(Radius),
+                RoundedFull) @Class">
 </div>
 
 @code {
+    [Parameter] [EditorRequired] public TileIndex TileIndex { get; set; }
+    [Parameter] [EditorRequired] public Corner Corner { get; set; }
+    [Parameter] [EditorRequired] public OneOf<BrushId, Any> CurrentBrushId { get; set; }
     [Parameter] public required string Radius { get; set; }
-
-    [Parameter] public ColorString Color { get; set; } = new("transparent");
     [Parameter] public string? Class { get; set; }
 
-    private string Classes => Class is null
-        ? TW(Absolute, W(Radius), H(Radius), RoundedFull, Bg(Color))
-        : $"{TW(Absolute, W(Radius), H(Radius), RoundedFull, Bg(Color))} {Class}";
+    private ColorString Color => CurrentBrushId.TryPickT0(out var brushId, out _)
+        ? GetBrushColor(brushId)
+        : Colors.Transparent;
+
+    private async Task HandleClick(MouseEventArgs e)
+    {
+        var request = new ListBrushesOperation.Request();
+        var listBrushesResult = await ListBrushesOperation.ExecuteAsync(request);
+        if (listBrushesResult.TryPickProblems(out var problems, out var brushes))
+        {
+            LoggingService.Show(problems);
+            return;
+        }
+
+        await ContextMenuService.ShowAsync(e, GetContextMenuContent(brushes.Brushes));
+    }
+
+    private RenderFragment GetContextMenuContent(IEnumerable
+        <BrushId> brushIds) => __builder =>
+    {
+        if (CurrentBrushId.TryPickT0(out var currentBrushId, out _))
+        {
+            brushIds = brushIds
+                .Where(x => x != currentBrushId)
+                .Prepend(currentBrushId);
+        }
+
+        @foreach (var brushId in brushIds)
+        {
+            var brushColor = GetBrushColor(brushId);
+            <ContextMenuItem OnClick="@(() => HandleSelectBrush(brushId))">
+
+                <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
+                    <Icon IconDescriptor="@IconDescriptor.Circle" Class="@TW(Text(brushColor))"/>
+
+                    <span class="@TW(FlexGrow)">
+                        @brushId.DisplayName
+                    </span>
+
+                    <Icon IconDescriptor="IconDescriptor.Edit"
+                          OnClick="@(e => HandleEditBrush(e, brushId))"
+                          StopPropagation="@true"
+                          Class="@TW(CursorPointer,
+                                     Text(Colors.Active.Text.Ordinary),
+                                     Hover(Text(Colors.Active.Text.Most)))"/>
+                </div>
+
+            </ContextMenuItem>
+        }
+
+        <HorizontalDivider/>
+        <ContextMenuItem OnClick="HandleNewBrush">
+            Add new brush
+        </ContextMenuItem>
+    };
+
+    private async Task HandleSelectBrush(BrushId brushId)
+    {
+        SetBrushForTileCornerOperation.Request request = new(TileIndex, Corner, brushId);
+        var result = await SetBrushForTileCornerOperation.ExecuteAsync(request);
+        if (result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+        }
+    }
+
+    private async Task HandleNewBrush()
+    {
+        CreateNewBrushOperation.Request request = new("New Brush");
+        var result = await CreateNewBrushOperation.ExecuteAsync(request);
+        if (result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+        }
+    }
+
+    private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, BrushId brushId) => Console.WriteLine("Edit brush: " + brushId);
+
+    private ColorString GetBrushColor(BrushId brushId) =>
+        CachedColorHelper.GetColorStringFromInteger(brushId.Id.GetHashCode(), HsvNormal.Default);
 
 }

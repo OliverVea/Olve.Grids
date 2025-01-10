@@ -32,6 +32,7 @@ public class CreateNewProjectOperation(
             lastAccessedAt,
             request.TileSheetImage,
             [ ],
+            [ ],
             tileAtlasBuilder);
 
         var createResult = await projectSettingRepository.SetProjectAsync(project, ct);

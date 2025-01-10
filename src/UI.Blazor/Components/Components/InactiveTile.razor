@@ -1,18 +1,36 @@
 ﻿@using Olve.Grids.Grids
 @using SixLabors.ImageSharp
-@using UI.Core
+@using UI.Core.Services.Tiles
+@inject ActivateTileOperation ActivateTileOperation
+@inject LoggingService LoggingService
 
-<TileBase
-    Image="@Image"
-    TileIndex="@TileIndex"
-    TextColor="@Colors.Active.Text.Less"
-    Classes="@TW(Relative, WFull, ShadowXl, TransitionTransform, Transform, Hover(Z(10)), Opacity(50))"/>
-
-
+<TileBase Image="@Image"
+          Classes="@TW(Relative, WFull, ShadowXl, TransitionTransform, Transform, Hover(Z(10)), Opacity(50))"
+          OnClick="HandleClick"
+          OnRightClick="HandleRightClick"
+/>
 
 @code {
     [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
 
     private TileIndex TileIndex => TileInformation.TileIndex;
     private Image Image => TileInformation.Image;
+
+    private async Task HandleClick()
+    {
+        var request = new ActivateTileOperation.Request(TileIndex);
+        var result = await ActivateTileOperation.ExecuteAsync(request);
+
+        if (result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+        }
+    }
+
+    private Task HandleRightClick()
+    {
+        Console.WriteLine("Right click on inactive tile");
+        return Task.CompletedTask;
+    }
+
 }

@@ -1,9 +1,8 @@
 ﻿@using Olve.Grids.Grids
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats.Png
-@using UI.Core
 
-<div class="transparency-background @Classes">
+<div class="transparency-background @Classes" @onclick="HandleClick" @oncontextmenu="HandleRightClick">
     <img src="@Image.ToBase64String(PngFormat.Instance)" alt="Tile" class="@TW(WFull, HFull)"/>
 
     @if (TileIndex.HasValue)
@@ -13,7 +12,7 @@
         </span>
     }
 
-    <div class="@TW(Absolute, Bottom(0), Right(0), Flex, FlexRow, Gap(2), P(2))">
+    <div class="@TW(Absolute, Inset(0))">
         @ChildContent
     </div>
 
@@ -26,6 +25,11 @@
     [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
     [Parameter] public string Classes { get; set; } = string.Empty;
     [Parameter] public ColorString TextColor { get; set; } = Colors.Active.Text.Ordinary;
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnRightClick { get; set; }
+
+    private Task HandleClick(MouseEventArgs e) => OnClick.InvokeAsync(e);
+    private Task HandleRightClick(MouseEventArgs e) => OnRightClick.InvokeAsync(e);
 }
 
 

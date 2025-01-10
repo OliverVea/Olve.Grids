@@ -18,9 +18,8 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
         <PackageReference Include="Microsoft.Extensions.Hosting"/>
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
         <PackageReference Include="OneOf.SourceGenerator"/>
         <PackageReference Include="Wacton.Unicolour"/>
     </ItemGroup>
-    
+
 </Project>

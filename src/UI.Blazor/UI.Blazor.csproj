@@ -14,4 +14,8 @@
         <ProjectReference Include="..\UI.Core\UI.Core.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="wwwroot\windowSizeService.js"/>
+    </ItemGroup>
+
 </Project>

@@ -16,7 +16,7 @@ public class ListProjectSummariesOperation(IProjectSearchingRepository projectRe
     {
         var result = await projectRepository.SearchProjectSummariesAsync(request.SearchPrompt,
             request.Pagination,
-            OrderKey.LastAccessedDate,
+            ProjectOrderKey.LastAccessedDate,
             true,
             ct);
 

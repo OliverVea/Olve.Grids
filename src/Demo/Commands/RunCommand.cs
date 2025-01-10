@@ -3,7 +3,6 @@ using Olve.Grids.DeBroglie;
 using Olve.Grids.Generation;
 using Olve.Grids.IO;
 using Olve.Grids.IO.Readers;
-using SixLabors.ImageSharp;
 using Spectre.Console;
 using Spectre.Console.Cli;
 

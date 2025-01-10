@@ -1,0 +1,56 @@
+﻿@inject ElementSizeInterop ElementSizeInterop
+@inject ContextMenuService ContextMenuService
+
+<ul id="@Id"
+    class="@TW(Fixed, MinW(px(200)), MaxW(pct(50)), Bg(Colors.Active.Panels.Ordinary), P(px(Padding)), ShadowMd, Z(50))"
+    style="left: @(Position.X - OutsidePadding)px; top: @(Position.Y - OutsidePadding)px; display: @(Visible ? "block" : "none")"
+    @onmouseleave="@(HandleMouseLeave)">
+    @if (Title is { } title)
+    {
+        <span class="@TW(Text(Colors.Active.Text.Ordinary), P(2))">@title</span>
+    }
+    @ChildContent
+</ul>
+
+@code {
+    private int Padding => InsidePadding + OutsidePadding;
+    private const int InsidePadding = 0;
+    private const int OutsidePadding = 12;
+
+    private const string Id = "context-menu";
+    private ContextMenuState _state = new();
+
+
+    public IdSelector IdSelector => new(Id);
+
+    public string? Title => _state.Title;
+    public Position Position => _state.Position;
+    public bool Visible => _state.Visible;
+    public RenderFragment ChildContent => _state.ChildContent;
+
+    protected override void OnInitialized()
+    {
+        ContextMenuService.Register(this);
+    }
+
+    public async ValueTask MutateAsync(Action<ContextMenuState> mutator)
+    {
+        mutator(_state);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public record ContextMenuState
+    {
+        public string? Title { get; set; }
+        public bool Visible { get; set; }
+        public Position Position { get; set; } = new(0, 0);
+        public RenderFragment ChildContent { get; set; } = _ => { };
+    }
+
+    private void HandleMouseLeave()
+    {
+        _state.Visible = false;
+        StateHasChanged();
+    }
+
+}

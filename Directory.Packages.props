@@ -34,5 +34,8 @@
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0"/>
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
         <PackageVersion Include="MudBlazor" Version="8.0.0-preview.7"/>
+        <PackageVersion Include="Serilog" Version="4.2.0"/>
+        <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0"/>
+        <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0"/>
     </ItemGroup>
 </Project>

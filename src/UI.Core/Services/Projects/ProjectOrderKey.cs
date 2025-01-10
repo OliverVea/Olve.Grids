@@ -1,6 +1,6 @@
 ﻿namespace UI.Core.Services.Projects;
 
-public enum OrderKey
+public enum ProjectOrderKey
 {
     None,
     ProjectName,

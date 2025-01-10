@@ -1,33 +1,40 @@
-﻿@using Olve.Grids.Brushes
-@using Olve.Grids.Primitives
-@using UI.Core
+﻿@using Olve.Grids.Primitives
+@using UI.Core.Services.Tiles
+@inject ContextMenuService ContextMenuService
+@inject DeactivateTileOperation DeactivateTileOperation
+@inject LoggingService LoggingService
 
 <TileBase Image="@TileInformation.Image"
-      Classes="@TW(Relative, WFull, ShadowXl, border, TransitionTransform, Transform, Hover(Scale(125), Z(10)))">
+          Classes="@TW(Relative,
+                       WFull,
+                       ShadowXl,
+                       TransitionTransform,
+                       Transform,
+                       border,
+                       Border(Colors.White),
+                       BorderOpacity(15),
+                       Hover(BorderOpacity(100), Scale(125), Z(10)))"
+          OnRightClick="HandleRightClick"
+>
 
     @foreach (var (corner, top, left) in GetCorners())
     {
-        var brushOrAny = CornerBrushes[corner];
-
-        @if (brushOrAny.TryPickT0(out var brushId, out _))
-        {
-            <Dot
-                Class="@TW(Absolute, Top(pct(top)), Left(pct(left)), Hover(Scale(150)), Z(15))"
-                Color="@GetBrushColorString(brushId)"
-                Radius="15%"/>
-        }
-        else
-        {
-            <Dot
-                Class="@TW(Absolute, Top(pct(top)), Left(pct(left)), Hover(Scale(150)), Z(15), border)"
-                Radius="15%"/>
-        }
+        var thisCorner = corner;
+        <Dot TileIndex="@TileInformation.TileIndex"
+             Corner="@thisCorner"
+             CurrentBrushId="@CornerBrushes[corner]"
+             Class="@TW(Absolute,
+                        Top(pct(top)),
+                        Left(pct(left)),
+                        Opacity(50),
+                        Hover(Opacity(100), Scale(125)),
+                        Z(15))"
+             Radius="10%"/>
     }
 </TileBase>
 
 
 @code {
-
 
     private static readonly HsvNormal HsvNormal = new(
         new NormalParameters(0.6f, 0.25f),
@@ -49,6 +56,29 @@
         yield return (Corner.UpperRight, Small, Large);
         yield return (Corner.LowerLeft, Large, Small);
         yield return (Corner.LowerRight, Large, Large);
+    }
+
+    private async Task HandleRightClick(MouseEventArgs e)
+    {
+        await ContextMenuService.ShowAsync(e, ContextMenuContent, $"Tile {TileInformation.TileIndex.Index}");
+    }
+
+    private RenderFragment ContextMenuContent => __builder =>
+    {
+        <ContextMenuItem OnClick="DeactivateTile" Class="@TW(Text(Colors.Active.Text.Danger))">
+            Deactivate
+        </ContextMenuItem>
+    };
+
+    private async Task DeactivateTile()
+    {
+        var request = new DeactivateTileOperation.Request(TileInformation.TileIndex);
+        var result = await DeactivateTileOperation.ExecuteAsync(request);
+
+        if (result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+        }
     }
 
 }

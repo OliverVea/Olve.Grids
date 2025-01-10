@@ -8,8 +8,6 @@ public readonly record struct BrushId(Id Id, string DisplayName) : IComparable<B
     private string ShortDisplay => string.IsNullOrWhiteSpace(DisplayName) ? Id.ToString() : DisplayName;
     private string LongDisplay => string.IsNullOrWhiteSpace(DisplayName) ? Id.ToString() : $"{Id} ({DisplayName})";
 
-    public static BrushId New() => new(Id.NewId(), string.Empty);
-
     public static BrushId New(string displayName) => new(Id.NewId(), displayName);
 
     public override string ToString() => ShortDisplay;

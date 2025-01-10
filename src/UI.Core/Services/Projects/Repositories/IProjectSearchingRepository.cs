@@ -7,7 +7,7 @@ public interface IProjectSearchingRepository
     Task<Result<PaginatedResult<ProjectSummary>>> SearchProjectSummariesAsync(
         string searchPrompt,
         Pagination pagination,
-        OrderKey orderKey = OrderKey.ProjectName,
+        ProjectOrderKey projectOrderKey = ProjectOrderKey.ProjectName,
         bool descending = false,
         CancellationToken ct = default);
 }
