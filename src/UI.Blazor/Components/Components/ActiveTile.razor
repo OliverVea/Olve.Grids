@@ -11,10 +11,10 @@
                        TransitionTransform,
                        Transform,
                        border,
-                       Border(Colors.White),
+                       Border(ColorString.White),
                        BorderOpacity(15),
-                       Hover(BorderOpacity(100), Scale(125), Z(10)))"
-          OnRightClick="HandleRightClick"
+                       Hover(BorderOpacity(100), Scale(110), Z(10)))"
+          OnClick="HandleClick"
 >
 
     @foreach (var (corner, top, left) in GetCorners())
@@ -58,7 +58,7 @@
         yield return (Corner.LowerRight, Large, Large);
     }
 
-    private async Task HandleRightClick(MouseEventArgs e)
+    private async Task HandleClick(MouseEventArgs e)
     {
         await ContextMenuService.ShowAsync(e, ContextMenuContent, $"Tile {TileInformation.TileIndex.Index}");
     }

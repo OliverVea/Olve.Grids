@@ -1,6 +1,7 @@
-﻿using UI.Blazor.Services;
+﻿using UI.Blazor.Interop;
+using UI.Blazor.Services;
 
-namespace UI.Blazor.Interop;
+namespace UI.Blazor;
 
 public static class ServiceExtensions
 {
@@ -10,6 +11,9 @@ public static class ServiceExtensions
 
         services.AddTransient<ContextMenuService>();
         services.AddSingleton<ContextMenuProviderContainer>();
+
+        services.AddTransient<ModalService>();
+        services.AddSingleton<ModalProviderContainer>();
 
         return services;
     }

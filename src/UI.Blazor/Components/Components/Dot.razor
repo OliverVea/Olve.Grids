@@ -6,8 +6,10 @@
 @inject CreateNewBrushOperation CreateNewBrushOperation
 @inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
 @inject LoggingService LoggingService
+@inject ModalService ModalService
 
 <div @onclick="HandleClick"
+     @onclick:stopPropagation="@true"
      class="@TW(CurrentBrushId.IsT1 ? border : Bg(Color),
                 W(Radius),
                 H(Radius),
@@ -23,7 +25,7 @@
 
     private ColorString Color => CurrentBrushId.TryPickT0(out var brushId, out _)
         ? GetBrushColor(brushId)
-        : Colors.Transparent;
+        : ColorString.Transparent;
 
     private async Task HandleClick(MouseEventArgs e)
     {
@@ -41,13 +43,6 @@
     private RenderFragment GetContextMenuContent(IEnumerable
         <BrushId> brushIds) => __builder =>
     {
-        if (CurrentBrushId.TryPickT0(out var currentBrushId, out _))
-        {
-            brushIds = brushIds
-                .Where(x => x != currentBrushId)
-                .Prepend(currentBrushId);
-        }
-
         @foreach (var brushId in brushIds)
         {
             var brushColor = GetBrushColor(brushId);
@@ -97,7 +92,10 @@
         }
     }
 
-    private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, BrushId brushId) => Console.WriteLine("Edit brush: " + brushId);
+    private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, BrushId brushId)
+    {
+        await ModalService.ShowAsync(@<span>Hi!</span>, "Edit Brush");
+    }
 
     private ColorString GetBrushColor(BrushId brushId) =>
         CachedColorHelper.GetColorStringFromInteger(brushId.Id.GetHashCode(), HsvNormal.Default);

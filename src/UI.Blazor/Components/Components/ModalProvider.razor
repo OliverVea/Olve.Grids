@@ -1,0 +1,64 @@
+﻿@inject ModalService ModalService
+
+@if (!Visible)
+{
+    return;
+}
+
+<div class="@TW(Fixed, Inset(0), Opacity(25), Bg(ColorString.Black))">
+
+</div>
+
+
+<div class="@TW(Fixed, Inset(0), Flex, JustifyCenter, ItemsCenter)">
+    <div class="@TW(Flex, FlexCol, W(px(400)), H(px(600)), Bg(Colors.Active.Panels.Ordinary))">
+        <div
+            class="@TW(Relative, WFull, P(4), H(px(32)), JustifyBetween, ItemsCenter, Bg(Colors.Active.Panels.More))">
+            <h1 class="@TW(Absolute, Inset(0), TextCenter, Text2Xl, Text(Colors.Active.Text.Ordinary))">@Title</h1>
+            <Button OnClick="Hide" Class="@TW(Absolute, Top(0), Right(0), P(2), Text(Colors.Active.Text.Ordinary))">
+                X
+            </Button>
+        </div>
+        <div class="@TW(FlexGrow, WFull)">
+            <span>Hello</span>
+            @ChildContent
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    public string? Title => _state.Title;
+    public bool Visible => _state.Visible;
+    private RenderFragment ChildContent => _state.ChildContent;
+
+    private ModalState _state = new();
+
+    protected override void OnInitialized()
+    {
+        ModalService.Register(this);
+    }
+
+    public async ValueTask MutateAsync(Action<ModalState> mutator)
+    {
+        await InvokeAsync(() => Mutate(mutator));
+    }
+
+    private void Mutate(Action<ModalState> mutator)
+    {
+        mutator(_state);
+        StateHasChanged();
+    }
+
+    private void Hide() => Mutate(s => s.Visible = false);
+
+    public record ModalState
+    {
+        public string? Title { get; set; }
+        public bool Visible { get; set; }
+        public RenderFragment ChildContent { get; set; } = _ => { };
+    }
+
+}

@@ -1,14 +1,5 @@
 ﻿<button
-    class="@TW(Bg(Colors.Active.Panels.More),
-               BorderNone,
-               Py(2),
-               Px(4),
-               RoundedMd,
-               Hover(Bg(Colors.Active.Panels.Most)),
-               Text(Colors.Active.Text.Most),
-               Transition,
-               Duration("75"),
-               TextNoWrap)"
+    class="@AllClasses"
     @onclick="OnClick">
     @ChildContent
 </button>
@@ -16,5 +7,9 @@
 
 @code {
     [Parameter] public EventCallback OnClick { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
+    [Parameter] public string? Class { get; set; }
+
+    private string ButtonClass => TW(Bg(Colors.Active.Panels.More), BorderNone, Py(2), Px(4), RoundedMd, Hover(Bg(Colors.Active.Panels.Most)), Text(Colors.Active.Text.Most), Transition, Duration("75"), TextNoWrap);
+    private string AllClasses => Class is null ? ButtonClass : $"{ButtonClass} {Class}";
 }

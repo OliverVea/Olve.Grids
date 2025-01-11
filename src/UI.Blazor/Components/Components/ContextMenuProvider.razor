@@ -26,7 +26,7 @@
     public string? Title => _state.Title;
     public Position Position => _state.Position;
     public bool Visible => _state.Visible;
-    public RenderFragment ChildContent => _state.ChildContent;
+    private RenderFragment ChildContent => _state.ChildContent;
 
     protected override void OnInitialized()
     {

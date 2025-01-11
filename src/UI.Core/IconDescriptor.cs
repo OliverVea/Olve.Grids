@@ -20,4 +20,5 @@ public class IconDescriptor
     public static readonly IconDescriptor Edit = new("fa fa-pencil");
     public static readonly IconDescriptor Circle = new("fa fa-circle");
     public static readonly IconDescriptor CircleSolid = new("fa-solid fa-circle");
+    public static readonly IconDescriptor XSolid = new("fa-solid fa-xmark");
 }
