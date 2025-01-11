@@ -2,7 +2,6 @@
 # It is optional. If not present, adjacencies will be generated from brushes and weights will be set to 1
 
 # Generates adjacencies automatically from tile brushes
-# see 
 generateAdjacenciesFromBrushes: true # Default is true
 
 # Manually configure adjacencies

@@ -38,7 +38,7 @@ public class RunPackedSettings : CommandSettings
 
 public class RunPackedCommand : Command<RunPackedSettings>
 {
-    public const string Name = "packed";
+    public const string Name = "runpacked";
 
     private const int Success = 0;
     private const int Error = 1;

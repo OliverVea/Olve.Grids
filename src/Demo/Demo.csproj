@@ -2,8 +2,6 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <AssemblyName>grids-demo</AssemblyName>
-        <PublishAot>true</PublishAot>
-        <PublishTrimmed>true</PublishTrimmed>
     </PropertyGroup>
 
     <ItemGroup>

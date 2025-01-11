@@ -86,7 +86,8 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
     {
         if (!ValidationResult.IsValid)
         {
-            throw new InvalidOperationException("Cannot build a tile atlas with invalid configuration.");
+            throw new InvalidOperationException(
+                $"Cannot build a tile atlas with invalid configuration: {ValidationResult}");
         }
 
         var tileSize = Configuration.TileSize ?? throw new InvalidOperationException("Tile size must be set.");

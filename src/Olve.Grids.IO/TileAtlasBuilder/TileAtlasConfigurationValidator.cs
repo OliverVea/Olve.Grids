@@ -6,14 +6,19 @@ internal class TileAtlasConfigurationValidator : AbstractValidator<TileAtlasConf
 {
     public TileAtlasConfigurationValidator()
     {
-        Size imageSize = new();
-
         RuleFor(x => x.TileSize)
             .NotNull()
             .WithMessage("{PropertyName} must not be null.")
             .Must(tileSize => tileSize!.Value is { Width: > 0, Height: > 0, })
-            .WithMessage("{PropertyName} must be greater than 0.")
-            .Must(x => x!.Value.Width <= imageSize.Width && x.Value.Height <= imageSize.Height)
+            .WithMessage("{PropertyName} must be greater than 0.");
+        
+        RuleFor(x => x.ImageSize)
+            .NotNull()
+            .WithMessage("{PropertyName} must not be null.");
+        
+        
+        RuleFor(x => new {x.TileSize, x.ImageSize})
+            .Must(x => x.TileSize!.Value.Width <= x.ImageSize!.Value.Width && x.TileSize!.Value.Height <= x.ImageSize!.Value.Height)
             .WithMessage("{PropertyName} must be less than or equal to the image size.");
 
         RuleFor(x => new

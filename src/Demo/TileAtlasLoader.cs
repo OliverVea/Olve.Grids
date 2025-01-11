@@ -52,7 +52,14 @@ public class TileAtlasLoader
             tileAtlasBuilder = tileAtlasBuilder.WithWeightLookup(weightLookup);
         }
 
-        return tileAtlasBuilder.Build();
+        try
+        {
+            return tileAtlasBuilder.Build();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return new ResultProblem(ex, "Could not build tile atlas");
+        }
     }
 
     private Result<(AdjacencyLookup, WeightLookup?)> LoadAdjacencyLookupAndWeightLookup(
