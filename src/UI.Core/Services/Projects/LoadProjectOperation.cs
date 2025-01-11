@@ -4,7 +4,7 @@ using UI.Core.Services.Projects.Repositories;
 namespace UI.Core.Services.Projects;
 
 public class LoadProjectOperation(IProjectGettingRepository projectGettingRepository)
-    : IAsyncOperation<LoadProjectOperation.Request, Result<LoadProjectOperation.Response>>
+    : IAsyncOperation<LoadProjectOperation.Request, LoadProjectOperation.Response>
 {
     public record Request(Id<Project> ProjectId);
 
@@ -16,7 +16,7 @@ public class LoadProjectOperation(IProjectGettingRepository projectGettingReposi
 
         if (!getResult.TryPickValue(out var project, out var problems))
         {
-            return Result<Response>.Failure(problems);
+            return problems;
         }
 
         return new Response(project);

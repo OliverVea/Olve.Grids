@@ -1,16 +1,14 @@
 ﻿using Olve.Grids.IO.Configuration.Models;
-using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
 public class WeightConfigurationParser(TileGroupParser tileGroupParser) : IParser<WeightConfiguration>
 {
-    public OneOf<WeightConfiguration, FileParsingError> Parse(ConfigurationModel configurationModel)
+    public Result<WeightConfiguration> Parse(ConfigurationModel configurationModel)
     {
-        if (!ParseWeights(configurationModel)
-                .TryPickT0(out var weights, out var error))
+        if (ParseWeights(configurationModel).TryPickProblems(out var problems, out var weights))
         {
-            return error;
+            return problems;
         }
 
         return new WeightConfiguration
@@ -19,35 +17,28 @@ public class WeightConfigurationParser(TileGroupParser tileGroupParser) : IParse
         };
     }
 
-    private OneOf<IReadOnlyList<WeightConfiguration.TileWeight>, FileParsingError> ParseWeights(
-        ConfigurationModel configurationModel)
+    private Result<IReadOnlyList<WeightConfiguration.TileWeight>> ParseWeights(ConfigurationModel configurationModel)
     {
         if (configurationModel.Weights is not { } weightModels)
         {
             return Array.Empty<WeightConfiguration.TileWeight>();
         }
-
-
-        if (!tileGroupParser
-                .Parse(configurationModel)
-                .TryPickT0(out var tileGroups, out var tileGroupsError))
+        
+        // Todo: Parsing tile groups here too?
+        var tileGroupParsingResult = tileGroupParser.Parse(configurationModel);
+        if (tileGroupParsingResult.TryPickProblems(out var problems, out var tileGroups))
         {
-            return tileGroupsError;
+            return problems;
         }
 
-        var weightParsingResults = weightModels
-            .Select(x => ParseWeight(tileGroups, x))
-            .ToArray();
+        var weightParsingResults = weightModels.Select(x => ParseWeight(tileGroups, x));
 
-        if (weightParsingResults.AnyT1())
+        if (weightParsingResults.TryPickProblems(out problems, out var weights))
         {
-            var errors = weightParsingResults.OfT1();
-            return FileParsingError.Combine(errors);
+            return problems;
         }
 
-        return weightParsingResults
-            .OfT0()
-            .ToArray();
+        return weights.ToArray();
     }
 
     private static readonly Dictionary<string, Func<float, Func<float, float>>> WeightFunctions = new()
@@ -57,46 +48,47 @@ public class WeightConfigurationParser(TileGroupParser tileGroupParser) : IParse
         ["multiply"] = weight => currentWeight => currentWeight * weight,
     };
 
-    private OneOf<Func<float, float>, FileParsingError> ParseWeightFunction(WeightModel weightModel)
+    private Result<Func<float, float>> ParseWeightFunction(WeightModel weightModel)
     {
         var mode = weightModel.Mode ?? "multiply";
 
         if (!WeightFunctions.TryGetValue(mode, out var weightFunction))
         {
-            return FileParsingError.New($"Unknown weight mode '{mode}'.");
+            // Todo: Ensure that result problems are formatted the same
+            //       - '' around parameters
+            //       - No full stop
+            //       Maybe use an analyzer?
+            return new ResultProblem("Unknown weight mode '{0}'", mode);
         }
 
         if (weightModel.Weight is not { } weight)
         {
-            return FileParsingError.New("Weight is required.");
+            return new ResultProblem("Weight is required");
         }
 
         return weightFunction(weight);
     }
 
-    private OneOf<WeightConfiguration.TileWeight, FileParsingError> ParseWeight(
+    private Result<WeightConfiguration.TileWeight> ParseWeight(
         TileGroups tileGroups,
         WeightModel weightModel
     )
     {
-        if (!tileGroupParser
-                .Parse(weightModel.Tiles, weightModel.Group, tileGroups)
-                .TryPickT0(out var tiles, out var tileError)
-           )
+        var tileGroupResults = tileGroupParser.Parse(weightModel.Tiles, weightModel.Group, tileGroups);
+        if (tileGroupResults.TryPickProblems(out var problems, out var tileIndices))
         {
-            return tileError;
+            return problems;
         }
 
-        if (!ParseWeightFunction(weightModel)
-                .TryPickT0(out var weightFunction, out var weightFunctionError)
-           )
+        var weightFunctionResult = ParseWeightFunction(weightModel);
+        if (weightFunctionResult.TryPickProblems(out problems, out var weightFunction))
         {
-            return weightFunctionError;
+            return problems;
         }
 
         return new WeightConfiguration.TileWeight
         {
-            Tiles = tiles.ToArray(),
+            Tiles = tileIndices.ToArray(),
             WeightFunction = weightFunction,
         };
     }

@@ -1,4 +1,4 @@
-﻿using OneOf.Types;
+﻿
 
 namespace Demo.Commands;
 
@@ -22,11 +22,11 @@ public readonly record struct VerbosityLevel(int Value)
 public static class VerbosityLevels
 {
 
-    public static OneOf<VerbosityLevel, Error<string>> Parse(string? value)
+    public static Result<VerbosityLevel> Parse(string? value)
     {
         if (value is null)
         {
-            return new Error<string>("The verbosity level must be specified.");
+            return Result<VerbosityLevel>.Failure(new ResultProblem("The verbosity level must be specified."));
         }
 
         switch (value.ToLowerInvariant())
@@ -41,8 +41,8 @@ public static class VerbosityLevels
             case "v":
                 return VerbosityLevel.Verbose;
             default:
-                return new Error<string>(
-                    "The verbosity level must be 'Quiet', 'Normal', or 'Verbose' or 'q', 'n', or 'v'.");
+                return Result<VerbosityLevel>.Failure(new ResultProblem (
+                    "The verbosity level must be 'Quiet', 'Normal', or 'Verbose' or 'q', 'n', or 'v'."));
         }
     }
 }

@@ -13,19 +13,19 @@ public class PackCommand : Command<PackCommandSettings>
 
     public override int Execute(CommandContext context, PackCommandSettings settings)
     {
-        if (!VerbosityLevels
-                .Parse(settings.Verbosity)
-                .TryPickT0(out var verbosityLevel, out var verbosityError))
+        var verbosityLevelResult = VerbosityLevels.Parse(settings.Verbosity);
+        if (verbosityLevelResult.TryPickProblems(out var problems, out var verbosityLevel))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {verbosityError}");
+            // Todo: Maybe prepend a problem that helps to show where the problem occured.
+            //       e.g.: problems.Prepend(new ProblemResult("Could not parse verbosity level '{0}'", settings.Verbosity);
+            problems.LogToAnsiConsole();
             return Error;
         }
 
-        if (!SizeParser
-                .Parse(settings.TileSize)
-                .TryPickT0(out var tileSize, out var tileSizeErrorMessage))
+        var sizeResult = SizeParser.Parse(settings.TileSize);
+        if (sizeResult.TryPickProblems(out problems, out var tileSize))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {tileSizeErrorMessage}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
@@ -40,26 +40,22 @@ public class PackCommand : Command<PackCommandSettings>
 
         var tileAtlasSize = new Size(tileAtlasImage.Width, tileAtlasImage.Height);
 
-        var tileAtlasLoader = new TileAtlasLoader();
-        if (!tileAtlasLoader
-                .LoadTileAtlas(tileAtlasSize,
-                    tileSize,
-                    settings.TileAtlasBrushesFile,
-                    settings.TileAtlasConfigFile)
-                .TryPickT0(out var tileAtlas, out var tileAtlasError))
+        var tileAtlasResult = new TileAtlasLoader()
+            .LoadTileAtlas(tileAtlasSize,
+                tileSize,
+                settings.TileAtlasBrushesFile,
+                settings.TileAtlasConfigFile);
+        if (tileAtlasResult.TryPickProblems(out problems, out var tileAtlas))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {tileAtlasError}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
         var serializer = new TileAtlasSerializer();
-        var tileAtlasFileLoader = new TileAtlasFileLoader(serializer);
-
-        if (!tileAtlasFileLoader
-                .Save(tileAtlas, settings.OutputFile, settings.Overwrite)
-                .TryPickT0(out _, out var savingError))
+        var saveTileAtlasResult = new TileAtlasFileLoader(serializer).Save(tileAtlas, settings.OutputFile, settings.Overwrite);
+        if (saveTileAtlasResult.TryPickProblems(out problems))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {savingError}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 

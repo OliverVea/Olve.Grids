@@ -5,14 +5,14 @@ using Olve.Grids.Grids;
 using Olve.Grids.IO.Configuration.Parsing;
 using Olve.Grids.Primitives;
 using Olve.Grids.Weights;
-using OneOf.Types;
+
 
 namespace Olve.Grids.IO.Configuration;
 
 public class ConfigurationLoader(
-    AdjacencyConfigurationLoader adjacencyConfigurationLoader,
+    AdjacencyConfigurationLoader adjacencyLoader,
     ConfigurationModelFileReader configurationModelFileReader,
-    WeightConfigurationLoader weightConfigurationLoader)
+    WeightConfigurationLoader weightLoader)
 {
     public static ConfigurationLoader Create()
     {
@@ -25,7 +25,12 @@ public class ConfigurationLoader(
         serviceCollection.AddSingleton<WeightConfigurationLoader>();
         serviceCollection.AddSingleton<TileGroupParser>();
         serviceCollection.AddSingleton<TileIndexParser>();
-        serviceCollection.AddSingleton<AdjacencyDirectionParser>();
+        // Todo: IL2066: Type passed to generic parameter 'TService' of
+        //       'Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<TService>(IServiceCollection)'
+        //        can not be statically determined and may not meet 'DynamicallyAccessedMembersAttribute' requirements.
+#pragma warning disable IL2066
+        serviceCollection.AddSingleton<DirectionParser>();
+#pragma warning restore IL2066
         serviceCollection.AddSingleton<ConfigurationLoader>();
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -34,33 +39,33 @@ public class ConfigurationLoader(
     }
 
 
-    public OneOf<Success, FileParsingError> Load(string configurationFilePath,
+    public Result Load(string configurationFilePath,
         IAdjacencyLookup adjacencyLookup,
         IWeightLookup weightLookup,
         IEnumerable<TileIndex> tileIndices,
         IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration)
     {
-        if (!configurationModelFileReader
-                .Read(configurationFilePath)
-                .TryPickT0(out var configurationModel, out var error))
+        var configurationModelFileResult = configurationModelFileReader.Read(configurationFilePath);
+        if (configurationModelFileResult.TryPickProblems(out var problems, out var configurationModel))
         {
-            return error;
+            return problems;
         }
 
-        if (!adjacencyConfigurationLoader
-                .ConfigureAdjacencyLookupBuilder(configurationModel, adjacencyLookup, brushConfiguration)
-                .TryPickT0(out _, out error))
+        var adjacencyResult = adjacencyLoader.ConfigureAdjacencyLookupBuilder(
+            configurationModel,
+            adjacencyLookup,
+            brushConfiguration);
+        if (adjacencyResult.TryPickProblems(out problems))
         {
-            return error;
+            return problems;
         }
 
-        if (!weightConfigurationLoader
-                .ConfigureWeightLookupBuilder(configurationModel, weightLookup, tileIndices)
-                .TryPickT0(out _, out error))
+        var weightResult = weightLoader.ConfigureWeightLookupBuilder(configurationModel, weightLookup, tileIndices);
+        if (weightResult.TryPickProblems(out problems))
         {
-            return error;
+            return problems;
         }
 
-        return new Success();
+        return Result.Success();
     }
 }

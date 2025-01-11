@@ -36,19 +36,17 @@ public class RunCommand : Command<RunCommandSettings>
 
     public override int Execute(CommandContext context, RunCommandSettings settings)
     {
-        if (!VerbosityLevels
-                .Parse(settings.Verbosity)
-                .TryPickT0(out var verbosityLevel, out var verbosityError))
+        var verbosityLevelResult = VerbosityLevels.Parse(settings.Verbosity);
+        if (verbosityLevelResult.TryPickProblems(out var problems, out var verbosityLevel))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {verbosityError}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
-        if (!SizeParser
-                .Parse(settings.TileSize)
-                .TryPickT0(out var tileSize, out var tileSizeErrorMessage))
+        var sizeResult = SizeParser.Parse(settings.TileSize);
+        if (sizeResult.TryPickProblems(out problems, out var tileSize))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {tileSizeErrorMessage}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
@@ -56,47 +54,36 @@ public class RunCommand : Command<RunCommandSettings>
         {
             AnsiConsole.MarkupLine("[bold yellow]Running DeBroglie demo...[/]");
             AnsiConsole.MarkupLine($"Tile atlas file: [bold]{settings.TileAtlasFile}[/]");
-            AnsiConsole.MarkupLine(
-                $"Tile size: [bold]{tileSize.Width}x{tileSize.Height}[/]");
+            AnsiConsole.MarkupLine($"Tile size: [bold]{tileSize.Width}x{tileSize.Height}[/]");
             AnsiConsole.MarkupLine($"Tile atlas brushes file: [bold]{settings.TileAtlasBrushesFile}[/]");
             AnsiConsole.MarkupLine($"Input brushes file: [bold]{settings.InputBrushesFile}[/]");
             AnsiConsole.MarkupLine($"Output file: [bold]{settings.OutputFile}[/]");
         }
 
-        var imageLoader = new ImageLoader();
-        if (!imageLoader
-                .LoadImage(settings.TileAtlasFile)
-                .TryPickValue(out var tileAtlasImage, out var imageLoaderError))
+        var imageResult = new ImageLoader().LoadImage(settings.TileAtlasFile);
+        if (imageResult.TryPickProblems(out problems, out var tileAtlasImage))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {imageLoaderError}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
         var tileAtlasSize = new Size(tileAtlasImage.Width, tileAtlasImage.Height);
 
-        var tileAtlasLoader = new TileAtlasLoader();
-        if (!tileAtlasLoader
-                .LoadTileAtlas(
-                    tileAtlasSize,
-                    tileSize,
-                    settings.TileAtlasBrushesFile,
-                    settings.TileAtlasConfigFile)
-                .TryPickT0(out var tileAtlas, out var tileAtlasError))
+        var tileAtlasResult = new TileAtlasLoader().LoadTileAtlas(
+            tileAtlasSize,
+            tileSize,
+            settings.TileAtlasBrushesFile,
+            settings.TileAtlasConfigFile);
+        if (tileAtlasResult.TryPickProblems(out problems, out var tileAtlas))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {tileAtlasError}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
-        var inputBrushFileReader = new InputBrushFileReader(settings.InputBrushesFile);
-        if (!inputBrushFileReader
-                .Load(tileAtlas.BrushLookup.Brushes)
-                .TryPickT0(out var brushGrid, out var fileParsingError))
+        var brushGridResult = new InputBrushFileReader(settings.InputBrushesFile).Load(tileAtlas.BrushLookup.Brushes);
+        if (brushGridResult.TryPickProblems(out problems, out var brushGrid))
         {
-            foreach (var problem in fileParsingError.Problems)
-            {
-                AnsiConsole.MarkupLine($"[bold red]Error:[/] {problem}");
-            }
-
+            problems.LogToAnsiConsole();
             return Error;
         }
 
@@ -121,11 +108,12 @@ public class RunCommand : Command<RunCommandSettings>
             AnsiConsole.MarkupLine($"Wrote output to: [bold]{new FileInfo(settings.OutputFile).FullName}[/]");
         }
 
-        if (result.Status.IsT2)
+        if (result.Result.TryPickProblems(out problems))
         {
+            problems.LogToAnsiConsole();
             return Error;
         }
-
+        
         return Success;
     }
 }

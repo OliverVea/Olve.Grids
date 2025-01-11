@@ -29,5 +29,6 @@
         <PackageReference Include="Olve.Utilities"/>
         <PackageReference Include="StrictId"/>
         <PackageReference Include="OneOf"/>
+        <PackageReference Include="OneOf.SourceGenerator"/>
     </ItemGroup>
 </Project>

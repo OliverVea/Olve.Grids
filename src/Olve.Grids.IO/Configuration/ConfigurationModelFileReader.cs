@@ -13,16 +13,16 @@ public class ConfigurationModelFileReader
         .WithNamingConvention(CamelCaseNamingConvention.Instance)
         .Build();
 
-    public OneOf<ConfigurationModel, FileParsingError> Read(string filePath)
+    public Result<ConfigurationModel> Read(string filePath)
     {
         if (!filePath.EndsWith(".yml") && !filePath.EndsWith(".yaml"))
         {
-            return FileParsingError.New("File must be a YAML file: {0}", filePath);
+            return new ResultProblem("File must be a YAML file: {0}", filePath);
         }
 
         if (!File.Exists(filePath))
         {
-            return FileParsingError.New("File not found: {0}", filePath);
+            return new ResultProblem("File not found: {0}", filePath);
         }
 
         var fileContent = File.ReadAllText(filePath);
@@ -34,7 +34,7 @@ public class ConfigurationModelFileReader
         }
         catch (YamlException e)
         {
-            return FileParsingError.New("Error parsing YAML file: {0}", e.Message);
+            return new ResultProblem("Error parsing YAML file: {0}", e.Message);
         }
     }
 }

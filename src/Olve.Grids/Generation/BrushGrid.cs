@@ -22,7 +22,7 @@ public class BrushGrid
     public Size Size { get; }
     public int Count { get; }
 
-    public IEnumerable<(Position position, OneOf<BrushId, Any>)> GetPositions()
+    public IEnumerable<(Position position, BrushIdOrAny)> GetPositions()
     {
         for (var y = 0; y < Size.Height; y++)
         {
@@ -36,7 +36,7 @@ public class BrushGrid
         }
     }
 
-    public OneOf<BrushId, Any> GetBrush(Position position)
+    public BrushIdOrAny GetBrush(Position position)
     {
         VerifyPosition(position);
         var index = GetIndex(position);
@@ -45,12 +45,12 @@ public class BrushGrid
         return GetBrushOrAny(brushId);
     }
 
-    public void SetBrush(Position position, OneOf<BrushId, Any> brush)
+    public void SetBrush(Position position, BrushIdOrAny brushIdOrAny)
     {
         VerifyPosition(position);
         var index = GetIndex(position);
 
-        _brushes[index] = GetBrushId(brush);
+        _brushes[index] = GetBrushId(brushIdOrAny);
     }
 
     private void Fill(BrushId brushId)
@@ -74,9 +74,9 @@ public class BrushGrid
 
     private int GetIndex(Position position) => position.Y * Size.Width + position.X;
 
-    private static OneOf<BrushId, Any> GetBrushOrAny(BrushId? brushId) => brushId ?? OneOf<BrushId, Any>.FromT1(new Any());
+    private static BrushIdOrAny GetBrushOrAny(BrushId? brushId) => brushId ?? BrushIdOrAny.Any;
 
-    private static BrushId? GetBrushId(OneOf<BrushId, Any> brush) =>
-        brush.TryPickT0(out var brushId, out _) ? brushId : null;
+    private static BrushId? GetBrushId(BrushIdOrAny brushIdOrAny) =>
+        brushIdOrAny.TryPickT0(out var brushId, out _) ? brushId : null;
 
 }

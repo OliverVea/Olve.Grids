@@ -8,7 +8,7 @@ public class SaveProjectAndSummaryOperation(
     LoggingService loggingService,
     IProjectGettingRepository projectGettingRepository,
     IProjectSettingRepository projectSettingRepository)
-    : IAsyncOperation<SaveProjectAndSummaryOperation.Request, Result>
+    : IAsyncOperation<SaveProjectAndSummaryOperation.Request>
 {
     public record Request(Project Project);
 
@@ -22,7 +22,7 @@ public class SaveProjectAndSummaryOperation(
         var projectPathResult = await projectGettingRepository.GetProjectPathAsync(projectToSave.Id, ct);
         if (!projectPathResult.TryPickValue(out var projectPath, out var problems))
         {
-            return Result.Failure(problems);
+            return problems;
         }
 
         var projectSummary = ProjectMapper.ToProjectSummary(projectToSave, projectPath);

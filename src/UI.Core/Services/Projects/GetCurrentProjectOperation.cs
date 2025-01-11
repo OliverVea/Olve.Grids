@@ -4,7 +4,7 @@ namespace UI.Core.Services.Projects;
 
 public class GetCurrentProjectOperation(ICurrentProjectRepository currentProjectRepository)
     : IAsyncOperation<GetCurrentProjectOperation.Request,
-        Result<GetCurrentProjectOperation.Response>>
+        GetCurrentProjectOperation.Response>
 {
     public record Request;
 
@@ -16,7 +16,7 @@ public class GetCurrentProjectOperation(ICurrentProjectRepository currentProject
 
         if (currentProjectResult.TryPickProblems(out var problems))
         {
-            return Result<Response>.Failure(problems);
+            return problems;
         }
 
         if (currentProjectResult.Value is not { } currentProject)

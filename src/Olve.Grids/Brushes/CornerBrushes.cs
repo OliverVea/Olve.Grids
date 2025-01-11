@@ -4,12 +4,12 @@ namespace Olve.Grids.Brushes;
 
 public record CornerBrushes
 {
-    public OneOf<BrushId, Any> UpperLeft { get; set; } = new Any();
-    public OneOf<BrushId, Any> UpperRight { get; set; } = new Any();
-    public OneOf<BrushId, Any> LowerLeft { get; set; } = new Any();
-    public OneOf<BrushId, Any> LowerRight { get; set; } = new Any();
+    public BrushIdOrAny UpperLeft { get; set; } = new Any();
+    public BrushIdOrAny UpperRight { get; set; } = new Any();
+    public BrushIdOrAny LowerLeft { get; set; } = new Any();
+    public BrushIdOrAny LowerRight { get; set; } = new Any();
 
-    public OneOf<BrushId, Any> this[Corner corner]
+    public BrushIdOrAny this[Corner corner]
     {
         get
         {

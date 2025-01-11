@@ -1,6 +1,6 @@
 ﻿using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
-using OneOf.Types;
+
 
 namespace Olve.Grids.Brushes;
 
@@ -60,7 +60,7 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
     public void SetCornerBrush(
         TileIndex tileIndex,
         Corner corner,
-        OneOf<BrushId, Any> brushId
+        BrushIdOrAny brushId
     )
     {
         if (brushId.TryPickT0(out var actualBrushId, out _))

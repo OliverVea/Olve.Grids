@@ -4,8 +4,7 @@ using UI.Core.Services.Projects.Repositories;
 namespace UI.Core.Services.Projects;
 
 public class DeleteProjectOperation(IProjectDeletionRepository projectDeletionRepository)
-    : IAsyncOperation<DeleteProjectOperation.Request,
-        Result>
+    : IAsyncOperation<DeleteProjectOperation.Request>
 {
     public record Request(Id<Project> ProjectId);
 
@@ -14,7 +13,7 @@ public class DeleteProjectOperation(IProjectDeletionRepository projectDeletionRe
         var result = await projectDeletionRepository.DeleteProjectAsync(request.ProjectId, ct);
         if (result.TryPickProblems(out var problems))
         {
-            return Result.Failure(problems);
+            return problems;
         }
 
         return Result.Success();

@@ -9,7 +9,7 @@ public class CreateNewProjectOperation(
     IProjectGettingRepository projectGettingRepository)
     : IAsyncOperation<
         CreateNewProjectOperation.Request,
-        Result<CreateNewProjectOperation.Response>>
+        CreateNewProjectOperation.Response>
 {
     public record Request(string Name, FileContent TileSheetImage, Size TileSize);
 
@@ -38,13 +38,13 @@ public class CreateNewProjectOperation(
         var createResult = await projectSettingRepository.SetProjectAsync(project, ct);
         if (createResult.TryPickProblems(out var problems))
         {
-            return Result<Response>.Failure(problems);
+            return problems;
         }
 
         var projectPathResult = await projectGettingRepository.GetProjectPathAsync(id, ct);
         if (!projectPathResult.TryPickValue(out var projectPath, out problems))
         {
-            return Result<Response>.Failure(problems);
+            return problems;
         }
 
         var projectSummary = new ProjectSummary(id, projectName, projectPath, lastAccessedAt);
@@ -52,7 +52,7 @@ public class CreateNewProjectOperation(
         var summaryResult = await projectSettingRepository.SetProjectSummaryAsync(projectSummary, ct);
         if (summaryResult.TryPickProblems(out problems))
         {
-            return Result<Response>.Failure(problems);
+            return problems;
         }
 
         return new Response(projectSummary);

@@ -2,7 +2,7 @@
 using DeBroglie.Models;
 using DeBroglie.Topo;
 using Olve.Grids.Generation;
-using OneOf.Types;
+
 using Direction = Olve.Grids.Primitives.Direction;
 
 namespace Olve.Grids.DeBroglie;
@@ -16,7 +16,7 @@ public class DeBroglieGenerator : IGenerator
         for (var attempt = 1; attempt <= request.Attempts; attempt++)
         {
             result = ExecuteInternal(request, attempt == request.Attempts);
-            if (result.Status.IsT0)
+            if (result.Result.Succeded)
             {
                 return result;
             }
@@ -76,13 +76,13 @@ public class DeBroglieGenerator : IGenerator
             .Map(x => ((Tile?)x).ToTileIndex(request.TileAtlas.FallbackTile))
             .ToArray2d();
 
-        for (var i = 0; i < request.OutputSize.Width; i++)
+        for (var i = 0; i < request.OutputSize.Width && status.Succeded; i++)
         {
             for (var j = 0; j < request.OutputSize.Height; j++)
             {
                 if (result[i, j] == request.TileAtlas.FallbackTile)
                 {
-                    status = new Error();
+                    status = Result.Failure(new ResultProblem("Output contained fallback tile"));
                 }
             }
         }
@@ -90,13 +90,13 @@ public class DeBroglieGenerator : IGenerator
         return new GenerationResult(request, result, status);
     }
 
-    private static OneOf<Success, Waiting, Error> GetStatus(Resolution resolution)
+    private static Result GetStatus(Resolution resolution)
     {
         return resolution switch
         {
-            Resolution.Decided => new Success(),
-            Resolution.Undecided => new Waiting(),
-            Resolution.Contradiction => new Error(),
+            Resolution.Decided => Result.Success(),
+            Resolution.Undecided => Result.Failure(new ResultProblem("Generation is undecided.")),
+            Resolution.Contradiction => Result.Failure(new ResultProblem("Generation has contradiction")),
             _ => throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null),
         };
     }

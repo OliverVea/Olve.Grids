@@ -7,7 +7,7 @@ using UI.Core.Services.Projects;
 namespace UI.Core.Services.Brushes;
 
 public class ListBrushesOperation(ICurrentProjectRepository currentProjectRepository)
-    : IAsyncOperation<ListBrushesOperation.Request, Result<ListBrushesOperation.Response>>
+    : IAsyncOperation<ListBrushesOperation.Request, ListBrushesOperation.Response>
 {
     public record Request;
 
@@ -18,7 +18,7 @@ public class ListBrushesOperation(ICurrentProjectRepository currentProjectReposi
         var currentProjectResult = await currentProjectRepository.GetCurrentProjectAsync(ct);
         if (currentProjectResult.TryPickProblems(out var problems, out var project))
         {
-            return Result<Response>.Failure(problems);
+            return problems;
         }
 
         return new Response(project.Brushes);
@@ -26,7 +26,7 @@ public class ListBrushesOperation(ICurrentProjectRepository currentProjectReposi
 }
 
 public class CreateNewBrushOperation(ICurrentProjectRepository currentProjectRepository)
-    : IAsyncOperation<CreateNewBrushOperation.Request, Result<CreateNewBrushOperation.Response>>
+    : IAsyncOperation<CreateNewBrushOperation.Request, CreateNewBrushOperation.Response>
 {
     public record Request(string Name);
 
@@ -49,7 +49,7 @@ public class CreateNewBrushOperation(ICurrentProjectRepository currentProjectRep
 }
 
 public class SetBrushForTileCornerOperation(ICurrentProjectRepository currentProjectRepository)
-    : IAsyncOperation<SetBrushForTileCornerOperation.Request, Result>
+    : IAsyncOperation<SetBrushForTileCornerOperation.Request>
 {
     public record Request(TileIndex TileIndex, Corner Corner, BrushId BrushId);
 

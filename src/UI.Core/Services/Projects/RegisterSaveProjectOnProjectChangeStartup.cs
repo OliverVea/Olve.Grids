@@ -22,7 +22,7 @@ public class RegisterSaveProjectOnProjectChangeStartup(
     {
         SaveProjectAndSummaryOperation.Request request = new(project);
         var operation = asyncOperationFactory
-            .Build<SaveProjectAndSummaryOperation, SaveProjectAndSummaryOperation.Request, Result>();
+            .Build<SaveProjectAndSummaryOperation, SaveProjectAndSummaryOperation.Request>();
 
         var result = await operation.ExecuteAsync(request);
 

@@ -3,8 +3,7 @@
 namespace UI.Core.Services.Projects;
 
 public class UpdateCurrentProjectOperation(ICurrentProjectRepository currentProjectRepository)
-    : IAsyncOperation<UpdateCurrentProjectOperation.Request,
-        Result>
+    : IAsyncOperation<UpdateCurrentProjectOperation.Request>
 {
     public record Request(Action<Project> Update);
 
@@ -14,7 +13,7 @@ public class UpdateCurrentProjectOperation(ICurrentProjectRepository currentProj
 
         if (updateResult.TryPickProblems(out var problems))
         {
-            return Result.Failure(problems);
+            return problems;
         }
 
         return Result.Success();

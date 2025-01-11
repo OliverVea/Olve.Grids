@@ -1,6 +1,6 @@
 ﻿namespace Olve.Grids.Primitives;
 
-public static class AdjacencyDirectionExtensions
+public static class DirectionExtensions
 {
     public static Direction Opposite(this Direction direction)
     {
@@ -28,4 +28,6 @@ public static class AdjacencyDirectionExtensions
 
         return opposite;
     }
+    
+    public static Direction Combine(this IEnumerable<Direction> directions) => directions.Aggregate((a, b) => a | b);
 }

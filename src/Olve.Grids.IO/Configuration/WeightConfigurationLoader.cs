@@ -2,28 +2,26 @@
 using Olve.Grids.IO.Configuration.Models;
 using Olve.Grids.IO.Configuration.Parsing;
 using Olve.Grids.Weights;
-using OneOf.Types;
+
 
 namespace Olve.Grids.IO.Configuration;
 
 public class WeightConfigurationLoader(WeightConfigurationParser weightConfigurationParser)
 {
-    public OneOf<IWeightLookup, FileParsingError> LoadWeightConfiguration(
-        ConfigurationModel configurationModel,
-        IEnumerable<TileIndex> tileIndices
-    )
+    public Result<IWeightLookup> LoadWeightConfiguration(ConfigurationModel configurationModel, IEnumerable<TileIndex> tileIndices)
     {
         var weightLookupBuilder = new WeightLookup();
 
         var result = ConfigureWeightLookupBuilder(configurationModel, weightLookupBuilder, tileIndices);
+        if (result.TryPickProblems(out var problems))
+        {
+            return problems;
+        }
 
-        return result.Match<OneOf<IWeightLookup, FileParsingError>>(
-            _ => weightLookupBuilder,
-            error => error
-        );
+        return weightLookupBuilder;
     }
 
-    public OneOf<Success, FileParsingError> ConfigureWeightLookupBuilder(
+    public Result ConfigureWeightLookupBuilder(
         ConfigurationModel configurationModel,
         IWeightLookup weightLookup,
         IEnumerable<TileIndex> tileIndices,
@@ -35,11 +33,10 @@ public class WeightConfigurationLoader(WeightConfigurationParser weightConfigura
             weightLookup.SetWeight(tileIndex, defaultWeight);
         }
 
-        if (!weightConfigurationParser
-                .Parse(configurationModel)
-                .TryPickT0(out var weightConfiguration, out var parsingError))
+        var parsingResult = weightConfigurationParser.Parse(configurationModel);
+        if (parsingResult.TryPickProblems(out var problems, out var weightConfiguration))
         {
-            return parsingError;
+            return problems;
         }
 
         foreach (var tileWeight in weightConfiguration.Weights)
@@ -53,6 +50,6 @@ public class WeightConfigurationLoader(WeightConfigurationParser weightConfigura
             }
         }
 
-        return new Success();
+        return Result.Success();
     }
 }

@@ -1,6 +1,5 @@
 using Olve.Utilities.AsyncOnStartup;
 using UI.Blazor.Components;
-using UI.Blazor.Interop;
 using UI.Core;
 
 namespace UI.Blazor;

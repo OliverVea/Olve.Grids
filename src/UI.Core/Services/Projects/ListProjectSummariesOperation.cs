@@ -6,7 +6,7 @@ namespace UI.Core.Services.Projects;
 
 public class ListProjectSummariesOperation(IProjectSearchingRepository projectRepository) : IAsyncOperation<
     ListProjectSummariesOperation.Request,
-    Result<ListProjectSummariesOperation.Response>>
+    ListProjectSummariesOperation.Response>
 {
     public record Request(string SearchPrompt, Pagination Pagination);
 
@@ -22,7 +22,7 @@ public class ListProjectSummariesOperation(IProjectSearchingRepository projectRe
 
         if (!result.TryPickValue(out var projects, out var problems))
         {
-            return Result<Response>.Failure(problems);
+            return problems;
         }
 
         return new Response(projects);

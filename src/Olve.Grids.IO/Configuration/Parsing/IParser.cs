@@ -2,12 +2,9 @@
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
-internal interface IParser<TOut>
-{
-    OneOf<TOut, FileParsingError> Parse(ConfigurationModel configurationModel);
-}
+internal interface IParser<TOut> : IParser<ConfigurationModel, TOut>;
 
 internal interface IParser<in TIn, TOut>
 {
-    OneOf<TOut, FileParsingError> Parse(TIn input);
+    Result<TOut> Parse(TIn input);
 }

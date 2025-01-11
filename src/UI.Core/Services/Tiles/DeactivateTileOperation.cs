@@ -5,7 +5,7 @@ using UI.Core.Services.Projects;
 namespace UI.Core.Services.Tiles;
 
 public class DeactivateTileOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
-    : IAsyncOperation<DeactivateTileOperation.Request, Result>
+    : IAsyncOperation<DeactivateTileOperation.Request>
 {
     public record Request(TileIndex TileIndex);
 

@@ -14,7 +14,7 @@ public class AdjacencyFromTileBrushEstimator
         var tileIndices = new HashSet<TileIndex>();
         var brushIds = new HashSet<BrushId>();
 
-        var lookup = new Dictionary<(TileIndex, Corner), OneOf<BrushId, Any>>();
+        var lookup = new Dictionary<(TileIndex, Corner), BrushIdOrAny>();
 
         foreach (var (tileIndex, corner, brushId) in brushConfiguration)
         {

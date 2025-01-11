@@ -1,30 +1,30 @@
-﻿using OneOf.Types;
+﻿
 
 namespace Demo.Commands;
 
 public static class SizeParser
 {
-    public static OneOf<Size, Error<string>> Parse(string? value)
+    public static Result<Size> Parse(string? value)
     {
         if (value is null)
         {
-            return new Error<string>("The size is required.");
+            return Result<Size>.Failure(new ResultProblem("The size must be specified."));
         }
 
         var parts = value.Split('x');
         if (parts.Length != 2)
         {
-            return new Error<string>("The size must be in the format '[width]x[height]', e.g. 4x4.");
+            return Result<Size>.Failure(new ResultProblem("The size '{0}' is not in the format 'widthxheight'.", value));
         }
 
         if (!int.TryParse(parts[0], out var width))
         {
-            return new Error<string>("The width must be a valid integer.");
+            return Result<Size>.Failure(new ResultProblem("The width '{0}' is not a valid integer.", parts[0]));
         }
 
         if (!int.TryParse(parts[1], out var height))
         {
-            return new Error<string>("The height must be a valid integer.");
+            return Result<Size>.Failure(new ResultProblem("The height '{0}' is not a valid integer.", parts[1]));
         }
 
         return new Size(width, height);

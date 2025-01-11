@@ -14,3 +14,9 @@ public readonly record struct BrushId(Id Id, string DisplayName) : IComparable<B
 
     public int CompareTo(BrushId other) => Id.CompareTo(other.Id);
 }
+
+[GenerateOneOf]
+public partial class BrushIdOrAny : OneOfBase<BrushId, Any>
+{
+    public static readonly BrushIdOrAny Any = new Any();
+}

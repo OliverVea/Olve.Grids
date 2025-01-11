@@ -10,7 +10,7 @@ public interface IBrushLookup : IReadOnlyBrushLookup
     void SetCornerBrush(
         TileIndex tileIndex,
         Corner corner,
-        OneOf<BrushId, Any> brushId
+        BrushIdOrAny brushId
     );
 
     void Clear();

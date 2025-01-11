@@ -1,31 +1,23 @@
 ﻿using Olve.Grids.IO.Configuration.Models;
 using Olve.Grids.Primitives;
-using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
-public class AdjacencyConfigurationParser(
-    TileGroupParser tileGroupParser,
-    AdjacencyDirectionParser adjacencyDirectionParser)
-    : IParser<AdjacencyConfiguration>
+public class AdjacencyConfigurationParser(TileGroupParser tileGroupParser, DirectionParser directionParser) : IParser<AdjacencyConfiguration>
 {
-    public OneOf<AdjacencyConfiguration, FileParsingError> Parse(
-        ConfigurationModel configurationModel
-    )
+    public Result<AdjacencyConfiguration> Parse(ConfigurationModel configurationModel)
     {
-        if (!tileGroupParser
-                .Parse(configurationModel)
-                .TryPickT0(out var tileGroups, out var tileGroupsError))
+        // Todo: Do we need to parse the tile groups again here?
+        var tileGroupResults = tileGroupParser.Parse(configurationModel);
+        if (tileGroupResults.TryPickProblems(out var problems, out var tileGroups))
         {
-            return tileGroupsError;
+            return problems;
         }
 
-        if (
-            !ParseAdjacencies(tileGroups, configurationModel)
-                .TryPickT0(out var adjacencies, out var adjacenciesError)
-        )
+        var adjacencyResult = ParseAdjacencies(tileGroups, configurationModel);
+        if (adjacencyResult.TryPickProblems(out problems, out var adjacencies))
         {
-            return adjacenciesError;
+            return problems;
         }
 
         return new AdjacencyConfiguration
@@ -35,109 +27,79 @@ public class AdjacencyConfigurationParser(
         };
     }
 
-    private OneOf<IReadOnlyList<AdjacencyConfiguration.Adjacency>, FileParsingError> ParseAdjacencies(
-        TileGroups tileGroups,
-        ConfigurationModel configurationModel)
+    private Result<IReadOnlyList<AdjacencyConfiguration.Adjacency>> ParseAdjacencies(TileGroups tileGroups, ConfigurationModel configurationModel)
     {
         if (configurationModel.Adjacencies is not { } adjacencyModels)
         {
             return Array.Empty<AdjacencyConfiguration.Adjacency>();
         }
 
-        var adjacencyParsingResults = adjacencyModels
-            .Select(x => ParseAdjacency(tileGroups, x))
-            .ToArray();
+        var adjacencyParsingResults = adjacencyModels.Select(x => ParseAdjacency(tileGroups, x));
 
-        if (!adjacencyParsingResults.AllT0())
+        if (adjacencyParsingResults.TryPickProblems(out var problems, out var adjacencies))
         {
-            var errors = adjacencyParsingResults.OfT1();
-            return FileParsingError.Combine(errors);
+            return problems;
         }
 
-        return adjacencyParsingResults
-            .OfT0()
-            .ToArray();
+        return adjacencies.ToArray();
     }
 
-    private OneOf<AdjacencyConfiguration.Adjacency, FileParsingError> ParseAdjacency(
-        TileGroups tileGroups,
-        AdjacencyModel adjacencyModel
-    )
+    private Result<AdjacencyConfiguration.Adjacency> ParseAdjacency(TileGroups tileGroups, AdjacencyModel adjacencyModel)
     {
-        if (!tileGroupParser
-                .Parse(adjacencyModel.Tiles, adjacencyModel.Group, tileGroups)
-                .TryPickT0(out var tiles, out var tileError)
-           )
+        var tileResult = tileGroupParser.Parse(adjacencyModel.Tiles, adjacencyModel.Group, tileGroups);
+        if (tileResult.TryPickProblems(out var problems, out var tileIndices))
         {
-            return tileError;
+            return problems;
         }
 
-        var adjacents = adjacencyModel.Adjacents is { } adjacentModels
-            ? adjacentModels
-                .Select(x => ParseAdjacent(tileGroups, x))
-                .ToArray()
+        var adjacentResults = adjacencyModel.Adjacents is { } adjacentModels
+            ? adjacentModels.Select(x => ParseAdjacent(tileGroups, x))
             : [ ];
 
-        if (!adjacents.AllT0())
+        if (!adjacentResults.TryPickProblems(out problems, out var adjacents))
         {
-            var errors = adjacents.OfT1();
-            return FileParsingError.Combine(errors);
+            return problems;
         }
 
-        var overwriteDirections = adjacencyModel.OverwriteBrushAdjacencies
+        var overwriteDirectionResults = adjacencyModel.OverwriteBrushAdjacencies
             is { } overwriteDirectionsModel
-            ? overwriteDirectionsModel
-                .Select(x => adjacencyDirectionParser.ParseAdjacencyDirection(x, false))
-                .ToArray()
+            ? overwriteDirectionsModel.Select(x => directionParser.ParseDirection(x, false))
             : [ ];
 
-        if (!overwriteDirections.AllT0())
+        if (overwriteDirectionResults.TryPickProblems(out problems, out var overwriteDirections))
         {
-            var errors = overwriteDirections.OfT1();
-            return FileParsingError.Combine(errors);
+            return problems;
         }
 
-        var adjacencyDirection = overwriteDirections
-            .OfT0()
-            .Aggregate(Direction.None, (acc, x) => acc | x);
+        var adjacencyDirection = overwriteDirections.Combine();
 
         return new AdjacencyConfiguration.Adjacency
         {
-            Tiles = tiles.ToArray(),
+            Tiles = tileIndices.ToArray(),
             DirectionToOverwrite = adjacencyDirection,
-            Adjacents = adjacents
-                .OfT0()
-                .ToArray(),
+            Adjacents = adjacents.ToArray(),
         };
     }
 
-    private OneOf<AdjacencyConfiguration.Adjacent, FileParsingError> ParseAdjacent(
-        TileGroups tileGroups,
-        AdjacentModel adjacentModel
-    )
+    private Result<AdjacencyConfiguration.Adjacent> ParseAdjacent(TileGroups tileGroups, AdjacentModel adjacentModel)
     {
-        if (!tileGroupParser
-                .Parse(adjacentModel.Tiles, adjacentModel.Group, tileGroups)
-                .TryPickT0(out var tiles, out var tileIndexError)
-           )
+        var tileResults = tileGroupParser.Parse(adjacentModel.Tiles, adjacentModel.Group, tileGroups);
+        if (tileResults.TryPickProblems(out var problems, out var tileIndices))
         {
-            return tileIndexError;
+            return problems;
         }
 
-        if (
-            !adjacencyDirectionParser
-                .ParseAdjacencyDirection(adjacentModel.Direction, true)
-                .TryPickT0(out var direction, out var directionError)
-        )
+        var directionResult = directionParser.ParseDirection(adjacentModel.Direction, required: true);
+        if (directionResult.TryPickProblems(out problems, out var adjacencyDirection))
         {
-            return directionError;
+            return problems;
         }
 
         return new AdjacencyConfiguration.Adjacent
         {
-            Tiles = tiles.ToArray(),
+            Tiles = tileIndices.ToArray(),
             IsAdjacent = adjacentModel.IsAdjacent,
-            Direction = direction,
+            Direction = adjacencyDirection,
         };
     }
 }

@@ -9,7 +9,7 @@ public class OperationFactory(IServiceProvider serviceProvider)
         where TOperation : IOperation<TRequest, TResponse> =>
         serviceProvider.GetRequiredService<TOperation>();
 
-    public TResponse Execute<TOperation, TRequest, TResponse>(TRequest request)
+    public Result<TResponse> Execute<TOperation, TRequest, TResponse>(TRequest request)
         where TOperation : IOperation<TRequest, TResponse> =>
         Build<TOperation, TRequest, TResponse>()
             .Execute(request);
@@ -17,11 +17,15 @@ public class OperationFactory(IServiceProvider serviceProvider)
 
 public class AsyncOperationFactory(IServiceProvider serviceProvider)
 {
+    public TOperation Build<TOperation, TRequest>()
+        where TOperation : IAsyncOperation<TRequest> =>
+        serviceProvider.GetRequiredService<TOperation>();
+    
     public TOperation Build<TOperation, TRequest, TResponse>()
         where TOperation : IAsyncOperation<TRequest, TResponse> =>
         serviceProvider.GetRequiredService<TOperation>();
 
-    public Task<TResponse> ExecuteAsync<TOperation, TRequest, TResponse>(TRequest request, CancellationToken ct = default)
+    public Task<Result<TResponse>> ExecuteAsync<TOperation, TRequest, TResponse>(TRequest request, CancellationToken ct = default)
         where TOperation : IAsyncOperation<TRequest, TResponse> =>
         Build<TOperation, TRequest, TResponse>()
             .ExecuteAsync(request, ct);

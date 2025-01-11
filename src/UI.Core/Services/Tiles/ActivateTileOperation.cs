@@ -5,7 +5,7 @@ using UI.Core.Services.Projects;
 namespace UI.Core.Services.Tiles;
 
 public class ActivateTileOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
-    : IAsyncOperation<ActivateTileOperation.Request, Result>
+    : IAsyncOperation<ActivateTileOperation.Request>
 {
     public record Request(TileIndex TileIndex);
 

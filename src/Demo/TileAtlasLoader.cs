@@ -2,7 +2,6 @@
 using Olve.Grids.Brushes;
 using Olve.Grids.Generation;
 using Olve.Grids.Grids;
-using Olve.Grids.IO;
 using Olve.Grids.IO.Configuration;
 using Olve.Grids.IO.Readers;
 using Olve.Grids.IO.TileAtlasBuilder;
@@ -14,7 +13,7 @@ namespace Demo;
 
 public class TileAtlasLoader
 {
-    public OneOf<TileAtlas, FileParsingError> LoadTileAtlas(
+    public Result<TileAtlas> LoadTileAtlas(
         Size imageSize,
         Size tileSize,
         string tileAtlasBrushesFile,
@@ -23,31 +22,29 @@ public class TileAtlasLoader
         var tileAtlasBuilder = new TileAtlasBuilder()
             .WithTileSize(tileSize);
 
-        var tileAtlasBrushesReader = new TileAtlasBrushesFileReader(tileAtlasBrushesFile);
-        if (!tileAtlasBrushesReader
-                .Load()
-                .TryPickT0(out var tileAtlasBrushes, out var brushErrors))
+        var tileAtlasBrushesResult = new TileAtlasBrushesFileReader(tileAtlasBrushesFile).Load();
+        if (tileAtlasBrushesResult.TryPickProblems(out var problems, out var brushLookup))
         {
-            return brushErrors;
+            return problems;
         }
 
-        var tileIndices = tileAtlasBrushes
+        var tileIndices = brushLookup
             .Entries
             .Select(x => x.TileIndex)
             .Distinct()
             .ToArray();
 
-        if (!LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, tileAtlasBrushes.Entries)
-                .TryPickT0(out var adjacencyAndWeightLookup, out var atlasConfigurationError))
+        var adjacencyAndWeightLookupResult = LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, brushLookup.Entries);
+        if (adjacencyAndWeightLookupResult.TryPickProblems(out problems, out var adjacencyAndWeightLookup))
         {
-            return atlasConfigurationError;
+            return problems;
         }
 
         var (adjacencyLookup, weightLookup) = adjacencyAndWeightLookup;
 
         tileAtlasBuilder = tileAtlasBuilder
             .WithImageSize(imageSize)
-            .WithBrushLookup(tileAtlasBrushes)
+            .WithBrushLookup(brushLookup)
             .WithAdjacencyLookup(adjacencyLookup);
 
         if (weightLookup is { })
@@ -58,7 +55,7 @@ public class TileAtlasLoader
         return tileAtlasBuilder.Build();
     }
 
-    private OneOf<(AdjacencyLookup, WeightLookup?), FileParsingError> LoadAdjacencyLookupAndWeightLookup(
+    private Result<(AdjacencyLookup, WeightLookup?)> LoadAdjacencyLookupAndWeightLookup(
         string? tileAtlasConfigFile,
         IEnumerable<TileIndex> tileIndices,
         IEnumerable<(TileIndex, Corner, BrushId)> tileAtlasBrushes)

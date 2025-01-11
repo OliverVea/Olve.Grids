@@ -3,8 +3,7 @@
 namespace UI.Core.Services.Projects;
 
 public class SetCurrentProjectOperation(ICurrentProjectRepository currentProjectRepository)
-    : IAsyncOperation<SetCurrentProjectOperation.Request,
-        Result>
+    : IAsyncOperation<SetCurrentProjectOperation.Request>
 {
     public record Request(Project Project);
 

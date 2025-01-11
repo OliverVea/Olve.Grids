@@ -8,7 +8,7 @@ public class TileAtlasBrushesFileReader(string filePath)
 {
     private const char NewLine = '\n';
 
-    public OneOf<BrushLookup, FileParsingError> Load()
+    public Result<BrushLookup> Load()
     {
         var text = File.ReadAllText(filePath);
         var sb = new StringBuilder(text);
@@ -32,7 +32,8 @@ public class TileAtlasBrushesFileReader(string filePath)
 
         if (lineCount % 2 != 0)
         {
-            return FileParsingError.New("Invalid brush lookup file: line number must be even.");
+            // Todo: add parameter to problem
+            return new ResultProblem("Invalid brush lookup file: line number must be even.");
         }
 
         var charCounts = lines
@@ -44,14 +45,14 @@ public class TileAtlasBrushesFileReader(string filePath)
                 .Count()
             != 1)
         {
-            return FileParsingError.New("Invalid brush lookup file: inconsistent line lengths.");
+            return new ResultProblem("Invalid brush lookup file: inconsistent line lengths.");
         }
 
         var charCount = charCounts.First();
 
         if (charCount % 2 != 0)
         {
-            return FileParsingError.New("Invalid brush lookup file: line length must be even.");
+            return new ResultProblem("Invalid brush lookup file: line length must be even.");
         }
 
         var brushLookup = new Dictionary<char, BrushId>();
@@ -86,11 +87,11 @@ public class TileAtlasBrushesFileReader(string filePath)
         return builder;
     }
 
-    private static OneOf<BrushId, Any> GetBrushId(char c, Dictionary<char, BrushId> brushLookup)
+    private static BrushIdOrAny GetBrushId(char c, Dictionary<char, BrushId> brushLookup)
     {
         if (c == FileIOConstants.AnyBrushChar)
         {
-            return new Any();
+            return BrushIdOrAny.Any;
         }
 
         if (brushLookup.TryGetValue(c, out var existingBrushId))

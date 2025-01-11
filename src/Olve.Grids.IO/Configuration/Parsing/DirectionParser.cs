@@ -1,9 +1,8 @@
 ﻿using Olve.Grids.Primitives;
-using Olve.Utilities.CollectionExtensions;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
-public class AdjacencyDirectionParser
+public class DirectionParser
 {
     private static readonly Dictionary<string, Direction> DirectionLookup = new()
     {
@@ -17,7 +16,7 @@ public class AdjacencyDirectionParser
         ["r"] = Direction.Right,
     };
 
-    public OneOf<Direction, FileParsingError> ParseAdjacencyDirection(
+    public Result<Direction> ParseDirection(
         string? direction,
         bool required
     )
@@ -26,41 +25,35 @@ public class AdjacencyDirectionParser
         {
             if (required)
             {
-                return FileParsingError.New("Direction is required.");
+                return new ResultProblem("Direction is required.");
             }
 
             return Direction.None;
         }
 
-        var components = direction
+        var directionResults = direction
             .Split('|')
             .Select(x => x.Trim())
-            .Select(ParseAdjacencyDirectionInternal)
-            .ToArray();
+            .Select(ParseAdjacencyDirectionInternal);
 
-        if (components.AnyT1())
+        if (directionResults.TryPickProblems(out var problems, out var directions))
         {
-            var errors = components.OfT1();
-            return FileParsingError.Combine(errors);
+            return problems;
         }
 
-        return components
-            .OfT0()
-            .Aggregate((a, b) => a | b);
+        return directions.Aggregate((a, b) => a | b);
     }
 
-    private OneOf<Direction, FileParsingError> ParseAdjacencyDirectionInternal(
-        string? direction
-    )
+    private Result<Direction> ParseAdjacencyDirectionInternal(string? direction)
     {
         if (direction is null)
         {
-            return FileParsingError.New("Direction is required.");
+            return new ResultProblem("Direction is required");
         }
 
         if (!DirectionLookup.TryGetValue(direction, out var adjacencyDirection))
         {
-            return FileParsingError.New(
+            return new ResultProblem(
                 "Invalid direction {0}. Allowed values are: {1}",
                 direction,
                 string.Join(", ", DirectionLookup.Keys)

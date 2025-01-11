@@ -48,33 +48,24 @@ public class RunPackedCommand : Command<RunPackedSettings>
         var tileAtlasSerializer = new TileAtlasSerializer();
         var tileAtlasFileLoader = new TileAtlasFileLoader(tileAtlasSerializer);
 
-        if (!tileAtlasFileLoader
-                .Load(settings.PackedTileAtlasFile)
-                .TryPickT0(out var tileAtlas, out var fileLoadingError))
+        var tileAtlasResult = tileAtlasFileLoader.Load(settings.PackedTileAtlasFile);
+        if (tileAtlasResult.TryPickProblems(out var problems, out var tileAtlas))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {fileLoadingError}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
-        var inputBrushFileReader = new InputBrushFileReader(settings.InputBrushesFile);
-        if (!inputBrushFileReader
-                .Load(tileAtlas.BrushLookup.Brushes)
-                .TryPickT0(out var brushGrid, out var fileParsingError))
+        var inputBrushResult = new InputBrushFileReader(settings.InputBrushesFile).Load(tileAtlas.BrushLookup.Brushes);
+        if (inputBrushResult.TryPickProblems(out problems, out var brushGrid))
         {
-            foreach (var problem in fileParsingError.Problems)
-            {
-                AnsiConsole.MarkupLine($"[bold red]Error:[/] {problem}");
-            }
-
+            problems.LogToAnsiConsole();
             return Error;
         }
 
-        var imageLoader = new ImageLoader();
-        if (!imageLoader
-                .LoadImage(settings.TileAtlasFile)
-                .TryPickValue(out var tileAtlasImage, out var imageLoaderError))
+        var imageResult = new ImageLoader().LoadImage(settings.TileAtlasFile);
+        if (imageResult.TryPickProblems(out problems, out var tileAtlasImage))
         {
-            AnsiConsole.MarkupLine($"[bold red]Error:[/] {imageLoaderError}");
+            problems.LogToAnsiConsole();
             return Error;
         }
 
@@ -92,8 +83,10 @@ public class RunPackedCommand : Command<RunPackedSettings>
         var visualizationExporter = new VisualizationExporter();
         visualizationExporter.ExportAsPng(generationResult, settings.OutputFile, tileAtlasImage);
 
-        if (generationResult.Status.IsT2)
+
+        if (generationResult.Result.TryPickProblems(out problems))
         {
+            problems.LogToAnsiConsole();
             return Error;
         }
 

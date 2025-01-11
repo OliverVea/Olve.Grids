@@ -4,46 +4,43 @@ using Olve.Grids.Grids;
 using Olve.Grids.IO.Configuration.Models;
 using Olve.Grids.IO.Configuration.Parsing;
 using Olve.Grids.Primitives;
-using OneOf.Types;
+
 
 namespace Olve.Grids.IO.Configuration;
 
 public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacencyConfigurationParser)
 {
-    public OneOf<IAdjacencyLookup, FileParsingError> LoadAdjacencyLookupBuilder(
+    public Result<IAdjacencyLookup> LoadAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
         IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
     )
     {
         var adjacencyLookupBuilder = new AdjacencyLookup();
 
-        if (
-            !ConfigureAdjacencyLookupBuilder(
-                    configurationModel,
-                    adjacencyLookupBuilder,
-                    brushConfiguration
-                )
-                .TryPickT0(out _, out var error)
-        )
+        var result = ConfigureAdjacencyLookupBuilder(
+            configurationModel,
+            adjacencyLookupBuilder,
+            brushConfiguration
+        );
+
+        if (result.TryPickProblems(out var problems))
         {
-            return error;
+            return problems;
         }
 
         return adjacencyLookupBuilder;
     }
 
-    public OneOf<Success, FileParsingError> ConfigureAdjacencyLookupBuilder(
+    public Result ConfigureAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
         IAdjacencyLookup adjacencyLookup,
         IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
     )
     {
-        if (!adjacencyConfigurationParser
-                .Parse(configurationModel)
-                .TryPickT0(out var adjacencyConfiguration, out var parsingError)
-           )
+        var adjacencyConfigurationResult = adjacencyConfigurationParser.Parse(configurationModel);
+        if (adjacencyConfigurationResult.TryPickProblems(out var problems, out var adjacencyConfiguration))
         {
-            return parsingError;
+            return problems;
         }
 
         if (adjacencyConfiguration.GenerateFromBrushes)
@@ -54,10 +51,10 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
         ClearAdjacenciesToOverwrite(adjacencyConfiguration, adjacencyLookup);
         SetConfiguredAdjacencies(adjacencyConfiguration, adjacencyLookup);
 
-        return new Success();
+        return Result.Success();
     }
 
-    private void GenerateFromBrushes(
+    private static void GenerateFromBrushes(
         IAdjacencyLookup adjacencyLookup,
         IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
     )
@@ -66,7 +63,7 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
         b.SetAdjacencies(adjacencyLookup, brushConfiguration);
     }
 
-    private void ClearAdjacenciesToOverwrite(
+    private static void ClearAdjacenciesToOverwrite(
         AdjacencyConfiguration adjacencyConfiguration,
         IAdjacencyLookup adjacencyLookup
     )
@@ -80,7 +77,7 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
         }
     }
 
-    private void SetConfiguredAdjacencies(
+    private static void SetConfiguredAdjacencies(
         AdjacencyConfiguration adjacencyConfiguration,
         IAdjacencyLookup adjacencyLookup
     )

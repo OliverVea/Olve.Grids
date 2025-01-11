@@ -14,21 +14,23 @@ public class InputBrushFileReader(string filePath)
     /// </summary>
     /// <param name="brushes">The brushes to use.</param>
     /// <returns>The loaded brush grid.</returns>
-    public OneOf<BrushGrid, FileParsingError> Load(IEnumerable<BrushId> brushes)
+    public Result<BrushGrid> Load(IEnumerable<BrushId> brushes)
     {
         var lines = File.ReadAllLines(filePath);
 
-        if (!GetSize(lines)
-                .TryPickT0(out var size, out var error))
+        var sizeResult = GetSize(lines);
+        if (sizeResult.TryPickProblems(out var problems, out var size))
         {
-            return error;
+            return problems;
         }
 
         var grid = new BrushGrid(size);
 
         var brushLookup = brushes.ToDictionary(x => x.DisplayName[0], x => x);
 
-        List<FileParsingError> errors = [ ];
+        // Todo: refactor this please
+        problems = new();
+        var hadProblems = false;
 
         for (var y = 0; y < size.Height; y++)
         {
@@ -38,9 +40,10 @@ public class InputBrushFileReader(string filePath)
 
                 var brushResult = GetBrushId(brushLookup, c);
 
-                if (brushResult.TryPickT2(out var fileParsingError, out var brushId))
+                if (brushResult.TryPickProblems(out var brushProblems, out var brushId))
                 {
-                    errors.Add(fileParsingError);
+                    problems.Append(brushProblems);
+                    hadProblems = true;
                     continue;
                 }
 
@@ -48,46 +51,43 @@ public class InputBrushFileReader(string filePath)
             }
         }
 
-        if (errors.Count > 0)
+        if (hadProblems)
         {
-            return FileParsingError.Combine(errors);
+            return problems;
         }
 
         return grid;
     }
 
-    private OneOf<Size, FileParsingError> GetSize(string[] lines)
+    private Result<Size> GetSize(string[] lines)
     {
         var height = lines.Length;
         if (height == 0)
         {
-            return FileParsingError.New("File is empty.");
+            return new ResultProblem("File is empty.");
         }
 
         var width = lines[0].Length;
         if (lines.Any(x => x.Length != width))
         {
-            return FileParsingError.New("Inconsistent line lengths.");
+            return new ResultProblem("Inconsistent line lengths.");
         }
 
         return new Size(width, height);
     }
 
-    private static OneOf<BrushId, Any, FileParsingError> GetBrushId(
-        Dictionary<char, BrushId> brushLookup,
-        char c
-    )
+    private static Result<BrushIdOrAny> GetBrushId(Dictionary<char, BrushId> brushLookup, char c)
     {
         if (c == FileIOConstants.AnyBrushChar)
         {
-            return new Any();
+            return BrushIdOrAny.Any;
         }
 
         if (!brushLookup.TryGetValue(c, out var brushId))
         {
-            return FileParsingError.New("Unknown brush character: '{0}'.", c);
+            return new ResultProblem("Unknown brush character: '{0}'", c);
         }
 
-        return brushId;
+        return new BrushIdOrAny(brushId);
     }
 }
