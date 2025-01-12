@@ -3,7 +3,8 @@ using Olve.Grids.Primitives;
 
 namespace Olve.Grids.IO.Configuration.Parsing;
 
-public class AdjacencyConfigurationParser(TileGroupParser tileGroupParser, DirectionParser directionParser) : IParser<AdjacencyConfiguration>
+public class AdjacencyConfigurationParser(TileGroupParser tileGroupParser, DirectionParser directionParser)
+    : IParser<AdjacencyConfiguration>
 {
     public Result<AdjacencyConfiguration> Parse(ConfigurationModel configurationModel)
     {
@@ -27,11 +28,12 @@ public class AdjacencyConfigurationParser(TileGroupParser tileGroupParser, Direc
         };
     }
 
-    private Result<IReadOnlyList<AdjacencyConfiguration.Adjacency>> ParseAdjacencies(TileGroups tileGroups, ConfigurationModel configurationModel)
+    private Result<IReadOnlyList<AdjacencyConfiguration.Adjacency>> ParseAdjacencies(TileGroups tileGroups,
+        ConfigurationModel configurationModel)
     {
         if (configurationModel.Adjacencies is not { } adjacencyModels)
         {
-            return Array.Empty<AdjacencyConfiguration.Adjacency>();
+            return Result<IReadOnlyList<AdjacencyConfiguration.Adjacency>>.Success([ ]);
         }
 
         var adjacencyParsingResults = adjacencyModels.Select(x => ParseAdjacency(tileGroups, x));
@@ -56,7 +58,7 @@ public class AdjacencyConfigurationParser(TileGroupParser tileGroupParser, Direc
             ? adjacentModels.Select(x => ParseAdjacent(tileGroups, x))
             : [ ];
 
-        if (!adjacentResults.TryPickProblems(out problems, out var adjacents))
+        if (adjacentResults.TryPickProblems(out problems, out var adjacents))
         {
             return problems;
         }
@@ -89,7 +91,7 @@ public class AdjacencyConfigurationParser(TileGroupParser tileGroupParser, Direc
             return problems;
         }
 
-        var directionResult = directionParser.ParseDirection(adjacentModel.Direction, required: true);
+        var directionResult = directionParser.ParseDirection(adjacentModel.Direction, true);
         if (directionResult.TryPickProblems(out problems, out var adjacencyDirection))
         {
             return problems;

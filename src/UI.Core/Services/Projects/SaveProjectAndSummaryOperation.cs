@@ -20,7 +20,7 @@ public class SaveProjectAndSummaryOperation(
         };
 
         var projectPathResult = await projectGettingRepository.GetProjectPathAsync(projectToSave.Id, ct);
-        if (!projectPathResult.TryPickValue(out var projectPath, out var problems))
+        if (projectPathResult.TryPickProblems(out var problems, out var projectPath))
         {
             return problems;
         }

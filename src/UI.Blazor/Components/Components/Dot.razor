@@ -94,6 +94,7 @@
 
     private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, BrushId brushId)
     {
+        await ContextMenuService.HideAsync();
         await ModalService.ShowAsync(@<span>Hi!</span>, "Edit Brush");
     }
 

@@ -20,7 +20,7 @@ public class ListProjectSummariesOperation(IProjectSearchingRepository projectRe
             true,
             ct);
 
-        if (!result.TryPickValue(out var projects, out var problems))
+        if (result.TryPickProblems(out var problems, out var projects))
         {
             return problems;
         }

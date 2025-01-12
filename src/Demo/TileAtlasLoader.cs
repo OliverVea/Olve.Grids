@@ -34,7 +34,8 @@ public class TileAtlasLoader
             .Distinct()
             .ToArray();
 
-        var adjacencyAndWeightLookupResult = LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, brushLookup.Entries);
+        var adjacencyAndWeightLookupResult =
+            LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, brushLookup.Entries);
         if (adjacencyAndWeightLookupResult.TryPickProblems(out problems, out var adjacencyAndWeightLookup))
         {
             return problems;
@@ -82,7 +83,15 @@ public class TileAtlasLoader
         var weightLookup = new WeightLookup();
 
         var configurationLoader = ConfigurationLoader.Create();
-        configurationLoader.Load(tileAtlasConfigFile, adjacencyLookup, weightLookup, tileIndices, tileAtlasBrushes);
+        var configurationResult = configurationLoader.Load(tileAtlasConfigFile,
+            adjacencyLookup,
+            weightLookup,
+            tileIndices,
+            tileAtlasBrushes);
+        if (configurationResult.TryPickProblems(out var problems))
+        {
+            return problems;
+        }
 
         return (adjacencyLookup, weightLookup);
     }

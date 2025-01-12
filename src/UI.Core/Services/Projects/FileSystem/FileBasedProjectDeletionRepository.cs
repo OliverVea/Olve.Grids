@@ -10,7 +10,7 @@ public class FileBasedProjectDeletionRepository(
     {
         LoadProjectOperation.Request loadProjectRequest = new(projectId);
         var loadProjectResult = await loadProjectOperation.ExecuteAsync(loadProjectRequest, ct);
-        if (!loadProjectResult.TryPickValue(out var project, out var problems))
+        if (loadProjectResult.TryPickProblems(out var problems, out var project))
         {
             return Result.Failure(problems);
         }

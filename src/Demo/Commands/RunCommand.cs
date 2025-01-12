@@ -113,7 +113,7 @@ public class RunCommand : Command<RunCommandSettings>
             problems.LogToAnsiConsole();
             return Error;
         }
-        
+
         return Success;
     }
 }

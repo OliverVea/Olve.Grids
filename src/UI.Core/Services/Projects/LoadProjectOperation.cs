@@ -14,7 +14,7 @@ public class LoadProjectOperation(IProjectGettingRepository projectGettingReposi
     {
         var getResult = await projectGettingRepository.GetProjectAsync(request.ProjectId, ct);
 
-        if (!getResult.TryPickValue(out var project, out var problems))
+        if (getResult.TryPickProblems(out var problems, out var project))
         {
             return problems;
         }

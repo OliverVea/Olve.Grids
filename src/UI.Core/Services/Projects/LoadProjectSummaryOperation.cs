@@ -14,7 +14,7 @@ public class LoadProjectSummaryOperation(IProjectGettingRepository projectGettin
     {
         var getResult = await projectGettingRepository.GetProjectSummaryAsync(request.ProjectId, ct);
 
-        if (!getResult.TryPickValue(out var projectSummary, out var problems))
+        if (getResult.TryPickProblems(out var problems, out var projectSummary))
         {
             return problems;
         }
