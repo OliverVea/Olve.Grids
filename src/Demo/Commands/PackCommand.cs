@@ -40,11 +40,11 @@ public class PackCommand : Command<PackCommandSettings>
 
         var tileAtlasSize = new Size(tileAtlasImage.Width, tileAtlasImage.Height);
 
-        var tileAtlasResult = new TileAtlasLoader()
-            .LoadTileAtlas(tileAtlasSize,
-                tileSize,
-                settings.TileAtlasBrushesFile,
-                settings.TileAtlasConfigFile);
+        var tileAtlasResult = new TileAtlasLoader().LoadTileAtlas(
+            tileAtlasSize,
+            tileSize,
+            settings.TileAtlasBrushesFile,
+            settings.TileAtlasConfigFile);
         if (tileAtlasResult.TryPickProblems(out problems, out var tileAtlas))
         {
             problems.LogToAnsiConsole();
@@ -52,7 +52,8 @@ public class PackCommand : Command<PackCommandSettings>
         }
 
         var serializer = new TileAtlasSerializer();
-        var saveTileAtlasResult = new TileAtlasFileLoader(serializer).Save(tileAtlas, settings.OutputFile, settings.Overwrite);
+        var saveTileAtlasResult =
+            new TileAtlasFileLoader(serializer).Save(tileAtlas, settings.OutputFile, settings.Overwrite);
         if (saveTileAtlasResult.TryPickProblems(out problems))
         {
             problems.LogToAnsiConsole();

@@ -55,7 +55,7 @@ public class RunPackedCommand : Command<RunPackedSettings>
             return Error;
         }
 
-        var inputBrushResult = new InputBrushFileReader(settings.InputBrushesFile).Load(tileAtlas.BrushLookup.Brushes);
+        var inputBrushResult = new InputBrushFileReader(settings.InputBrushesFile).Load();
         if (inputBrushResult.TryPickProblems(out problems, out var brushGrid))
         {
             problems.LogToAnsiConsole();

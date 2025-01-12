@@ -2,6 +2,7 @@
 using Olve.Grids.Brushes;
 using Olve.Grids.Generation;
 using Olve.Grids.Grids;
+using Olve.Grids.IO;
 using Olve.Grids.IO.Configuration;
 using Olve.Grids.IO.Readers;
 using Olve.Grids.IO.TileAtlasBuilder;
@@ -23,19 +24,19 @@ public class TileAtlasLoader
             .WithTileSize(tileSize);
 
         var tileAtlasBrushesResult = new TileAtlasBrushesFileReader(tileAtlasBrushesFile).Load();
-        if (tileAtlasBrushesResult.TryPickProblems(out var problems, out var brushLookup))
+        if (tileAtlasBrushesResult.TryPickProblems(out var problems, out var brushes))
         {
             return problems;
         }
 
-        var tileIndices = brushLookup
+        var tileIndices = brushes
             .Entries
             .Select(x => x.TileIndex)
             .Distinct()
             .ToArray();
 
         var adjacencyAndWeightLookupResult =
-            LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, brushLookup.Entries);
+            LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, brushes.Entries);
         if (adjacencyAndWeightLookupResult.TryPickProblems(out problems, out var adjacencyAndWeightLookup))
         {
             return problems;
@@ -45,7 +46,7 @@ public class TileAtlasLoader
 
         tileAtlasBuilder = tileAtlasBuilder
             .WithImageSize(imageSize)
-            .WithBrushLookup(brushLookup)
+            .WithBrushLookup(brushes)
             .WithAdjacencyLookup(adjacencyLookup);
 
         if (weightLookup is { })
@@ -55,7 +56,8 @@ public class TileAtlasLoader
 
         try
         {
-            return tileAtlasBuilder.Build();
+            var tileAtlas = tileAtlasBuilder.Build();
+            return tileAtlas;
         }
         catch (InvalidOperationException ex)
         {

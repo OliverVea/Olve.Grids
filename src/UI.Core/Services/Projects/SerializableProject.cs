@@ -70,16 +70,14 @@ public partial class SerializableProject
 public partial class SerializedBrushId
 {
     public required string Id { get; init; }
-    public required string DisplayName { get; init; }
 
     public static SerializedBrushId FromBrushId(BrushId brushId) =>
         new()
         {
-            Id = brushId.Id.ToString(),
-            DisplayName = brushId.DisplayName,
+            Id = brushId.Value,
         };
 
-    public BrushId ToBrushId() => new(StrictId.Id.Parse(Id), DisplayName);
+    public BrushId ToBrushId() => new(Id);
 }
 
 [MemoryPackable]

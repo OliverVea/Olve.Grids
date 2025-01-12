@@ -1,0 +1,38 @@
+﻿@using Olve.Grids.Grids
+@using Olve.Grids.Primitives
+@using UI.Core.Services.Brushes
+@inject ContextMenuService ContextMenuService
+@inject ListBrushesOperation ListBrushesOperation
+@inject CreateNewBrushOperation CreateNewBrushOperation
+@inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
+@inject LoggingService LoggingService
+@inject ModalService ModalService
+@inject BrushColorService BrushColorService
+
+<div @onclick="HandleClick"
+     @onclick:stopPropagation="@true"
+     class="@TW(CurrentBrushId.IsT1 ? border : Bg(Color),
+                W(Radius),
+                H(Radius),
+                RoundedFull) @Class">
+</div>
+
+@code {
+    [Parameter] [EditorRequired] public required TileIndex TileIndex { get; set; }
+    [Parameter] [EditorRequired] public required Corner Corner { get; set; }
+    [Parameter] [EditorRequired] public required BrushIdOrAny CurrentBrushId { get; set; } = BrushIdOrAny.Any;
+    [Parameter] [EditorRequired] public required string Radius { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private ColorString Color => CurrentBrushId.TryPickT0(out var brushId, out _)
+        ? BrushColorService.GetBrushColor(brushId)
+        : ColorString.Transparent;
+
+    private async Task HandleClick(MouseEventArgs e)
+    {
+        await ContextMenuService.ShowAsync(e,
+            @<SelectBrush TileIndex="@TileIndex" Corner="@Corner"/>);
+    }
+
+
+}

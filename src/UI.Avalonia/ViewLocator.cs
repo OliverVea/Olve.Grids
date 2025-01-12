@@ -13,20 +13,26 @@ public class ViewLocator : IDataTemplate
             return null;
         }
 
-        var name = data.GetType()
-            .FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-        var type = Type.GetType(name);
 
-        if (type != null)
+        // Todo: This is kind of disgusting.
+        var viewModelType = data.GetType();
+        var viewModelName = viewModelType.FullName;
+        var viewName = viewModelName?.Replace("ViewModel", "View", StringComparison.Ordinal);
+
+#pragma warning disable IL2057
+        var viewType = viewName is null ? null : Type.GetType(viewName);
+#pragma warning restore IL2057
+
+        if (viewType != null)
         {
-            var control = (Control)Activator.CreateInstance(type)!;
+            var control = (Control)Activator.CreateInstance(viewType)!;
             control.DataContext = data;
             return control;
         }
 
         return new TextBlock
         {
-            Text = "Not Found: " + name,
+            Text = "Not Found: " + viewName,
         };
     }
 

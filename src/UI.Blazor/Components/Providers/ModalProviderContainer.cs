@@ -1,6 +1,4 @@
-﻿using UI.Blazor.Components.Providers;
-
-namespace UI.Blazor.Services;
+﻿namespace UI.Blazor.Components.Providers;
 
 public class ModalProviderContainer
 {

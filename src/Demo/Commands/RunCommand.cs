@@ -80,7 +80,7 @@ public class RunCommand : Command<RunCommandSettings>
             return Error;
         }
 
-        var brushGridResult = new InputBrushFileReader(settings.InputBrushesFile).Load(tileAtlas.BrushLookup.Brushes);
+        var brushGridResult = new InputBrushFileReader(settings.InputBrushesFile).Load();
         if (brushGridResult.TryPickProblems(out problems, out var brushGrid))
         {
             problems.LogToAnsiConsole();

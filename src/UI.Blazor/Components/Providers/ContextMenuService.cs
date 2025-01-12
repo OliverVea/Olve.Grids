@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using UI.Blazor.Components.Providers;
 using UI.Blazor.Interop;
 
-namespace UI.Blazor.Services;
+namespace UI.Blazor.Components.Providers;
 
 public class ContextMenuService(ContextMenuProviderContainer providerContainer, ElementSizeInterop elementSizeInterop)
 {

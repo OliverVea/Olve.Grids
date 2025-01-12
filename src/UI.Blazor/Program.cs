@@ -10,9 +10,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Todo: DynamicallyAccessedMember warnings
+
+#pragma warning disable IL2026
         builder
             .Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+#pragma warning restore IL2026
 
         builder.Services.AddLogging(c => c.AddConsole());
 

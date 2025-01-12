@@ -4,72 +4,45 @@
 @inject LoggingService LoggingService
 @inject NavigationManager NavigationManager
 
-<div
-    class="@TW(Flex, FlexCol, ItemsCenter, JustifyCenter, W("440px"), Gap(6), Text(Colors.Active.Text.Most))">
-
-    <!-- Title -->
-    <Title>[GRIDS]</Title>
-
-    <!-- Search Bar -->
-    <SearchBar OnSearchPromptChange="HandleSearchPromptChange">
-        <Button OnClick="NavigateToCreateNewProject">
-            New Project
-        </Button>
-    </SearchBar>
-
-    <!-- Project Overview -->
+<div class="@TW(Flex, FlexRow, Gap(2), ItemsCenter, JustifyCenter, MinHScreen, MinWScreen)">
     <div
-        class="@TW(Grid, WFull, GridCols("30%,70%"), GapX(2), GapY(4), BreakWords, Text(Colors.Active.Text.Ordinary))">
-        @foreach (var project in ProjectSummaries)
-        {
-            <!-- Row: Date -->
-            <div class="@TW(TextRight, FlexGrow, Flex, JustifyEnd, FontLight, TextXs)">
-                <TimeAgo Then="@project.LastAccessed"/>
-            </div>
+        class="@TW(Flex, FlexCol, ItemsCenter, JustifyCenter, W("460px"), Gap(6), Text(Colors.Active.Text.Most))">
 
-            <!-- Row: Project -->
-            <div class="@TW(TextLeft, Flex, FlexCol)">
-                <div class="@TW(Flex,
-                                FlexRow,
-                                JustifyBetween)">
-                    <span @onclick="() => NavigateToProjectDashboard(project.ProjectId)"
-                          class="@TW(Text(Colors.Active.Text.More),
-                                     FlexGrow,
-                                     Hover(Underline),
-                                     CursorPointer,
-                                     FontSemibold)">@project.Name.Value</span>
-                    <Icon @onclick="() => HandleDelete(project.ProjectId)"
-                          Class="@TW(Hover(Text(Colors.Active.Text.Most)), CursorPointer)"
-                          IconDescriptor="@IconDescriptor.Trash"/>
-                </div>
-                <span title="@project.Path.Value" class="@TW(FontLight, TextXs)">
-                    @(new FileInfo(project.Path.Value).Name)
-                </span>
+        <!-- Title -->
+        <Title>[GRIDS]</Title>
+
+        <!-- Search Bar -->
+        <SearchBar OnSearchPromptChange="HandleSearchPromptChange">
+            <Button OnClick="NavigateToCreateNewProject">
+                New Project
+            </Button>
+        </SearchBar>
+
+        <!-- Project Overview -->
+        <TwoRowGrid Left="@ProjectOverviewLeft" Right="@ProjectOverviewRight" LeftSize="auto"/>
+
+        <!-- Pagination -->
+        @if (TotalPages > 1)
+        {
+            <div class="@TW(Flex, FlexGrow, ItemsCenter, JustifyCenter, Gap(2), Text(Colors.Active.Text.Ordinary))">
+                @if (HasPreviousPage)
+                {
+                    <Button OnClick="DecrementPage">
+                        <Icon IconDescriptor="@IconDescriptor.ChevronLeft"/>
+                    </Button>
+                }
+
+                <span>@(Page + 1) / @(TotalPages)</span>
+
+                @if (HasNextPage)
+                {
+                    <Button OnClick="IncrementPage">
+                        <Icon IconDescriptor="@IconDescriptor.ChevronRight"/>
+                    </Button>
+                }
             </div>
         }
     </div>
-
-    <!-- Pagination -->
-    @if (TotalPages > 1)
-    {
-        <div class="@TW(Flex, FlexGrow, ItemsCenter, JustifyCenter, Gap(2), Text(Colors.Active.Text.Ordinary))">
-            @if (HasPreviousPage)
-            {
-                <Button OnClick="DecrementPage">
-                    <Icon IconDescriptor="@IconDescriptor.ChevronLeft"/>
-                </Button>
-            }
-
-            <span>@(Page + 1) / @(TotalPages)</span>
-
-            @if (HasNextPage)
-            {
-                <Button OnClick="IncrementPage">
-                    <Icon IconDescriptor="@IconDescriptor.ChevronRight"/>
-                </Button>
-            }
-        </div>
-    }
 </div>
 
 @code {
@@ -87,6 +60,35 @@
     {
         await LoadProjects();
     }
+
+    private IEnumerable<RenderFragment> ProjectOverviewLeft => ProjectSummaries.Select(GetProjectOverviewLeft);
+
+    private RenderFragment GetProjectOverviewLeft(ProjectSummary projectSummary) => __builder =>
+    {
+        <TimeAgo Then="@projectSummary.LastAccessed"/>
+    };
+
+    private IEnumerable<RenderFragment> ProjectOverviewRight => ProjectSummaries.Select(GetProjectOverviewRight);
+
+    private RenderFragment GetProjectOverviewRight(ProjectSummary projectSummary) => __builder =>
+    {
+        <div class="@TW(Flex, FlexCol)">
+            <div class="@TW(Flex, FlexRow, JustifyBetween)">
+                <span @onclick="() => NavigateToProjectDashboard(projectSummary.ProjectId)"
+                      class="@TW(Text(Colors.Active.Text.More),
+                                 FlexGrow,
+                                 Hover(Underline),
+                                 CursorPointer,
+                                 FontSemibold)">@projectSummary.Name.Value</span>
+                <Icon @onclick="() => HandleDelete(projectSummary.ProjectId)"
+                      Class="@TW(Hover(Text(Colors.Active.Text.Most)), CursorPointer)"
+                      IconDescriptor="@IconDescriptor.Trash"/>
+            </div>
+            <span title="@projectSummary.Path.Value" class="@TW(FontLight, TextXs)">
+                @(new FileInfo(projectSummary.Path.Value).Name)
+            </span>
+        </div>
+    };
 
     private async Task LoadProjects()
     {

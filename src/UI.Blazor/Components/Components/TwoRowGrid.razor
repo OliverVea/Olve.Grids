@@ -1,0 +1,57 @@
+﻿<div class="@TW(Grid,
+                WFull,
+                GridCols(GridCols),
+                GapX(2),
+                GapY(4),
+                ItemsStart,
+                BreakWords,
+                Text(Colors.Active.Text.Ordinary))">
+    @foreach (var (left, right) in GetItems())
+    {
+        <div class="@TW(Flex,
+                        FlexGrow,
+                        JustifyEnd,
+                        ItemsCenter,
+                        Text(Colors.Active.Text.Most))">
+            @left
+        </div>
+        <div
+            class="@TW(Flex,
+                       FlexGrow,
+                       JustifyStart,
+                       ItemsCenter)">
+            @right
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public IEnumerable<RenderFragment>? Left { get; set; }
+    [Parameter] public IEnumerable<RenderFragment>? Right { get; set; }
+
+    [Parameter] public IEnumerable<(RenderFragment Left, RenderFragment Right)>? Items { get; set; }
+
+    private IEnumerable<(RenderFragment Left, RenderFragment Right)> GetItems()
+    {
+        if ((Left is { } || Right is { }) && Items is { })
+        {
+            throw new InvalidOperationException("Cannot provide both Left and Right and Items");
+        }
+
+        if ((Left is null || Right is null) && Items is null)
+        {
+            throw new InvalidOperationException("Must provide either Left and Right or Items");
+        }
+
+        if (Items is { })
+        {
+            return Items;
+        }
+
+        return Left!.Zip(Right!);
+    }
+
+    [Parameter] public string LeftSize { get; set; } = "auto";
+    [Parameter] public string RightSize { get; set; } = "auto";
+    private string GridCols => $"{LeftSize},{RightSize}";
+}

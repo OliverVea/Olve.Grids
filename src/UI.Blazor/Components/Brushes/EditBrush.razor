@@ -1,0 +1,32 @@
+﻿@inject BrushColorService BrushColorService;
+
+<TwoRowGrid Left="@Left" Right="@Right"/>
+
+@code {
+    [Parameter] public BrushId BrushId { get; set; }
+
+    private string BrushName { get; set; } = string.Empty;
+    private ColorString BrushColor { get; set; } = ColorString.NotSet;
+
+    protected override void OnParametersSet()
+    {
+        BrushName = BrushId.Value;
+        BrushColor = BrushColorService.GetBrushColor(BrushId);
+    }
+
+    private IEnumerable<RenderFragment> Left =>
+    [
+        @<span>Brush Name:</span>,
+        @<span>Brush Color:</span>,
+    ];
+
+    private IEnumerable<RenderFragment> Right =>
+    [
+        @<TextInputField @bind-Value="BrushName" Placeholder="Brush name"/>,
+        @<div class="@TW(Flex, FlexRow, Gap(2), ItemsCenter)">
+            <ColorDot Color="@BrushColor"/>
+            <span>@BrushColor.Value</span>
+        </div>,
+    ];
+
+}

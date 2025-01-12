@@ -8,7 +8,7 @@ public class TileAtlasBrushesFileReader(string filePath)
 {
     private const char NewLine = '\n';
 
-    public Result<BrushLookup> Load()
+    public Result<IBrushLookup> Load()
     {
         var text = File.ReadAllText(filePath);
         var sb = new StringBuilder(text);
@@ -55,21 +55,21 @@ public class TileAtlasBrushesFileReader(string filePath)
             return new ResultProblem("Invalid brush lookup file: line length must be even.");
         }
 
-        var brushLookup = new Dictionary<char, BrushId>();
+        var brushCharacters = new Dictionary<char, BrushId>();
 
         var tileIndex = new TileIndex(0);
-        var builder = new BrushLookup();
+        var brushLookup = new BrushLookup();
 
         for (var y = 0; y < lineCount; y += 2)
         {
             for (var x = 0; x < charCount; x += 2)
             {
-                var upperLeft = GetBrushId(lines[y][x], brushLookup);
-                var upperRight = GetBrushId(lines[y][x + 1], brushLookup);
-                var lowerLeft = GetBrushId(lines[y + 1][x], brushLookup);
-                var lowerRight = GetBrushId(lines[y + 1][x + 1], brushLookup);
+                var upperLeft = GetBrushId(lines[y][x], brushCharacters);
+                var upperRight = GetBrushId(lines[y][x + 1], brushCharacters);
+                var lowerLeft = GetBrushId(lines[y + 1][x], brushCharacters);
+                var lowerRight = GetBrushId(lines[y + 1][x + 1], brushCharacters);
 
-                builder.SetCornerBrushes(
+                brushLookup.SetCornerBrushes(
                     tileIndex,
                     new CornerBrushes
                     {
@@ -84,7 +84,7 @@ public class TileAtlasBrushesFileReader(string filePath)
             }
         }
 
-        return builder;
+        return brushLookup;
     }
 
     private static BrushIdOrAny GetBrushId(char c, Dictionary<char, BrushId> brushLookup)
@@ -99,7 +99,7 @@ public class TileAtlasBrushesFileReader(string filePath)
             return existingBrushId;
         }
 
-        var newBrushId = BrushId.New(c.ToString());
+        var newBrushId = new BrushId(c.ToString());
         brushLookup.Add(c, newBrushId);
 
         return newBrushId;

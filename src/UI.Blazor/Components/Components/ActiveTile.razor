@@ -3,6 +3,7 @@
 @inject ContextMenuService ContextMenuService
 @inject DeactivateTileOperation DeactivateTileOperation
 @inject LoggingService LoggingService
+@inject BrushColorService BrushColorService
 
 <TileBase Image="@TileInformation.Image"
           Classes="@TW(Relative,
@@ -35,12 +36,7 @@
 
 
 @code {
-
-    private static readonly HsvNormal HsvNormal = new(
-        new NormalParameters(0.6f, 0.25f),
-        new NormalParameters(0.5f, 0.05f));
-
-    private ColorString GetBrushColorString(BrushId brushId) => CachedColorHelper.GetColorStringFromInteger(brushId.Id.GetHashCode(), HsvNormal);
+    private ColorString GetBrushColorString(BrushId brushId) => BrushColorService.GetBrushColor(brushId);
 
     [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
 

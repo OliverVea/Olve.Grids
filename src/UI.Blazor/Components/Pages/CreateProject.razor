@@ -6,42 +6,7 @@
 <div class="@TW(Flex, FlexRow, Gap(2), ItemsCenter, JustifyCenter, MinHScreen, MinWScreen)">
     <div
         class="@TW(Flex, FlexCol, ItemsCenter, JustifyCenter, MinHScreen, MinW("320px"))">
-        <div class="@TW(Grid,
-                        GridCols("auto,auto"),
-                        GapX(2),
-                        GapY(4),
-                        ItemsStart,
-                        BreakWords,
-                        Text(Colors.Active.Text.Ordinary))">
-            @foreach (var (left, right) in
-                          new (RenderFragment, RenderFragment)[]
-                          {
-                              (@<span>Project Name:</span>,
-                                  @<TextInputField @bind-Value="ProjectName" Placeholder="Project name"/>),
-                              (@<span>Tile Size:</span>,
-                                  @<SizeInputFields
-                                      Size="TileSize"
-                                      OnSizeChanged="OnTileSizeChanged"/>),
-                              (@<span>Tile Sheet:</span>,
-                                  @<FileInputField OnFileChanged="OnTileSheetFileChanged" Accept="image/png"/>),
-                          })
-            {
-                <div class="@TW(Flex,
-                                FlexGrow,
-                                JustifyEnd,
-                                ItemsCenter,
-                                Text(Colors.Active.Text.Most))">
-                    @left
-                </div>
-                <div
-                    class="@TW(Flex,
-                               FlexGrow,
-                               JustifyStart,
-                               ItemsCenter)">
-                    @right
-                </div>
-            }
-        </div>
+        <TwoRowGrid Left="@Left" Right="@Right"/>
 
         <HorizontalDivider/>
 
@@ -69,7 +34,6 @@
 
 
 @code {
-
     private const int DefaultTileLength = 32;
     private static readonly Size DefaultTileSize = new(DefaultTileLength, DefaultTileLength);
 
@@ -77,6 +41,20 @@
     private FileContent? TileSheetFile { get; set; }
 
     private Size TileSize { get; set; } = DefaultTileSize;
+
+    private IEnumerable<RenderFragment> Left =>
+    [
+        @<span>Project Name:</span>,
+        @<span>Tile Size:</span>,
+        @<span>Tile Sheet:</span>,
+    ];
+
+    private IEnumerable<RenderFragment> Right =>
+    [
+        @<TextInputField @bind-Value="ProjectName" Placeholder="Project name"/>,
+        @<SizeInputFields Size="TileSize" OnSizeChanged="OnTileSizeChanged"/>,
+        @<FileInputField OnFileChanged="OnTileSheetFileChanged" Accept="image/png"/>,
+    ];
 
     private void OnTileSizeChanged(Size newSize)
     {

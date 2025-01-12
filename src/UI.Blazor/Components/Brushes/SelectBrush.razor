@@ -1,0 +1,83 @@
+﻿@using Olve.Grids.Grids
+@using Olve.Grids.Primitives
+@using UI.Core.Services.Brushes
+@inject BrushColorService BrushColorService
+@inject ListBrushesOperation ListBrushesOperation
+@inject LoggingService LoggingService
+@inject ModalService ModalService
+@inject ContextMenuService ContextMenuService
+@inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
+@inject CreateNewBrushOperation CreateNewBrushOperation
+
+@foreach (var brushId in _brushIds)
+{
+    var brushColor = BrushColorService.GetBrushColor(brushId);
+    <ContextMenuItem OnClick="@(() => HandleSelectBrush(brushId))">
+        <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
+            <ColorDot Color="@brushColor"/>
+
+            <span class="@TW(FlexGrow)">
+                        @brushId.Value
+                    </span>
+
+            <Icon IconDescriptor="IconDescriptor.Edit"
+                  OnClick="@(e => HandleEditBrush(e, brushId))"
+                  StopPropagation="@true"/>
+        </div>
+    </ContextMenuItem>
+}
+
+<HorizontalDivider/>
+<ContextMenuItem OnClick="HandleNewBrush">
+    Add new brush
+</ContextMenuItem>
+
+@code {
+    [Parameter] [EditorRequired] public TileIndex TileIndex { get; set; }
+    [Parameter] [EditorRequired] public Corner Corner { get; set; }
+
+    private IReadOnlyList<BrushId> _brushIds = new List<BrushId>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var request = new ListBrushesOperation.Request();
+        var listBrushesResult = await ListBrushesOperation.ExecuteAsync(request);
+        if (listBrushesResult.TryPickProblems(out var problems, out var brushes))
+        {
+            LoggingService.Show(problems);
+            return;
+        }
+
+        _brushIds = brushes.Brushes.ToArray();
+    }
+
+    private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, BrushId brushId)
+    {
+        await ContextMenuService.HideAsync();
+        await ModalService.ShowAsync(
+            @<EditBrush BrushId="@brushId"/>,
+            "Edit Brush");
+    }
+
+
+    private async Task HandleSelectBrush(BrushId brushId)
+    {
+        SetBrushForTileCornerOperation.Request request = new(TileIndex, Corner, brushId);
+        var result = await SetBrushForTileCornerOperation.ExecuteAsync(request);
+        if (result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+        }
+    }
+
+    private async Task HandleNewBrush()
+    {
+        CreateNewBrushOperation.Request request = new();
+        var result = await CreateNewBrushOperation.ExecuteAsync(request);
+        if (result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+        }
+    }
+
+}

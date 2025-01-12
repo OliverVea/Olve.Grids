@@ -28,13 +28,21 @@ public class ListBrushesOperation(ICurrentProjectRepository currentProjectReposi
 public class CreateNewBrushOperation(ICurrentProjectRepository currentProjectRepository)
     : IAsyncOperation<CreateNewBrushOperation.Request, CreateNewBrushOperation.Response>
 {
-    public record Request(string Name);
+    public record Request;
 
     public record Response(BrushId BrushId);
 
     public async Task<Result<Response>> ExecuteAsync(Request request, CancellationToken ct = new())
     {
-        var brushId = BrushId.New(request.Name);
+        // Todo: Improve brush name logic
+        //       Validate brush name:
+        //       - Ensure it is not empty
+        //       - Ensure it is not already in use
+        //       If name not set, default to valid name, e.g. "New Brush", "New Brush 2", etc.
+        var brushIdContent = Id
+            .NewId()
+            .ToString();
+        var brushId = new BrushId(brushIdContent);
 
         var updateResult = await currentProjectRepository.UpdateCurrentProjectAsync(AddBrushToProject, ct);
         if (updateResult.TryPickProblems(out var problems))

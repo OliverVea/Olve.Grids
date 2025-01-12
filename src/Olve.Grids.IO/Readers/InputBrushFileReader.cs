@@ -12,9 +12,8 @@ public class InputBrushFileReader(string filePath)
     /// <summary>
     ///     Loads a brush grid from the file.
     /// </summary>
-    /// <param name="brushes">The brushes to use.</param>
     /// <returns>The loaded brush grid.</returns>
-    public Result<BrushGrid> Load(IEnumerable<BrushId> brushes)
+    public Result<BrushGrid> Load()
     {
         var lines = File.ReadAllLines(filePath);
 
@@ -26,10 +25,8 @@ public class InputBrushFileReader(string filePath)
 
         var grid = new BrushGrid(size);
 
-        var brushLookup = brushes.ToDictionary(x => x.DisplayName[0], x => x);
-
         // Todo: refactor this please
-        problems = new();
+        problems = new ResultProblemCollection();
         var hadProblems = false;
 
         for (var y = 0; y < size.Height; y++)
@@ -38,15 +35,7 @@ public class InputBrushFileReader(string filePath)
             {
                 var c = lines[y][x];
 
-                var brushResult = GetBrushId(brushLookup, c);
-
-                if (brushResult.TryPickProblems(out var brushProblems, out var brushId))
-                {
-                    problems.Append(brushProblems);
-                    hadProblems = true;
-                    continue;
-                }
-
+                var brushId = new BrushId(c.ToString());
                 grid.SetBrush(new Position(x, y), brushId);
             }
         }
@@ -74,20 +63,5 @@ public class InputBrushFileReader(string filePath)
         }
 
         return new Size(width, height);
-    }
-
-    private static Result<BrushIdOrAny> GetBrushId(Dictionary<char, BrushId> brushLookup, char c)
-    {
-        if (c == FileIOConstants.AnyBrushChar)
-        {
-            return BrushIdOrAny.Any;
-        }
-
-        if (!brushLookup.TryGetValue(c, out var brushId))
-        {
-            return new ResultProblem("Unknown brush character: '{0}'", c);
-        }
-
-        return new BrushIdOrAny(brushId);
     }
 }
