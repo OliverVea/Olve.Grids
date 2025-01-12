@@ -1,0 +1,33 @@
+﻿<div
+    class="@TW(WFull, Bg(Colors.Active.Panels.More), Flex, FlexRow, JustifyBetween, ItemsCenter)">
+    <div>
+        @if (IconLeft is { } iconLeft)
+        {
+            <Button OnClick="@(() => OnLeft.InvokeAsync())">
+                <Icon IconDescriptor="@iconLeft"/>
+            </Button>
+        }
+    </div>
+
+    <span class="@TW(Text(Colors.Active.Text.Ordinary))">
+            @Title
+    </span>
+
+    <div>
+        @if (IconRight is { } iconRight)
+        {
+            <Button OnClick="@(() => OnRight.InvokeAsync())" Disabled="@RightDisabled">
+                <Icon Disabled="@RightDisabled" IconDescriptor="@iconRight"/>
+            </Button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public EventCallback OnLeft { get; set; }
+    [Parameter] public EventCallback OnRight { get; set; }
+    [Parameter] public IconDescriptor? IconLeft { get; set; } = IconDescriptor.ChevronLeft;
+    [Parameter] public IconDescriptor? IconRight { get; set; }
+    [Parameter] public bool RightDisabled { get; set; }
+}

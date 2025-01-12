@@ -11,22 +11,7 @@
 @inject ICurrentProjectRepository CurrentProjectRepository
 
 <div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
-    <div
-        class="@TW(WFull, Bg(Colors.Active.Panels.More), Flex, FlexRow, JustifyBetween, ItemsCenter)">
-        <div>
-            <Button OnClick="HandleBack">
-                <Icon IconDescriptor="IconDescriptor.ChevronLeft"/>
-            </Button>
-        </div>
-
-        <h1 class="@TW(Text(Colors.Active.Text.Ordinary))">
-            @(Project.Name.Value)
-        </h1>
-
-        <div>
-        </div>
-
-    </div>
+    <TitleBar Title="@Project.Name.Value" OnLeft="HandleBack"/>
 
     <div class="@TW(FlexGrow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
         <div class="@TW(Grid, GridCols($"repeat({GridConfiguration.Columns},auto)"), Gap(2))">

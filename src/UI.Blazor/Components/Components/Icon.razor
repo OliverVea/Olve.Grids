@@ -1,4 +1,4 @@
-﻿<i @onclick="OnClick"
+﻿<i @onclick="@(e => OnClick.InvokeAsync(e))"
    @onclick:stopPropagation="StopPropagation"
    @attributes="AdditionalAttributes"
    class="@AllClasses"></i>
@@ -7,10 +7,19 @@
     [Parameter] [EditorRequired] public required IconDescriptor IconDescriptor { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public bool StopPropagation { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public ColorString ActiveColor { get; set; } = Colors.Active.Text.More;
+    [Parameter] public ColorString HoverColor { get; set; } = Colors.Active.Text.Most;
+    [Parameter] public ColorString DisabledColor { get; set; } = Colors.Active.Text.Less;
+
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    private string AllClasses => Class is null ? IconDescriptor.Class : $"{IconDescriptor.Class} {Class}";
+    private string Cursor => !Disabled ? TW(CursorPointer) : string.Empty;
+    private string Color => Disabled ? TW(Text(DisabledColor)) : TW(Text(ActiveColor), Hover(Text(HoverColor)));
+
+    private string AllClasses => $"{IconDescriptor.Class} {Color} {Cursor} {Class ?? string.Empty}";
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
+
 }

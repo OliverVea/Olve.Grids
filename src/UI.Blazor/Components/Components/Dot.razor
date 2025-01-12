@@ -49,7 +49,7 @@
             <ContextMenuItem OnClick="@(() => HandleSelectBrush(brushId))">
 
                 <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
-                    <Icon IconDescriptor="@IconDescriptor.Circle" Class="@TW(Text(brushColor))"/>
+                    <Icon IconDescriptor="@IconDescriptor.Circle" Disabled="@true" DisabledColor="@brushColor"/>
 
                     <span class="@TW(FlexGrow)">
                         @brushId.DisplayName
@@ -57,10 +57,7 @@
 
                     <Icon IconDescriptor="IconDescriptor.Edit"
                           OnClick="@(e => HandleEditBrush(e, brushId))"
-                          StopPropagation="@true"
-                          Class="@TW(CursorPointer,
-                                     Text(Colors.Active.Text.Ordinary),
-                                     Hover(Text(Colors.Active.Text.Most)))"/>
+                          StopPropagation="@true"/>
                 </div>
 
             </ContextMenuItem>

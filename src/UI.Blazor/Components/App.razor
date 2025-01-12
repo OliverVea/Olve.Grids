@@ -21,11 +21,14 @@
 <script src="_framework/blazor.web.js"></script>
 <script src="https://kit.fontawesome.com/57b66bfad5.js" crossorigin="anonymous"></script>
 <script src="@Assets["windowSizeService.js"]"></script>
-<script>
-    window.addEventListener("contextmenu", function (e) {
-        e.preventDefault();
-    });
-</script>
+@if (BlockContextMenu)
+{
+    <script>
+        window.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+    </script>
+}
 </body>
 
 </html>
@@ -33,4 +36,6 @@
 @code {
     public static readonly IComponentRenderMode InteractiveServer = new InteractiveServerRenderMode();
     public static readonly IComponentRenderMode InteractiveClientWasm = new InteractiveWebAssemblyRenderMode();
+
+    public static bool BlockContextMenu { get; set; }
 }
