@@ -29,7 +29,9 @@ public static class ServiceExtensions
         services.AddTransient<DeactivateTileOperation>();
 
         // Brushes
+        services.AddTransient<GetBrushOperation>();
         services.AddTransient<CreateNewBrushOperation>();
+        services.AddTransient<UpdateBrushOperation>();
         services.AddTransient<ListBrushesOperation>();
         services.AddTransient<SetBrushForTileCornerOperation>();
 

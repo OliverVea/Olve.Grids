@@ -5,7 +5,16 @@ namespace UI.Core.Services.Projects;
 public class UpdateCurrentProjectOperation(ICurrentProjectRepository currentProjectRepository)
     : IAsyncOperation<UpdateCurrentProjectOperation.Request>
 {
-    public record Request(Action<Project> Update);
+    public record Request(Func<Project, Result> Update)
+    {
+        public Request(Action<Project> Update) : this(p =>
+        {
+            Update(p);
+            return Result.Success();
+        })
+        {
+        }
+    }
 
     public async Task<Result> ExecuteAsync(Request request, CancellationToken ct = new())
     {

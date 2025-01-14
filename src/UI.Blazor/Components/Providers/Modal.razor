@@ -1,0 +1,8 @@
+﻿<div class="@TW(Flex, FlexCol, MinW(px(400)), MinH(px(600)), Bg(Colors.Active.Panels.Ordinary))"
+     @onclick:stopPropagation="true">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
+}

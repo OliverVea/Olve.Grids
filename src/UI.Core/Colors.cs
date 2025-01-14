@@ -64,6 +64,9 @@ public readonly record struct ColorString(string Value)
     public static readonly ColorString White = new("#ffffff");
     public static readonly ColorString Red = new("#FF0000");
     public static readonly ColorString Black = new("#000000");
+    public static readonly ColorString Black50 = new("#00000080");
+    public static readonly ColorString Black25 = new("#00000040");
+    public static readonly ColorString Black125 = new("#00000020");
 
     public static ColorString Overlay(ColorString foreground, ColorString background, float alpha)
     {

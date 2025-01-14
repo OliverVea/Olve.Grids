@@ -46,7 +46,6 @@ public static class TailwindExtensions
     public static readonly TailwindClass TextRight = new("text-right");
     public static readonly TailwindClass TextCenter = new("text-center");
 
-
     public static readonly TailwindClass Shadow = new("shadow");
     public static readonly TailwindClass ShadowMd = new("shadow-md");
     public static readonly TailwindClass ShadowLg = new("shadow-lg");
@@ -85,6 +84,8 @@ public static class TailwindExtensions
     public static readonly TailwindClass BreakWords = new("break-words");
 
     public static readonly TailwindClass CursorPointer = new("cursor-pointer");
+
+    public static readonly TailwindClass MarginAuto = new("m-auto");
 
     public static TailwindClass RoundedFull = new("rounded-full");
 
@@ -185,5 +186,8 @@ public static class TailwindExtensions
             $"{percent.Value.ToString(CultureInfo.InvariantCulture)}%";
     }
 
-    public readonly record struct TailwindClass(string Value);
+    public readonly record struct TailwindClass(string Value)
+    {
+        public override string ToString() => Value;
+    }
 }

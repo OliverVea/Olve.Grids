@@ -1,8 +1,8 @@
 ﻿<div class="@TW(Grid,
                 WFull,
                 GridCols(GridCols),
-                GapX(2),
-                GapY(4),
+                GapX(GapX),
+                GapY(GapY),
                 ItemsStart,
                 BreakWords,
                 Text(Colors.Active.Text.Ordinary))">
@@ -28,6 +28,9 @@
 @code {
     [Parameter] public IEnumerable<RenderFragment>? Left { get; set; }
     [Parameter] public IEnumerable<RenderFragment>? Right { get; set; }
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public int GapY { get; set; } = 2;
+    [Parameter] public int GapX { get; set; } = 2;
 
     [Parameter] public IEnumerable<(RenderFragment Left, RenderFragment Right)>? Items { get; set; }
 

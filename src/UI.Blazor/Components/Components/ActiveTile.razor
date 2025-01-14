@@ -1,9 +1,9 @@
 ﻿@using Olve.Grids.Primitives
 @using UI.Core.Services.Tiles
+@using UI.Blazor.Components.Adjacency
 @inject ContextMenuService ContextMenuService
 @inject DeactivateTileOperation DeactivateTileOperation
 @inject LoggingService LoggingService
-@inject BrushColorService BrushColorService
 
 <TileBase Image="@TileInformation.Image"
           Classes="@TW(Relative,
@@ -15,20 +15,33 @@
                        Border(ColorString.White),
                        BorderOpacity(15),
                        Hover(BorderOpacity(100), Scale(110), Z(10)))"
-          OnClick="HandleClick"
->
+          OnClick="HandleClick">
+    @foreach (var (direction, top, left) in GetDirections())
+    {
+        <div class="@TW(Absolute,
+                        Top(pct(top)),
+                        Left(pct(left)),
+                        W(20),
+                        H(20),
+                        Z(10))">
+            <AdjacencyArrow Direction="@direction"/>
+
+        </div>
+    }
 
     @foreach (var (corner, top, left) in GetCorners())
     {
         var thisCorner = corner;
+        var brushId = CornerBrushes[corner];
+
         <Dot TileIndex="@TileInformation.TileIndex"
              Corner="@thisCorner"
-             CurrentBrushId="@CornerBrushes[corner]"
+             CurrentBrushId="@brushId"
              Class="@TW(Absolute,
                         Top(pct(top)),
                         Left(pct(left)),
-                        Opacity(50),
-                        Hover(Opacity(100), Scale(125)),
+                        Hover(Scale(125)),
+                        TransitionTransform,
                         Z(15))"
              Radius="10%"/>
     }
@@ -36,14 +49,13 @@
 
 
 @code {
-    private ColorString GetBrushColorString(BrushId brushId) => BrushColorService.GetBrushColor(brushId);
-
     [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
 
     private CornerBrushes CornerBrushes => TileInformation.CornerBrushes;
 
     private const float DotRadius = 15f;
     private const float Small = 15f;
+    private const float Middle = 50f - DotRadius;
     private const float Large = 85f - DotRadius;
 
     private IEnumerable<(Corner, float Top, float Left)> GetCorners()
@@ -52,6 +64,14 @@
         yield return (Corner.UpperRight, Small, Large);
         yield return (Corner.LowerLeft, Large, Small);
         yield return (Corner.LowerRight, Large, Large);
+    }
+
+    private IEnumerable<(Direction, float Top, float Left)> GetDirections()
+    {
+        yield return (Direction.Up, Small, Middle);
+        yield return (Direction.Left, Middle, Small);
+        yield return (Direction.Right, Middle, Large);
+        yield return (Direction.Down, Large, Middle);
     }
 
     private async Task HandleClick(MouseEventArgs e)

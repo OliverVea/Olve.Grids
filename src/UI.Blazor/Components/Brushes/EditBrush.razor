@@ -1,17 +1,35 @@
-﻿@inject BrushColorService BrushColorService;
+﻿@inject UpdateBrushOperation UpdateBrushOperation
+@inject ModalService ModalService
+@inject LoggingService LoggingService
 
-<TwoRowGrid Left="@Left" Right="@Right"/>
+<Modal>
+    <TitleBar Title="Edit Brush"
+              OnLeft="HandleBack"
+              IconRight="IconDescriptor.Check"
+              OnRight="HandleConfirm"/>
+
+    <div class="@TW(P(4))">
+        <TwoRowGrid Class="@TW(P(4))" Left="@Left" Right="@Right"/>
+    </div>
+</Modal>
 
 @code {
-    [Parameter] public BrushId BrushId { get; set; }
+    [Parameter] public ProjectBrush Brush { get; set; }
 
-    private string BrushName { get; set; } = string.Empty;
-    private ColorString BrushColor { get; set; } = ColorString.NotSet;
+    private string _name = string.Empty;
+    private string _colorString = string.Empty;
+    private ColorStringValidator _colorStringValidator = new();
+
+    private bool ColorStringIsValid => _colorStringValidator.Validate(_colorString)
+        .IsValid;
+
+    private ColorString ColorString => ParseColorString(_colorString)
+        .GetValueOrDefault(ColorString.Transparent);
 
     protected override void OnParametersSet()
     {
-        BrushName = BrushId.Value;
-        BrushColor = BrushColorService.GetBrushColor(BrushId);
+        _name = Brush.DisplayName;
+        _colorString = Brush.Color.Value;
     }
 
     private IEnumerable<RenderFragment> Left =>
@@ -22,11 +40,47 @@
 
     private IEnumerable<RenderFragment> Right =>
     [
-        @<TextInputField @bind-Value="BrushName" Placeholder="Brush name"/>,
+        @<TextInputField @bind-Value="_name" Placeholder="Brush name"/>,
         @<div class="@TW(Flex, FlexRow, Gap(2), ItemsCenter)">
-            <ColorDot Color="@BrushColor"/>
-            <span>@BrushColor.Value</span>
+            <ColorDot Color="@ColorString"/>
+            <TextInputField Placeholder="E.g. #FF0000" @bind-Value="@_colorString" Immediate="true"/>
         </div>,
     ];
+
+    private Task HandleBack() => ModalService.HideAsync();
+
+    private async Task HandleConfirm()
+    {
+        var colorResult = ParseColorString(_colorString);
+        if (colorResult.TryPickProblems(out var problems, out var color))
+        {
+            LoggingService.Show(problems);
+            return;
+        }
+
+        var request = new UpdateBrushOperation.Request(Brush.Id, _name, color);
+        var result = await UpdateBrushOperation.ExecuteAsync(request);
+        if (result.TryPickProblems(out problems))
+        {
+            LoggingService.Show(problems);
+            return;
+        }
+
+        await ModalService.HideAsync();
+    }
+
+    private Result<ColorString> ParseColorString(string colorString)
+    {
+        var validationResult = _colorStringValidator.Validate(colorString);
+        if (validationResult.IsValid)
+        {
+            return new ColorString(colorString);
+        }
+
+        var errors = validationResult.Errors.Select(x => x.ErrorMessage);
+        var errorString = string.Join(", ", errors);
+
+        return new ResultProblem("Color string '{0}' has error(s): {1}", colorString, errorString);
+    }
 
 }

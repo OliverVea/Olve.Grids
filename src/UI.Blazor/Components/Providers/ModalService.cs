@@ -20,4 +20,9 @@ public class ModalService(ModalProviderContainer providerContainer)
             state.Visible = true;
         });
     }
+
+    public async Task HideAsync()
+    {
+        await Provider.MutateAsync(state => state.Visible = false);
+    }
 }

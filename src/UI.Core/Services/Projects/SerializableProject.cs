@@ -18,7 +18,7 @@ public partial class SerializableProject
     public required SerializedFileContent TileSheetImage { get; init; }
     public required SerializableTileAtlasConfiguration TileAtlasBuilder { get; init; }
     public int[]? ActiveTileIds { get; init; }
-    public SerializedBrushId[]? Brushes { get; init; }
+    public SerializedProjectBrush[]? Brushes { get; init; }
 
     public static (SerializableProject Project, byte[] ImageBytes) FromProject(Project project) =>
         (new SerializableProject
@@ -34,7 +34,8 @@ public partial class SerializableProject
                 .ActiveTiles.Select(x => x.Index)
                 .ToArray(),
             Brushes = project
-                .Brushes.Select(SerializedBrushId.FromBrushId)
+                .Brushes.Values
+                .Select(SerializedProjectBrush.FromProjectBrush)
                 .ToArray(),
         }, project.TileSheetImage.Content);
 
@@ -59,25 +60,29 @@ public partial class SerializableProject
             ?? [ ],
             Brushes
                 ?
-                .Select(x => x.ToBrushId())
-                .ToHashSet()
+                .Select(x => x.ToProjectBrush())
+                .ToDictionary(x => x.Id)
             ?? [ ],
             new TileAtlasBuilder(TileAtlasBuilder.ToTileAtlasConfiguration()));
     }
 }
 
 [MemoryPackable]
-public partial class SerializedBrushId
+public partial class SerializedProjectBrush
 {
     public required string Id { get; init; }
+    public required string DisplayName { get; init; }
+    public required string Color { get; init; }
 
-    public static SerializedBrushId FromBrushId(BrushId brushId) =>
+    public static SerializedProjectBrush FromProjectBrush(ProjectBrush projectBrush) =>
         new()
         {
-            Id = brushId.Value,
+            Id = projectBrush.Id.Value,
+            DisplayName = projectBrush.DisplayName,
+            Color = projectBrush.Color.Value,
         };
 
-    public BrushId ToBrushId() => new(Id);
+    public ProjectBrush ToProjectBrush() => new(new BrushId(Id), DisplayName, new ColorString(Color));
 }
 
 [MemoryPackable]

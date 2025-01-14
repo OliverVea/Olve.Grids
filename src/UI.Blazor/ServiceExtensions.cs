@@ -1,5 +1,4 @@
-﻿using UI.Blazor.Components.Brushes;
-using UI.Blazor.Components.Providers;
+﻿using UI.Blazor.Components.Providers;
 using UI.Blazor.Interop;
 
 namespace UI.Blazor;
@@ -15,8 +14,6 @@ public static class ServiceExtensions
 
         services.AddTransient<ModalService>();
         services.AddSingleton<ModalProviderContainer>();
-
-        services.AddTransient<BrushColorService>();
 
         return services;
     }

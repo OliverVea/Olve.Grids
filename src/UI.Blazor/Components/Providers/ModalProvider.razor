@@ -1,28 +1,16 @@
 ﻿@inject ModalService ModalService
+@inject ElementSizeInterop ElementSizeInterop
 
 @if (!Visible)
 {
     return;
 }
 
-<div class="@TW(Fixed, Inset(0), Opacity(25), Bg(ColorString.Black))">
-
+<div class="@TW(Fixed, Inset(0), Bg(ColorString.Black25), Flex, JustifyCenter, ItemsCenter)" @onclick="Hide">
+    @ChildContent
 </div>
-
-
-<div class="@TW(Fixed, Inset(0), Flex, JustifyCenter, ItemsCenter)">
-    <div class="@TW(Flex, FlexCol, MinW(px(400)), MinH(px(600)), Bg(Colors.Active.Panels.Ordinary))">
-        <TitleBar Title="@Title" OnLeft="Hide" IconRight="IconDescriptor.Check" OnRight="Confirm" RightDisabled="true"/>
-        <div class="@TW(FlexGrow, WFull, P(4))">
-            @ChildContent
-        </div>
-    </div>
-</div>
-
-
 
 @code {
-    public string? Title => _state.Title;
     public bool Visible => _state.Visible;
     private RenderFragment ChildContent => _state.ChildContent;
 
@@ -44,7 +32,11 @@
         StateHasChanged();
     }
 
-    private void Hide() => Mutate(s => s.Visible = false);
+    private void Hide()
+    {
+        Console.WriteLine("Hide");
+        Mutate(s => s.Visible = false);
+    }
 
     public record ModalState
     {

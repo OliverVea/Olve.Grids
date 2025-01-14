@@ -1,20 +1,12 @@
 ﻿@using Olve.Grids.Grids
 @using Olve.Grids.Primitives
-@using UI.Core.Services.Brushes
 @inject ContextMenuService ContextMenuService
-@inject ListBrushesOperation ListBrushesOperation
-@inject CreateNewBrushOperation CreateNewBrushOperation
-@inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
 @inject LoggingService LoggingService
-@inject ModalService ModalService
-@inject BrushColorService BrushColorService
+@inject GetBrushOperation GetBrushOperation
 
 <div @onclick="HandleClick"
      @onclick:stopPropagation="@true"
-     class="@TW(CurrentBrushId.IsT1 ? border : Bg(Color),
-                W(Radius),
-                H(Radius),
-                RoundedFull) @Class">
+     class="@TW(border, Bg(CurrentBrushId.IsT0 ? Color : ColorString.Transparent), W(Radius), H(Radius), RoundedFull) @Class">
 </div>
 
 @code {
@@ -24,8 +16,31 @@
     [Parameter] [EditorRequired] public required string Radius { get; set; }
     [Parameter] public string? Class { get; set; }
 
-    private ColorString Color => CurrentBrushId.TryPickT0(out var brushId, out _)
-        ? BrushColorService.GetBrushColor(brushId)
+    private ProjectBrushOrAny CurrentBrush { get; set; } = ProjectBrushOrAny.Any;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!CurrentBrushId.TryPickT0(out var brushId, out _))
+        {
+            CurrentBrush = ProjectBrushOrAny.Any;
+            return;
+        }
+
+        GetBrushOperation.Request request = new(brushId);
+        var brushResult = await GetBrushOperation.ExecuteAsync(request);
+
+        if (brushResult.TryPickProblems(out var problems, out var brush))
+        {
+            LoggingService.Show(problems);
+            CurrentBrush = ProjectBrushOrAny.Any;
+            return;
+        }
+
+        CurrentBrush = brush.Brush;
+    }
+
+    private ColorString Color => CurrentBrush.TryPickT0(out var brush, out _)
+        ? brush.Color
         : ColorString.Transparent;
 
     private async Task HandleClick(MouseEventArgs e)

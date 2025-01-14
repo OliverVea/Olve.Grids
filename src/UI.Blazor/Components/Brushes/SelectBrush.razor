@@ -1,7 +1,6 @@
 ﻿@using Olve.Grids.Grids
 @using Olve.Grids.Primitives
 @using UI.Core.Services.Brushes
-@inject BrushColorService BrushColorService
 @inject ListBrushesOperation ListBrushesOperation
 @inject LoggingService LoggingService
 @inject ModalService ModalService
@@ -9,19 +8,18 @@
 @inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
 @inject CreateNewBrushOperation CreateNewBrushOperation
 
-@foreach (var brushId in _brushIds)
+@foreach (var brush in _brushes)
 {
-    var brushColor = BrushColorService.GetBrushColor(brushId);
-    <ContextMenuItem OnClick="@(() => HandleSelectBrush(brushId))">
+    <ContextMenuItem OnClick="@(() => HandleSelectBrush(brush.Id))">
         <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
-            <ColorDot Color="@brushColor"/>
+            <ColorDot Color="@brush.Color"/>
 
             <span class="@TW(FlexGrow)">
-                        @brushId.Value
+                        @brush.DisplayName
                     </span>
 
             <Icon IconDescriptor="IconDescriptor.Edit"
-                  OnClick="@(e => HandleEditBrush(e, brushId))"
+                  OnClick="@(e => HandleEditBrush(e, brush))"
                   StopPropagation="@true"/>
         </div>
     </ContextMenuItem>
@@ -36,7 +34,7 @@
     [Parameter] [EditorRequired] public TileIndex TileIndex { get; set; }
     [Parameter] [EditorRequired] public Corner Corner { get; set; }
 
-    private IReadOnlyList<BrushId> _brushIds = new List<BrushId>();
+    private IReadOnlyList<ProjectBrush> _brushes = [ ];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -48,14 +46,14 @@
             return;
         }
 
-        _brushIds = brushes.Brushes.ToArray();
+        _brushes = brushes.Brushes.ToArray();
     }
 
-    private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, BrushId brushId)
+    private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, ProjectBrush brush)
     {
         await ContextMenuService.HideAsync();
         await ModalService.ShowAsync(
-            @<EditBrush BrushId="@brushId"/>,
+            @<EditBrush Brush="@brush"/>,
             "Edit Brush");
     }
 

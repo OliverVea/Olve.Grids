@@ -12,6 +12,14 @@ public record Project(
     DateTimeOffset LastAccessedAt,
     FileContent TileSheetImage,
     HashSet<TileIndex> ActiveTiles,
-    HashSet<BrushId> Brushes,
+    Dictionary<BrushId, ProjectBrush> Brushes,
     TileAtlasBuilder TileAtlasBuilder)
     : IHasId<Id<Project>>;
+
+public readonly record struct ProjectBrush(BrushId Id, string DisplayName, ColorString Color);
+
+[GenerateOneOf]
+public partial class ProjectBrushOrAny : OneOfBase<ProjectBrush, Any>
+{
+    public static readonly ProjectBrushOrAny Any = new Any();
+}

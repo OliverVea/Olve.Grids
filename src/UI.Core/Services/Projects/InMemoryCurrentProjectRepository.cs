@@ -20,14 +20,18 @@ public class InMemoryCurrentProjectRepository : ICurrentProjectRepository
         return ValueTask.FromResult(Result.Success());
     }
 
-    public async ValueTask<Result> UpdateCurrentProjectAsync(Action<Project> update, CancellationToken ct = new())
+    public async ValueTask<Result> UpdateCurrentProjectAsync(Func<Project, Result> update, CancellationToken ct = new())
     {
         if (_project is null)
         {
             return Result.Failure(new ResultProblem("No project is currently selected."));
         }
 
-        update(_project);
+        var updateResult = update(_project);
+        if (updateResult.TryPickProblems(out var problems))
+        {
+            return problems;
+        }
 
         foreach (var listener in OnCurrentProjectChanged)
         {
