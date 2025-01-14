@@ -1,0 +1,22 @@
+﻿using Olve.Grids.Grids;
+using Olve.Utilities.Operations;
+using UI.Core.Projects;
+using UI.Core.Projects.Operations;
+
+namespace UI.Core.Tiles;
+
+public class ActivateTileOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
+    : IAsyncOperation<ActivateTileOperation.Request>
+{
+    public record Request(TileIndex TileIndex);
+
+    public Task<Result> ExecuteAsync(Request request, CancellationToken ct = new())
+    {
+        var updateRequest = new UpdateCurrentProjectOperation.Request(project =>
+        {
+            project.ActiveTiles.Add(request.TileIndex);
+        });
+
+        return updateCurrentProjectOperation.ExecuteAsync(updateRequest, ct);
+    }
+}

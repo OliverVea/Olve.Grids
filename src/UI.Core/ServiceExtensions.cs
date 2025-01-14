@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Olve.Utilities.AsyncOnStartup;
 using UI.Core.Logging;
-using UI.Core.Services.Brushes;
-using UI.Core.Services.Projects;
-using UI.Core.Services.Projects.FileSystem;
-using UI.Core.Services.Projects.Repositories;
-using UI.Core.Services.Tiles;
+using UI.Core.Brushes;
+using UI.Core.Projects;
+using UI.Core.Projects.FileSystem;
+using UI.Core.Projects.Operations;
+using UI.Core.Projects.Repositories;
+using UI.Core.Tiles;
 
 namespace UI.Core;
 
