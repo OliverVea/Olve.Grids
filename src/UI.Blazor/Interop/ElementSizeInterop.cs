@@ -6,7 +6,7 @@ namespace UI.Blazor.Interop;
 public class ElementSizeInterop(IJSRuntime jsRuntime)
 {
     private const string GetWindowSizeJSFunctionName = "getWindowSize";
-    private const string GetElementSizeJSFunctionName = "getElementSize";
+    private const string GetElementSizeJSFunctionName = "getElementSizeById";
 
     public async Task<Size> GetWindowSize()
     {
@@ -20,9 +20,9 @@ public class ElementSizeInterop(IJSRuntime jsRuntime)
         return size.Value;
     }
 
-    public async Task<Size?> GetElementSize(IElementSelector selector)
+    public async Task<Size?> GetElementSizeById(IdSelector idSelector)
     {
-        var jsSize = await jsRuntime.InvokeAsync<JsSize?>(GetElementSizeJSFunctionName, selector.Selector);
+        var jsSize = await jsRuntime.InvokeAsync<JsSize?>(GetElementSizeJSFunctionName, idSelector.Id);
 
         TryMapSize(jsSize, out var size);
 

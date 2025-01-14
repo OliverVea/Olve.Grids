@@ -1,4 +1,4 @@
-﻿@page "/project/{projectId}/edit-adjacencies/{tileIndex:int}"
+﻿@page "/edit-adjacencies/{tileIndex:int}"
 @using Olve.Grids.Grids
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats.Png
@@ -8,7 +8,7 @@
 @inject GetTileInformationOperation GetTileInformationOperation
 @inject NavigationManager NavigationManager
 
-<img src="@_tileInformation.Image.ToBase64String(PngFormat.Instance)" alt="Tile"/>
+<img class="@TW(W(px(80)), H(px(80)))" src="@_tileInformation.Image.ToBase64String(PngFormat.Instance)" alt="Tile"/>
 
 @code {
     [Parameter] public string ProjectId { get; set; }

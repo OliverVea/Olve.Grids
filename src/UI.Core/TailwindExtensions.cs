@@ -36,6 +36,12 @@ public static class TailwindExtensions
 
     public static readonly TailwindClass HFull = new("h-full");
     public static readonly TailwindClass WFull = new("w-full");
+    public static readonly TailwindClass WScreen = new("w-screen");
+    public static readonly TailwindClass HScreen = new("h-screen");
+    public static readonly TailwindClass WAuto = new("w-auto");
+    public static readonly TailwindClass HAuto = new("h-auto");
+    public static readonly TailwindClass WFit = new("w-fit");
+    public static readonly TailwindClass HFit = new("h-fit");
 
     public static readonly TailwindClass BorderNone = new("border-none");
     public static readonly TailwindClass Rounded = new("rounded");
@@ -90,6 +96,7 @@ public static class TailwindExtensions
     public static TailwindClass RoundedFull = new("rounded-full");
 
     public static TailwindClass TransitionTransform = new("transition-transform");
+    public static TailwindClass TransitionOpacity = new("transition-opacity");
     public static TailwindClass Transform => new("transform");
 
 

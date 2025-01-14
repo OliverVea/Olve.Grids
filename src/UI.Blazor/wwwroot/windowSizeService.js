@@ -5,7 +5,7 @@
     };
 };
 
-window.getElementSize = function (elementId) {
+window.getElementSizeById = function (elementId) {
     const element = document.getElementById(elementId);
     if (!element) {
         return null;

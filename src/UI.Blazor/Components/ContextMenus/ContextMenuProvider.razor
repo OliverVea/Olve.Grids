@@ -2,7 +2,7 @@
 @inject ContextMenuService ContextMenuService
 
 <ul id="@Id"
-    class="@TW(Fixed, MinW(px(200)), MaxW(pct(50)), Bg(Colors.Active.Panels.Ordinary), P(px(Padding)), ShadowMd, Z(50))"
+    class="@TW(Fixed, MinW(px(200)), WFit, MaxW(pct(50)), Bg(Colors.Active.Panels.Ordinary), P(px(Padding)), ShadowMd, Z(50), Opacity(Visible ? 100 : 0), TransitionOpacity, Duration("500ms"))"
     style="left: @(Position.X - OutsidePadding)px; top: @(Position.Y - OutsidePadding)px; display: @(Visible ? "block" : "none")"
     @onmouseleave="@(HandleMouseLeave)">
     @ChildContent
@@ -15,7 +15,6 @@
 
     private const string Id = "context-menu";
     private ContextMenuState _state = new();
-
 
     public IdSelector IdSelector => new(Id);
 

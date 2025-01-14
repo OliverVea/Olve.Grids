@@ -19,14 +19,13 @@ public class ContextMenuService(ContextMenuProviderContainer providerContainer, 
 
     public async ValueTask ShowAsync(Position position, RenderFragment childContent)
     {
+        await Provider.MutateAsync(state => { state.ChildContent = childContent; });
+
         var menuPosition = await GetMenuPositionAsync(position);
 
-        await Provider.MutateAsync(state =>
-        {
-            state.ChildContent = childContent;
-            state.Visible = true;
-            state.Position = menuPosition;
-        });
+        await Provider.MutateAsync(state => { state.Position = menuPosition; });
+
+        await Provider.MutateAsync(state => { state.Visible = true; });
     }
 
 
@@ -62,7 +61,7 @@ public class ContextMenuService(ContextMenuProviderContainer providerContainer, 
 
     private async ValueTask<Size> GetMenuSizeAsync()
     {
-        var size = await elementSizeInterop.GetElementSize(Provider.IdSelector);
+        var size = await elementSizeInterop.GetElementSizeById(Provider.IdSelector);
 
         return size ?? new Size(0, 0);
     }
