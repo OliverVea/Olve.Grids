@@ -1,0 +1,63 @@
+﻿@using Olve.Grids.Primitives
+@inject ContextMenuService ContextMenuService
+@inject LoggingService LoggingService
+
+<TileBase Image="@TileInformation.Image"
+          Class="@TW(Relative,
+                     WFull,
+                     ShadowXl,
+                     TransitionTransform,
+                     Transform,
+                     border,
+                     Border(ColorString.White),
+                     BorderOpacity(15),
+                     Hover(BorderOpacity(100), Scale(110), Z(10)))"
+          OnClick="HandleClick">
+
+    @foreach (var (corner, top, left) in GetCorners())
+    {
+        var thisCorner = corner;
+        var brushId = CornerBrushes[corner];
+
+        <Dot TileIndex="@TileInformation.TileIndex"
+             Corner="@thisCorner"
+             CurrentBrushId="@brushId"
+             Class="@TW(Absolute,
+                        Top(pct(top)),
+                        Left(pct(left)),
+                        Hover(Scale(125)),
+                        TransitionTransform,
+                        Z(15))"
+             Radius="10%"/>
+    }
+</TileBase>
+
+
+@code {
+    [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
+
+    private CornerBrushes CornerBrushes => TileInformation.CornerBrushes;
+
+    private const float DotRadius = 15f;
+    private const float Small = 15f;
+    private const float Middle = 50f - DotRadius;
+    private const float Large = 85f - DotRadius;
+
+    private IEnumerable<(Corner, float Top, float Left)> GetCorners()
+    {
+        yield return (Corner.UpperLeft, Small, Small);
+        yield return (Corner.UpperRight, Small, Large);
+        yield return (Corner.LowerLeft, Large, Small);
+        yield return (Corner.LowerRight, Large, Large);
+    }
+
+    private async Task HandleClick(MouseEventArgs e)
+    {
+        await ContextMenuService.ShowAsync(e,
+            @<TileContextMenu TileInformation="@TileInformation"/>);
+    }
+
+}
+
+
+

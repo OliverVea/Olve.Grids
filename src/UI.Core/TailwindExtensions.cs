@@ -146,7 +146,9 @@ public static class TailwindExtensions
 
     public static TailwindClass M(int value) => new($"m-{value}");
     public static TailwindClass Mx(int value) => new($"mx-{value}");
+    public static TailwindClass Mx(string value) => new($"mx-[{value}]");
     public static TailwindClass My(int value) => new($"my-{value}");
+    public static TailwindClass My(string value) => new($"my-[{value}]");
     public static TailwindClass Ml(int value) => new($"ml-{value}");
     public static TailwindClass Mr(int value) => new($"mr-{value}");
     public static TailwindClass Mt(int value) => new($"mt-{value}");

@@ -10,7 +10,7 @@ namespace UI.Core.Brushes;
 public class SetBrushForTileCornerOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
     : IAsyncOperation<SetBrushForTileCornerOperation.Request>
 {
-    public record Request(TileIndex TileIndex, Corner Corner, BrushId BrushId);
+    public record Request(TileIndex TileIndex, Corner Corner, BrushIdOrAny BrushId);
 
     public async Task<Result> ExecuteAsync(Request request, CancellationToken ct = new())
     {

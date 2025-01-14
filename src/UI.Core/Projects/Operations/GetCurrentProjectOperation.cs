@@ -22,9 +22,9 @@ public class GetCurrentProjectOperation(ICurrentProjectRepository currentProject
 
         if (currentProjectResult.Value is not { } currentProject)
         {
-            return Result<Response>.Failure(new ResultProblem("No project is currently selected."));
+            return new ResultProblem("No project is currently selected.");
         }
 
-        return Result<Response>.Success(new Response(currentProject));
+        return new Response(currentProject);
     }
 }

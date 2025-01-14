@@ -1,0 +1,35 @@
+﻿@page "/project/{projectId}/edit-adjacencies/{tileIndex:int}"
+@using Olve.Grids.Grids
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats.Png
+@using UI.Core.Tiles
+
+@inject LoggingService LoggingService
+@inject GetTileInformationOperation GetTileInformationOperation
+@inject NavigationManager NavigationManager
+
+<img src="@_tileInformation.Image.ToBase64String(PngFormat.Instance)" alt="Tile"/>
+
+@code {
+    [Parameter] public string ProjectId { get; set; }
+    [Parameter] public int TileIndex { get; set; }
+
+    private TileInformation _tileInformation;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var tileIndex = new TileIndex(TileIndex);
+
+        GetTileInformationOperation.Request request = new(tileIndex);
+        var tileInformationRequest = await GetTileInformationOperation.ExecuteAsync(request);
+        if (tileInformationRequest.TryPickProblems(out var problems, out var tileInformationResponse))
+        {
+            LoggingService.Show(problems);
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+
+        _tileInformation = tileInformationResponse.TileInformation;
+    }
+
+}

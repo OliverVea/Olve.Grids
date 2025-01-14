@@ -21,6 +21,7 @@ public static class ServiceExtensions
         services.AddTransient<DeleteProjectOperation>();
         services.AddTransient<CreateNewProjectOperation>();
         services.AddTransient<SaveProjectAndSummaryOperation>();
+        services.AddTransient<SaveProjectAndSummaryOperation.Factory>();
         services.AddTransient<UpdateCurrentProjectOperation>();
         services.AddTransient<GetCurrentProjectOperation>();
         services.AddTransient<SetCurrentProjectOperation>();
@@ -28,6 +29,7 @@ public static class ServiceExtensions
         // Tiles
         services.AddTransient<ActivateTileOperation>();
         services.AddTransient<DeactivateTileOperation>();
+        services.AddTransient<GetTileInformationOperation>();
 
         // Brushes
         services.AddTransient<GetBrushOperation>();
@@ -47,7 +49,6 @@ public static class ServiceExtensions
         services.AddTransient<LoggingService>();
         services.AddTransient<ILoggingProvider, ConsoleLoggingProvider>();
 
-        services.AddTransient<OperationFactory>();
 
         services.AddTransient<IAsyncOnStartup, RegisterSaveProjectOnProjectChangeStartup>();
     }

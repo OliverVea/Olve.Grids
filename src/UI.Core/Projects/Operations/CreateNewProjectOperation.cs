@@ -21,10 +21,11 @@ public class CreateNewProjectOperation(
         var projectName = new ProjectName(request.Name);
         var createdAt = DateTimeOffset.Now;
         var lastAccessedAt = createdAt;
+        var imageSize = new Size(request.TileSheetImage.Image.Width, request.TileSheetImage.Image.Height);
 
         var tileAtlasBuilder = new TileAtlasBuilder()
             .WithTileSize(request.TileSize)
-            .WithImageSize(request.TileSheetImage.Size);
+            .WithImageSize(imageSize);
 
         var project = new Project(id,
             projectName,

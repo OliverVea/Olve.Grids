@@ -1,10 +1,11 @@
 ﻿using Olve.Utilities.Operations;
 using UI.Core.Projects;
+using UI.Core.Projects.Operations;
 using UI.Core.Projects.Repositories;
 
 namespace UI.Core.Brushes;
 
-public class ListBrushesOperation(ICurrentProjectRepository currentProjectRepository)
+public class ListBrushesOperation(GetCurrentProjectOperation getCurrentProjectOperation)
     : IAsyncOperation<ListBrushesOperation.Request, ListBrushesOperation.Response>
 {
     public record Request;
@@ -13,12 +14,13 @@ public class ListBrushesOperation(ICurrentProjectRepository currentProjectReposi
 
     public async Task<Result<Response>> ExecuteAsync(Request request, CancellationToken ct = new())
     {
-        var currentProjectResult = await currentProjectRepository.GetCurrentProjectAsync(ct);
-        if (currentProjectResult.TryPickProblems(out var problems, out var project))
+        GetCurrentProjectOperation.Request currentProjectRequest = new();
+        var currentProjectResult = await getCurrentProjectOperation.ExecuteAsync(currentProjectRequest, ct);
+        if (currentProjectResult.TryPickProblems(out var problems, out var projectResponse))
         {
             return problems;
         }
 
-        return new Response(project.Brushes.Values);
+        return new Response(projectResponse.Project.Brushes.Values);
     }
 }

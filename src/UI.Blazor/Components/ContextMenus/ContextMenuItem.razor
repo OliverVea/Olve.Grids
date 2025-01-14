@@ -1,0 +1,18 @@
+﻿@inject ContextMenuService ContextMenuService
+
+<li class="@Class @TW(Px, Py, Text(Colors.Active.Text.Ordinary))"
+    @attributes="AdditionalAttributes">
+    @ChildContent
+</li>
+
+@code {
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
+
+    [Parameter] public TailwindClass Px { get; set; } = Px(2);
+    [Parameter] public TailwindClass Py { get; set; } = Py(1);
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
+
+}

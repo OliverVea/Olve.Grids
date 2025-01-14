@@ -1,0 +1,33 @@
+﻿@using UI.Core.Tiles
+@inject DeactivateTileOperation DeactivateTileOperation
+@inject LoggingService LoggingService
+@inject NavigationManager NavigationManager
+
+<ContextMenuText Text="@Title"/>
+<ContextMenuDivider/>
+<ContextMenuOption
+    OnClick="@(() => NavigationManager.NavigateTo($"/edit-adjacencies/{TileInformation.TileIndex.Index}"))">
+    Adjacencies
+</ContextMenuOption>
+<ContextMenuOption OnClick="DeactivateTile" TextColor="Colors.Active.Text.Danger">
+    Deactivate
+</ContextMenuOption>
+
+@code {
+    [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
+
+    private string Title => $"Tile {TileInformation.TileIndex.Index}";
+
+
+    private async Task DeactivateTile()
+    {
+        var request = new DeactivateTileOperation.Request(TileInformation.TileIndex);
+        var result = await DeactivateTileOperation.ExecuteAsync(request);
+
+        if (result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+        }
+    }
+
+}

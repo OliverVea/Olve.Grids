@@ -12,13 +12,13 @@ public class LoggingService(IEnumerable<ILoggingProvider> loggingProviders)
 
     public void Show(ResultProblem problem)
     {
-        var message = new LogMessage(
-            problem.Exception,
-            LogLevel.Error,
-            problem.Message,
-            problem.Tags,
-            problem.Source,
-            problem.Args);
+        var message = new LogMessage(problem.Message, problem.Args)
+        {
+            Exception = problem.Exception,
+            Level = LogLevel.Error,
+            Source = problem.Source,
+            Tags = problem.Tags,
+        };
 
         Log(message);
     }

@@ -2,10 +2,9 @@
 @using Olve.Grids.Adjacencies
 @using Olve.Grids.Grids
 @using Olve.Grids.Weights
-@using SixLabors.ImageSharp
-@using SixLabors.ImageSharp.Processing
 @using UI.Core.Projects.Operations
 @using UI.Core.Projects.Repositories
+@using UI.Core.Tiles
 @inject LoadProjectOperation LoadProjectOperation
 @inject LoggingService Logger
 @inject NavigationManager NavigationManager
@@ -34,7 +33,6 @@
     private Id<Project> ProjectId { get; set; }
     private Project Project { get; set; } = null!;
 
-    private Image TileSheetImage { get; set; } = null!;
     private GridConfiguration GridConfiguration { get; set; }
 
     private IBrushLookup BrushLookup { get; set; } = null!;
@@ -87,7 +85,7 @@
             return;
         }
 
-        var gridConfigurationResult = GetGridConfiguration(Project);
+        var gridConfigurationResult = GridConfigurationExtractionHelper.GetGridConfiguration(Project);
         if (gridConfigurationResult.TryPickProblems(out problems, out var gridConfiguration))
         {
             Logger.Show(problems);
@@ -96,7 +94,6 @@
         }
 
         GridConfiguration = gridConfiguration;
-        TileSheetImage = Image.Load(response.Project.TileSheetImage.Content);
 
         BrushLookup = response.Project.TileAtlasBuilder.Configuration.BrushLookup ?? new BrushLookup();
         Project.TileAtlasBuilder.WithBrushLookup(BrushLookup);
@@ -113,77 +110,20 @@
         NavigationManager.NavigateTo("/");
     }
 
-    private Result
-        <GridConfiguration> GetGridConfiguration(Project project)
-    {
-        var config = project.TileAtlasBuilder.Configuration;
-        var columns = config.Columns;
-
-        if (!columns.HasValue)
-        {
-            if (!config.ImageSize.HasValue || !config.TileSize.HasValue)
-            {
-                return Result
-                    <GridConfiguration>.Failure(new ResultProblem("No columns defined and image size or tile size not defined")
-                {
-                    Source = nameof(ProjectDashboard),
-                });
-            }
-
-            columns = config.ImageSize.Value.Width / config.TileSize.Value.Width;
-        }
-
-        var rows = config.Rows;
-
-        if (!rows.HasValue)
-        {
-            if (!config.ImageSize.HasValue || !config.TileSize.HasValue)
-            {
-                return Result
-                    <GridConfiguration>.Failure(new ResultProblem("No rows defined and image size or tile size not defined")
-                {
-                    Source = nameof(ProjectDashboard),
-                });
-            }
-
-            rows = config.ImageSize.Value.Height / config.TileSize.Value.Height;
-        }
-
-        if (!config.TileSize.HasValue)
-        {
-            return Result
-                <GridConfiguration>.Failure(new ResultProblem("No rows defined")
-            {
-                Source = nameof(ProjectDashboard),
-            });
-        }
-
-        return new GridConfiguration(config.TileSize.Value, rows.Value, columns.Value);
-    }
-
-    private IEnumerable
-        <TileInformation> GetTileInformation()
+    private IEnumerable<TileInformation> GetTileInformation()
     {
         var tileIndices = GridConfiguration.GetTileIndices();
 
         foreach (var tileIndex in tileIndices)
         {
-            var (row, col) = GridConfiguration.GetRowAndColumn(tileIndex);
+            var result = TileInformationExtractionHelper.ExtractTileInformation(Project, tileIndex);
+            if (result.TryPickProblems(out var problems, out var tileInformation))
+            {
+                Logger.Show(problems);
+                continue;
+            }
 
-            var image = TileSheetImage.Clone(x => x.Crop(new Rectangle(
-                col * GridConfiguration.TileSize.Width,
-                row * GridConfiguration.TileSize.Height,
-                GridConfiguration.TileSize.Width,
-                GridConfiguration.TileSize.Height)));
-
-            var weight = WeightLookup.GetWeight(tileIndex);
-            var cornerBrushes = BrushLookup
-                .GetBrushes(tileIndex)
-                .GetT0OrDefault(new CornerBrushes());
-            var neighbors = AdjacencyLookup.GetNeighbors(tileIndex);
-            var active = Project.ActiveTiles.Contains(tileIndex);
-
-            yield return new TileInformation(tileIndex, image, weight, cornerBrushes, neighbors, active);
+            yield return tileInformation;
         }
     }
 

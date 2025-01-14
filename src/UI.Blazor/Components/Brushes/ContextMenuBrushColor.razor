@@ -1,0 +1,19 @@
+﻿<ContextMenuItem>
+<span>
+    Current:
+</span>
+    <ColorDot Color="@Color"/>
+    <span>
+    @Text
+</span>
+</ContextMenuItem>
+
+
+@code {
+    [Parameter] [EditorRequired] public required ProjectBrushOrAny ProjectBrushOrAny { get; set; }
+
+    private ColorString Color => ProjectBrushOrAny.TryPickT0(out var brush, out _) ? brush.Color : ColorString.Transparent;
+    private string Text => ProjectBrushOrAny.TryPickT0(out var brush, out _) ? brush.DisplayName : string.Empty;
+
+
+}

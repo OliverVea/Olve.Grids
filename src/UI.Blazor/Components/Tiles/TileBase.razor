@@ -2,7 +2,9 @@
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats.Png
 
-<div class="transparency-background @Classes" @onclick="HandleClick" @oncontextmenu="HandleRightClick">
+<div class="transparency-background @Class"
+     @onclick="@(e => OnClick.InvokeAsync(e))"
+     @oncontextmenu="OnRightClick">
     <img src="@Image.ToBase64String(PngFormat.Instance)" alt="Tile" class="@TW(WFull, HFull)"/>
 
     @if (TileIndex.HasValue)
@@ -23,13 +25,10 @@
     [Parameter] [EditorRequired] public Image Image { get; set; } = null!;
     [Parameter] public TileIndex? TileIndex { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
-    [Parameter] public string Classes { get; set; } = string.Empty;
+    [Parameter] public string Class { get; set; } = string.Empty;
     [Parameter] public ColorString TextColor { get; set; } = Colors.Active.Text.Ordinary;
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
     [Parameter] public EventCallback<MouseEventArgs> OnRightClick { get; set; }
-
-    private Task HandleClick(MouseEventArgs e) => OnClick.InvokeAsync(e);
-    private Task HandleRightClick(MouseEventArgs e) => OnRightClick.InvokeAsync(e);
 }
 
 

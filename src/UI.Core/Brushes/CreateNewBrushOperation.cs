@@ -1,11 +1,11 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Utilities.Operations;
 using UI.Core.Projects;
-using UI.Core.Projects.Repositories;
+using UI.Core.Projects.Operations;
 
 namespace UI.Core.Brushes;
 
-public class CreateNewBrushOperation(ICurrentProjectRepository currentProjectRepository)
+public class CreateNewBrushOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
     : IAsyncOperation<CreateNewBrushOperation.Request, CreateNewBrushOperation.Response>
 {
     public record Request(string? DisplayName = null);
@@ -22,7 +22,8 @@ public class CreateNewBrushOperation(ICurrentProjectRepository currentProjectRep
 
         var brush = NewBrush(request);
 
-        var updateResult = await currentProjectRepository.UpdateCurrentProjectAsync(AddBrushToProject, ct);
+        UpdateCurrentProjectOperation.Request updateRequest = new(AddBrushToProject);
+        var updateResult = await updateCurrentProjectOperation.ExecuteAsync(updateRequest, ct);
         if (updateResult.TryPickProblems(out var problems))
         {
             return Result<Response>.Failure(problems);

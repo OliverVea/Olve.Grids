@@ -1,11 +1,12 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Utilities.Operations;
 using UI.Core.Projects;
+using UI.Core.Projects.Operations;
 using UI.Core.Projects.Repositories;
 
 namespace UI.Core.Brushes;
 
-public class GetBrushOperation(ICurrentProjectRepository currentProjectRepository)
+public class GetBrushOperation(GetCurrentProjectOperation getCurrentProjectOperation)
     : IAsyncOperation<GetBrushOperation.Request, GetBrushOperation.Response>
 {
     public record Request(BrushId BrushId);
@@ -14,13 +15,15 @@ public class GetBrushOperation(ICurrentProjectRepository currentProjectRepositor
 
     public async Task<Result<Response>> ExecuteAsync(Request request, CancellationToken ct = new())
     {
-        var projectResult = await currentProjectRepository.GetCurrentProjectAsync(ct);
-        if (projectResult.TryPickProblems(out var problems, out var project))
+        GetCurrentProjectOperation.Request currentProjectRequest = new();
+        var projectResult = await getCurrentProjectOperation.ExecuteAsync(currentProjectRequest, ct);
+        if (projectResult.TryPickProblems(out var problems, out var projectResponse))
         {
             return problems;
         }
 
-        if (project.Brushes.TryGetValue(request.BrushId, out var brush))
+        var brushes = projectResponse.Project.Brushes;
+        if (brushes.TryGetValue(request.BrushId, out var brush))
         {
             return new Response(brush);
         }

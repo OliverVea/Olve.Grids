@@ -2,6 +2,8 @@
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.IO.TileAtlasBuilder;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace UI.Core.Projects;
 
@@ -19,8 +21,9 @@ public partial class SerializableProject
     public required SerializableTileAtlasConfiguration TileAtlasBuilder { get; init; }
     public int[]? ActiveTileIds { get; init; }
     public SerializedProjectBrush[]? Brushes { get; init; }
+    public string ImageName { get; init; } = string.Empty;
 
-    public static (SerializableProject Project, byte[] ImageBytes) FromProject(Project project) =>
+    public static (SerializableProject Project, Image Image) FromProject(Project project) =>
         (new SerializableProject
         {
             Id = project.Id.ToString(),
@@ -37,10 +40,11 @@ public partial class SerializableProject
                 .Brushes.Values
                 .Select(SerializedProjectBrush.FromProjectBrush)
                 .ToArray(),
-        }, project.TileSheetImage.Content);
+            ImageName = project.TileSheetImage.Name,
+        }, project.TileSheetImage.Image);
 
 
-    public Project ToProject(byte[] tileSheetContent)
+    public Project ToProject(Image tileSheetImage)
     {
         if (Version != SerializationVersion)
         {
@@ -52,7 +56,7 @@ public partial class SerializableProject
             new ProjectName(Name),
             DateTimeOffset.FromUnixTimeSeconds(CreatedAt),
             DateTimeOffset.FromUnixTimeSeconds(LastAccessedAt),
-            TileSheetImage.ToFileContent(tileSheetContent),
+            TileSheetImage.ToFileContent(tileSheetImage),
             ActiveTileIds
                 ?
                 .Select(x => new TileIndex(x))
@@ -89,17 +93,13 @@ public partial class SerializedProjectBrush
 public partial class SerializedFileContent
 {
     public required string Name { get; init; }
-    public required int Width { get; init; }
-    public required int Height { get; init; }
 
     public static SerializedFileContent FromFileContent(FileContent fileContent) =>
         new()
         {
             Name = fileContent.Name,
-            Width = fileContent.Size.Width,
-            Height = fileContent.Size.Height,
         };
 
-    public FileContent ToFileContent(byte[] content) =>
-        new(Name, content, new Size(Width, Height));
+    public FileContent ToFileContent(Image image) =>
+        new(Name, image);
 }

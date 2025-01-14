@@ -6,7 +6,7 @@ namespace UI.Core.Projects;
 
 public class RegisterSaveProjectOnProjectChangeStartup(
     ICurrentProjectRepository currentProjectRepository,
-    OperationFactory asyncOperationFactory) : IAsyncOnStartup
+    SaveProjectAndSummaryOperation.Factory operationFactory) : IAsyncOnStartup
 {
 
     public Task OnStartupAsync(CancellationToken cancellationToken = new())
@@ -22,11 +22,9 @@ public class RegisterSaveProjectOnProjectChangeStartup(
 
     private async Task SaveProjectAndSummary(Project project)
     {
-        SaveProjectAndSummaryOperation.Request request = new(project);
-        var operation = asyncOperationFactory.BuildAsyncOperation<
-            SaveProjectAndSummaryOperation,
-            SaveProjectAndSummaryOperation.Request>();
+        var operation = operationFactory.Build();
 
+        SaveProjectAndSummaryOperation.Request request = new(project);
         var result = await operation.ExecuteAsync(request);
 
         if (result.TryPickProblems(out var problems))

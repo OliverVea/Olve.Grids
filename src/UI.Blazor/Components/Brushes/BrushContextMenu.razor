@@ -1,6 +1,5 @@
 ﻿@using Olve.Grids.Grids
 @using Olve.Grids.Primitives
-@using UI.Core.Brushes
 @inject ListBrushesOperation ListBrushesOperation
 @inject LoggingService LoggingService
 @inject ModalService ModalService
@@ -8,9 +7,19 @@
 @inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
 @inject CreateNewBrushOperation CreateNewBrushOperation
 
+
+@{
+    var firstText = $"Select brush for tile {TileIndex.Index}";
+}
+
+<ContextMenuText Text="@firstText"/>
+<ContextMenuBrushColor ProjectBrushOrAny="@ProjectBrushOrAny"/>
+
+<ContextMenuDivider/>
+
 @foreach (var brush in _brushes)
 {
-    <ContextMenuItem OnClick="@(() => HandleSelectBrush(brush.Id))">
+    <ContextMenuOption OnClick="@(() => HandleSelectBrush(brush.Id))">
         <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
             <ColorDot Color="@brush.Color"/>
 
@@ -22,16 +31,28 @@
                   OnClick="@(e => HandleEditBrush(e, brush))"
                   StopPropagation="@true"/>
         </div>
-    </ContextMenuItem>
+    </ContextMenuOption>
 }
 
-<HorizontalDivider/>
-<ContextMenuItem OnClick="HandleNewBrush">
+<ContextMenuOption OnClick="@(() => HandleSelectBrush(BrushIdOrAny.Any))">
+    <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
+        <ColorDot Color="@ColorString.Transparent"/>
+
+        <span class="@TW(FlexGrow)">
+            No brush
+        </span>
+    </div>
+</ContextMenuOption>
+
+<ContextMenuDivider/>
+
+<ContextMenuOption OnClick="HandleNewBrush">
     Add new brush
-</ContextMenuItem>
+</ContextMenuOption>
 
 @code {
     [Parameter] [EditorRequired] public TileIndex TileIndex { get; set; }
+    [Parameter] [EditorRequired] public ProjectBrushOrAny ProjectBrushOrAny { get; set; } = ProjectBrushOrAny.Any;
     [Parameter] [EditorRequired] public Corner Corner { get; set; }
 
     private IReadOnlyList<ProjectBrush> _brushes = [ ];
@@ -58,7 +79,7 @@
     }
 
 
-    private async Task HandleSelectBrush(BrushId brushId)
+    private async Task HandleSelectBrush(BrushIdOrAny brushId)
     {
         SetBrushForTileCornerOperation.Request request = new(TileIndex, Corner, brushId);
         var result = await SetBrushForTileCornerOperation.ExecuteAsync(request);

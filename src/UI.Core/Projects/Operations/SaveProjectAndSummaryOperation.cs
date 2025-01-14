@@ -12,6 +12,9 @@ public class SaveProjectAndSummaryOperation(
 {
     public record Request(Project Project);
 
+    public class Factory(IServiceProvider serviceProvider)
+        : AsyncOperationFactory<SaveProjectAndSummaryOperation, Request>(serviceProvider);
+
     public async Task<Result> ExecuteAsync(Request request, CancellationToken ct = new())
     {
         var projectToSave = request.Project with
@@ -44,11 +47,7 @@ public class SaveProjectAndSummaryOperation(
             return Result.Failure(newProblems);
         }
 
-        loggingService.Log(new LogMessage(null,
-            LogLevel.Information,
-            "Saved project with id {0}, name {1}",
-            null,
-            null,
+        loggingService.Log(new LogMessage("Saved project with id {0}, name {1}",
             projectToSave.Id,
             projectToSave.Name));
         return Result.Success();

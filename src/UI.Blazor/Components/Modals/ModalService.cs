@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace UI.Blazor.Components.Providers;
+namespace UI.Blazor.Components.Modals;
 
 public class ModalService(ModalProviderContainer providerContainer)
 {

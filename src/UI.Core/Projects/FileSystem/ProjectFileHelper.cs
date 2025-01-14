@@ -1,4 +1,5 @@
 ﻿using MemoryPack;
+using SixLabors.ImageSharp;
 
 namespace UI.Core.Projects.FileSystem;
 
@@ -45,10 +46,11 @@ public static class ProjectFileHelper
 
         var projectId = Id<Project>.Parse(serializableProject.Id);
         var tileSheetImageExtension = Path.GetExtension(serializableProject.TileSheetImage.Name);
-        byte[] tileSheetBytes;
+        Image tileSheetImage;
         try
         {
-            tileSheetBytes = File.ReadAllBytes(PathHelper.GetTileSheetPath(projectId, tileSheetImageExtension));
+            var tileSheetImagePath = PathHelper.GetTileSheetPath(projectId, tileSheetImageExtension);
+            tileSheetImage = Image.Load(tileSheetImagePath);
         }
         catch (Exception ex)
         {
@@ -60,7 +62,7 @@ public static class ProjectFileHelper
 
         try
         {
-            project = serializableProject.ToProject(tileSheetBytes);
+            project = serializableProject.ToProject(tileSheetImage);
         }
         catch (Exception ex)
         {
@@ -84,13 +86,13 @@ public static class ProjectFileHelper
         }
 
         SerializableProject serializableProject;
-        byte[] tileSheetBytes;
+        Image tileSheetImage;
 
         try
         {
             var result = SerializableProject.FromProject(project);
             serializableProject = result.Project;
-            tileSheetBytes = result.ImageBytes;
+            tileSheetImage = result.Image;
         }
         catch (Exception ex)
         {
@@ -126,7 +128,7 @@ public static class ProjectFileHelper
         var imageFilePath = PathHelper.GetTileSheetPath(project.Id, tileSheetExtension);
         try
         {
-            File.WriteAllBytes(imageFilePath, tileSheetBytes);
+            tileSheetImage.Save(imageFilePath);
         }
         catch (Exception ex)
         {

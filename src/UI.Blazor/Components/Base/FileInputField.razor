@@ -1,4 +1,4 @@
-﻿@using Olve.Grids.IO.TileAtlasBuilder
+﻿@using SixLabors.ImageSharp
 <InputFile
     class="@TW(Text(Colors.Active.Text.Most), WFull, HFull, OverflowHidden)"
     OnChange="HandleFileSelected"
@@ -16,9 +16,9 @@
 
         await fileStream.ReadExactlyAsync(buffer, 0, buffer.Length);
 
-        var imageSize = ImageSizeHelper.GetImageSize(buffer);
+        var image = Image.Load(buffer);
 
-        var file = new FileContent(arg.File.Name, buffer, imageSize);
+        var file = new FileContent(arg.File.Name, image);
         File = file;
 
         await OnFileChanged.InvokeAsync(file);

@@ -1,4 +1,4 @@
-﻿namespace UI.Blazor.Components.Providers;
+﻿namespace UI.Blazor.Components.ContextMenus;
 
 public class ContextMenuProviderContainer
 {

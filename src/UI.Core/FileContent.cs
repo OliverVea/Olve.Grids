@@ -1,3 +1,5 @@
-﻿namespace UI.Core;
+﻿using SixLabors.ImageSharp;
 
-public readonly record struct FileContent(string Name, byte[] Content, Size Size);
+namespace UI.Core;
+
+public readonly record struct FileContent(string Name, Image Image);

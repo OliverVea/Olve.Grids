@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using UI.Blazor.Interop;
 
-namespace UI.Blazor.Components.Providers;
+namespace UI.Blazor.Components.ContextMenus;
 
 public class ContextMenuService(ContextMenuProviderContainer providerContainer, ElementSizeInterop elementSizeInterop)
 {
@@ -11,19 +11,18 @@ public class ContextMenuService(ContextMenuProviderContainer providerContainer, 
     public void Register(ContextMenuProvider provider) => providerContainer.SetProvider(provider);
 
 
-    public ValueTask ShowAsync(MouseEventArgs e, RenderFragment childContent, string? title = null)
+    public ValueTask ShowAsync(MouseEventArgs e, RenderFragment childContent)
     {
         var position = new Position((int)e.ClientX, (int)e.ClientY);
-        return ShowAsync(position, childContent, title);
+        return ShowAsync(position, childContent);
     }
 
-    public async ValueTask ShowAsync(Position position, RenderFragment childContent, string? title = null)
+    public async ValueTask ShowAsync(Position position, RenderFragment childContent)
     {
         var menuPosition = await GetMenuPositionAsync(position);
 
         await Provider.MutateAsync(state =>
         {
-            state.Title = title;
             state.ChildContent = childContent;
             state.Visible = true;
             state.Position = menuPosition;
