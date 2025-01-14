@@ -6,7 +6,7 @@ namespace UI.Core.Projects;
 
 public class RegisterSaveProjectOnProjectChangeStartup(
     ICurrentProjectRepository currentProjectRepository,
-    AsyncOperationFactory asyncOperationFactory) : IAsyncOnStartup
+    OperationFactory asyncOperationFactory) : IAsyncOnStartup
 {
 
     public Task OnStartupAsync(CancellationToken cancellationToken = new())
@@ -23,8 +23,9 @@ public class RegisterSaveProjectOnProjectChangeStartup(
     private async Task SaveProjectAndSummary(Project project)
     {
         SaveProjectAndSummaryOperation.Request request = new(project);
-        var operation = asyncOperationFactory
-            .Build<SaveProjectAndSummaryOperation, SaveProjectAndSummaryOperation.Request>();
+        var operation = asyncOperationFactory.BuildAsyncOperation<
+            SaveProjectAndSummaryOperation,
+            SaveProjectAndSummaryOperation.Request>();
 
         var result = await operation.ExecuteAsync(request);
 

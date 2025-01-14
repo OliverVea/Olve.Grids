@@ -50,9 +50,9 @@ public static class ProjectSummaryFileHelper
     public static Result Save(ProjectSummary projectSummary)
     {
         var directoryResult = ProjectDirectoryHelper.EnsureDirectoryExists();
-        if (!directoryResult.Succeded)
+        if (directoryResult.TryPickProblems(out var problems))
         {
-            return directoryResult;
+            return problems;
         }
 
         var projectFilePath = PathHelper.GetSummaryPath(projectSummary);

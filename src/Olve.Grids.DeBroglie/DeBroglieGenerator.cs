@@ -2,7 +2,6 @@
 using DeBroglie.Models;
 using DeBroglie.Topo;
 using Olve.Grids.Generation;
-
 using Direction = Olve.Grids.Primitives.Direction;
 
 namespace Olve.Grids.DeBroglie;
@@ -16,7 +15,7 @@ public class DeBroglieGenerator : IGenerator
         for (var attempt = 1; attempt <= request.Attempts; attempt++)
         {
             result = ExecuteInternal(request, attempt == request.Attempts);
-            if (result.Result.Succeded)
+            if (result.Result.Succeeded)
             {
                 return result;
             }
@@ -76,9 +75,9 @@ public class DeBroglieGenerator : IGenerator
             .Map(x => ((Tile?)x).ToTileIndex(request.TileAtlas.FallbackTile))
             .ToArray2d();
 
-        for (var i = 0; i < request.OutputSize.Width && status.Succeded; i++)
+        for (var i = 0; i < request.OutputSize.Width && status.Succeeded; i++)
         {
-            for (var j = 0; j < request.OutputSize.Height; j++)
+            for (var j = 0; j < request.OutputSize.Height && status.Succeeded; j++)
             {
                 if (result[i, j] == request.TileAtlas.FallbackTile)
                 {

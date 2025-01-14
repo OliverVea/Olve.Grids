@@ -78,9 +78,9 @@ public static class ProjectFileHelper
     public static Result Save(Project project)
     {
         var directoryResult = ProjectDirectoryHelper.EnsureDirectoryExists();
-        if (!directoryResult.Succeded)
+        if (directoryResult.TryPickProblems(out var problems))
         {
-            return directoryResult;
+            return problems;
         }
 
         SerializableProject serializableProject;

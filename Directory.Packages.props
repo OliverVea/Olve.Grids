@@ -4,7 +4,7 @@
         <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="1.7.2"/>
         <PackageVersion Include="Blazorise.Tailwind" Version="1.7.2"/>
         <PackageVersion Include="MemoryPack.Core" Version="1.21.3"/>
-        <PackageVersion Include="Olve.Utilities" Version="0.0.15-20250112124813.bac734e"/>
+        <PackageVersion Include="Olve.Utilities" Version="0.0.15"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.2.0"/>

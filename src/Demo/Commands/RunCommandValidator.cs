@@ -17,8 +17,13 @@ public class RunCommandValidator : AbstractValidator<RunCommandSettings>
         RuleFor(x => x.TileSize)
             .NotEmpty()
             .WithMessage("The tile size must be specified.")
-            .Must(tileSize => SizeParser.Parse(tileSize).Succeded)
-            .WithMessage(x => SizeParser.Parse(x.TileSize).Problems?.First().ToString() ?? "Problem parsing the tile size.");
+            .Must(tileSize => SizeParser.Parse(tileSize)
+                .Succeeded)
+            .WithMessage(x => SizeParser
+                                  .Parse(x.TileSize)
+                                  .Problems?.First()
+                                  .ToString()
+                              ?? "Problem parsing the tile size.");
 
         RuleFor(x => x.TileAtlasBrushesFile)
             .NotEmpty()
@@ -49,7 +54,12 @@ public class RunCommandValidator : AbstractValidator<RunCommandSettings>
         RuleFor(x => x.Verbosity)
             .NotEmpty()
             .WithMessage("The verbosity level must be specified.")
-            .Must(verbosity => VerbosityLevels.Parse(verbosity).Succeded)
-            .WithMessage(x => VerbosityLevels.Parse(x.Verbosity).Problems?.First().ToString() ?? "Problem parsing the verbosity level.");
+            .Must(verbosity => VerbosityLevels.Parse(verbosity)
+                .Succeeded)
+            .WithMessage(x => VerbosityLevels
+                                  .Parse(x.Verbosity)
+                                  .Problems?.First()
+                                  .ToString()
+                              ?? "Problem parsing the verbosity level.");
     }
 }

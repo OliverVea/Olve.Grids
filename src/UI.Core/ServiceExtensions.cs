@@ -48,7 +48,6 @@ public static class ServiceExtensions
         services.AddTransient<ILoggingProvider, ConsoleLoggingProvider>();
 
         services.AddTransient<OperationFactory>();
-        services.AddTransient<AsyncOperationFactory>();
 
         services.AddTransient<IAsyncOnStartup, RegisterSaveProjectOnProjectChangeStartup>();
     }
