@@ -19,16 +19,16 @@
         var thisCorner = corner;
         var brushId = CornerBrushes[corner];
 
-        <Dot TileIndex="@TileInformation.TileIndex"
-             Corner="@thisCorner"
-             CurrentBrushId="@brushId"
-             Class="@TW(Absolute,
-                        Top(pct(top)),
-                        Left(pct(left)),
-                        Hover(Scale(125)),
-                        TransitionTransform,
-                        Z(15))"
-             Radius="10%"/>
+        <TileBrush TileIndex="@TileInformation.TileIndex"
+                   Corner="@thisCorner"
+                   CurrentBrushId="@brushId"
+                   Class="@TW(Absolute,
+                              Top(pct(top)),
+                              Left(pct(left)),
+                              Hover(Scale(125)),
+                              TransitionTransform,
+                              Z(15))"
+                   Radius="10%"/>
     }
 </TileBase>
 
