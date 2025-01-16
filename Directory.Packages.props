@@ -1,6 +1,6 @@
 <Project>
     <ItemGroup>
-        <!-- Olve.Grids -->g
+        <!-- Olve.Grids -->
         <PackageVersion Include="Olve.Utilities" Version="0.0.15"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271"/>
