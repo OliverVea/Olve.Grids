@@ -13,11 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repo", "repo", "{F2F8BC4F-E
 		README.md = README.md
 		.editorconfig = .editorconfig
 		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{336398BB-0198-4C90-90F8-3E4E5C62720D}"
-	ProjectSection(SolutionItems) = preProject
-		.github\workflows\publish.yml = .github\workflows\publish.yml
+		VERSION = VERSION
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BE6D0662-C36C-499F-A6AC-E277251F8146}"
@@ -73,7 +69,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C5852073-3607-4133-82EB-2F255F8BE2A5} = {DB78AA41-3A48-4BA0-812D-49371D958138}
-		{336398BB-0198-4C90-90F8-3E4E5C62720D} = {F2F8BC4F-E0F5-498D-B340-276EE7F4F1E7}
 		{4D5E2652-2413-4F60-9515-66777626F903} = {DB78AA41-3A48-4BA0-812D-49371D958138}
 		{6CA60CCA-4443-4616-A387-E7EEFDFEF213} = {DB78AA41-3A48-4BA0-812D-49371D958138}
 		{962D696E-CB02-43E1-A2C9-64A75C868462} = {DB78AA41-3A48-4BA0-812D-49371D958138}
