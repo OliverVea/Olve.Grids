@@ -25,10 +25,10 @@ public partial class SerializableTileAtlas
         };
 
     public static TileAtlas ToTileAtlas(SerializableTileAtlas serializableTileAtlas) =>
-        new(SerializableGridConfiguration.ToGridConfiguration(serializableTileAtlas.Grid),
-            SerializableBrushLookup.ToFrozenBrushLookup(serializableTileAtlas.BrushLookup),
-            SerializableAdjacencyLookup.ToFrozenAdjacencyLookup(serializableTileAtlas.AdjacencyLookup),
-            SerializableWeightLookup.ToFrozenWeightLookup(serializableTileAtlas.WeightLookup))
+        new(serializableTileAtlas.Grid.ToGridConfiguration(),
+            serializableTileAtlas.BrushLookup.ToFrozenBrushLookup(),
+            serializableTileAtlas.AdjacencyLookup.ToFrozenAdjacencyLookup(),
+            serializableTileAtlas.WeightLookup.ToFrozenWeightLookup())
         {
             FallbackTile = new TileIndex(serializableTileAtlas.FallbackTile),
         };

@@ -1,131 +1,70 @@
 ﻿@page "/project/{projectId}"
-@using Olve.Grids.Adjacencies
-@using Olve.Grids.Grids
-@using Olve.Grids.Weights
+@using UI.Blazor.Navigation
 @using UI.Core.Projects.Operations
 @using UI.Core.Projects.Repositories
-@using UI.Core.Tiles
 @inject LoadProjectOperation LoadProjectOperation
 @inject LoggingService Logger
-@inject NavigationManager NavigationManager
+@inject NavigationService NavigationService
 @inject SetCurrentProjectOperation SetCurrentProjectOperation
 @inject ICurrentProjectRepository CurrentProjectRepository
 
-<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
-    <TitleBar Title="@Project.Name.Value" OnLeft="HandleBack"/>
+@if (_project is not { } project)
+{
+    <span>Loading...</span>
+    return;
+}
 
-    <div class="@TW(FlexGrow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
-        <div class="@TW(Grid, GridCols($"repeat({GridConfiguration.Columns},auto)"), Gap(2))">
-            @foreach (var tileInformation in GetTileInformation())
-            {
-                <Tile TileInformation="@tileInformation"/>
-            }
-        </div>
-    </div>
-</div>
+<ProjectDashboardRoot Project="@project"/>
 
 @code {
-    private const string ProjectIdParameterName = "projectId";
+    [Parameter] public required string ProjectId { get; set; }
 
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> Garbage { get; set; } = new();
-
-    private Id<Project> ProjectId { get; set; }
-    private Project Project { get; set; } = null!;
-
-    private GridConfiguration GridConfiguration { get; set; }
-
-    private IBrushLookup BrushLookup { get; set; } = null!;
-    private IAdjacencyLookup AdjacencyLookup { get; set; } = null!;
-    private IWeightLookup WeightLookup { get; set; } = null!;
-
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        foreach (var parameter in parameters)
-        {
-            switch (parameter.Name)
-            {
-                case ProjectIdParameterName:
-                    ProjectId = Id<Project>.Parse((string)parameter.Value);
-                    break;
-            }
-        }
-
-        await base.SetParametersAsync(parameters);
-    }
+    private Project? _project;
 
     protected override void OnInitialized()
     {
-        CurrentProjectRepository.OnCurrentProjectChanged.Add(async project =>
-        {
-            Project = project;
-            await InvokeAsync(StateHasChanged);
-        });
+        CurrentProjectRepository.OnCurrentProjectChanged.Add(async _ => { await InvokeAsync(StateHasChanged); });
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        LoadProjectOperation.Request request = new(ProjectId);
+        var projectResult = await LoadProjectAsync();
+        if (projectResult.TryPickProblems(out var problems, out var project))
+        {
+            _project = null;
+            Logger.Show(problems);
+            NavigationService.NavigateTo(new ApplicationIndexNavigationTarget());
+            return;
+        }
+
+        _project = project;
+    }
+
+    private async Task<Result<Project>> LoadProjectAsync()
+    {
+        var parsingResult = Id<Project>.TryParse(ProjectId, out var projectId);
+        if (!parsingResult)
+        {
+            var problem = new ResultProblem("Invalid project id: '{0}'", ProjectId);
+            return problem;
+        }
+
+        LoadProjectOperation.Request request = new(projectId);
         var result = await LoadProjectOperation.ExecuteAsync(request);
 
         if (result.TryPickProblems(out var problems, out var response))
         {
-            Logger.Show(problems);
-            HandleBack();
-            return;
+            return problems;
         }
 
-        Project = response.Project;
-        SetCurrentProjectOperation.Request setCurrentProjectRequest = new(Project);
+        SetCurrentProjectOperation.Request setCurrentProjectRequest = new(response.Project);
         var setCurrentProjectResult = await SetCurrentProjectOperation.ExecuteAsync(setCurrentProjectRequest);
-        if (setCurrentProjectResult.TryPickProblems(out var setCurrentProjectProblems))
+        if (setCurrentProjectResult.TryPickProblems(out problems))
         {
-            Logger.Show(setCurrentProjectProblems);
-            HandleBack();
-            return;
+            return problems;
         }
 
-        var gridConfigurationResult = GridConfigurationExtractionHelper.GetGridConfiguration(Project);
-        if (gridConfigurationResult.TryPickProblems(out problems, out var gridConfiguration))
-        {
-            Logger.Show(problems);
-            HandleBack();
-            return;
-        }
-
-        GridConfiguration = gridConfiguration;
-
-        BrushLookup = response.Project.TileAtlasBuilder.Configuration.BrushLookup ?? new BrushLookup();
-        Project.TileAtlasBuilder.WithBrushLookup(BrushLookup);
-
-        AdjacencyLookup = response.Project.TileAtlasBuilder.Configuration.AdjacencyLookup ?? new AdjacencyLookup();
-        Project.TileAtlasBuilder.WithAdjacencyLookup(AdjacencyLookup);
-
-        WeightLookup = response.Project.TileAtlasBuilder.Configuration.WeightLookup ?? new WeightLookup();
-        Project.TileAtlasBuilder.WithWeightLookup(WeightLookup);
+        return response.Project;
     }
-
-    private void HandleBack()
-    {
-        NavigationManager.NavigateTo("/");
-    }
-
-    private IEnumerable<TileInformation> GetTileInformation()
-    {
-        var tileIndices = GridConfiguration.GetTileIndices();
-
-        foreach (var tileIndex in tileIndices)
-        {
-            var result = TileInformationExtractionHelper.ExtractTileInformation(Project, tileIndex);
-            if (result.TryPickProblems(out var problems, out var tileInformation))
-            {
-                Logger.Show(problems);
-                continue;
-            }
-
-            yield return tileInformation;
-        }
-    }
-
 
 }

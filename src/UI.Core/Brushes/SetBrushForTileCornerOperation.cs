@@ -24,16 +24,8 @@ public class SetBrushForTileCornerOperation(UpdateCurrentProjectOperation update
         return Result.Success();
     }
 
-    private static Result SetBrushForTileCorner(Request request, Project project)
+    private static void SetBrushForTileCorner(Request request, Project project)
     {
-        var brushLookup = project.TileAtlasBuilder.Configuration.BrushLookup;
-        if (brushLookup is null)
-        {
-            return new ResultProblem("No brush lookup is available.");
-        }
-
-        brushLookup.SetCornerBrush(request.TileIndex, request.Corner, request.BrushId);
-
-        return Result.Success();
+        project.BrushLookup.SetCornerBrush(request.TileIndex, request.Corner, request.BrushId);
     }
 }

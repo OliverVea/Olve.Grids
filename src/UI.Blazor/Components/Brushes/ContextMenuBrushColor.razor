@@ -1,19 +1,24 @@
 ﻿<ContextMenuItem>
-<span>
-    Current:
-</span>
+    <span>
+        Current:
+    </span>
     <ColorDot Color="@Color"/>
     <span>
-    @Text
-</span>
+        @Text
+    </span>
+    @if (ChildContent is { } childContent)
+    {
+        <span class="@TW(Ml(2))">
+        @childContent
+        </span>
+    }
 </ContextMenuItem>
 
 
 @code {
     [Parameter] [EditorRequired] public required ProjectBrushOrAny ProjectBrushOrAny { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     private ColorString Color => ProjectBrushOrAny.TryPickT0(out var brush, out _) ? brush.Color : ColorString.Transparent;
     private string Text => ProjectBrushOrAny.TryPickT0(out var brush, out _) ? brush.DisplayName : string.Empty;
-
-
 }

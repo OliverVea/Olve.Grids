@@ -2,6 +2,7 @@
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.IO.TileAtlasBuilder;
+using Olve.Grids.Serialization.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 
@@ -17,10 +18,13 @@ public partial class SerializableProject
     public required string Name { get; init; }
     public required long CreatedAt { get; init; }
     public required long LastAccessedAt { get; init; }
+    public required SerializableGridConfiguration GridConfiguration { get; init; }
     public required SerializedFileContent TileSheetImage { get; init; }
-    public required SerializableTileAtlasConfiguration TileAtlasBuilder { get; init; }
-    public int[]? ActiveTileIds { get; init; }
-    public SerializedProjectBrush[]? Brushes { get; init; }
+    public required SerializableAdjacencyLookup AdjacencyLookup { get; init; }
+    public required SerializableBrushLookup BrushLookup { get; init; }
+    public required SerializableWeightLookup WeightLookup { get; init; }
+    public required int[] ActiveTileIds { get; init; }
+    public required SerializedProjectBrush[] Brushes { get; init; }
     public string ImageName { get; init; } = string.Empty;
 
     public static (SerializableProject Project, Image Image) FromProject(Project project) =>
@@ -31,16 +35,19 @@ public partial class SerializableProject
             CreatedAt = project.CreatedAt.ToUnixTimeSeconds(),
             LastAccessedAt = project.CreatedAt.ToUnixTimeSeconds(),
             TileSheetImage = SerializedFileContent.FromFileContent(project.TileSheetImage),
-            TileAtlasBuilder =
-                SerializableTileAtlasConfiguration.FromTileAtlasConfiguration(project.TileAtlasBuilder.Configuration),
+            GridConfiguration = SerializableGridConfiguration.FromGridConfiguration(project.GridConfiguration),
+            AdjacencyLookup = SerializableAdjacencyLookup.FromAdjacencyLookup(project.AdjacencyLookup),
+            BrushLookup = SerializableBrushLookup.FromBrushLookup(project.BrushLookup),
+            WeightLookup = SerializableWeightLookup.FromWeightLookup(project.WeightLookup),
+            ImageName = project.TileSheetImage.Name,
             ActiveTileIds = project
-                .ActiveTiles.Select(x => x.Index)
+                .ActiveTiles
+                .Select(x => x.Index)
                 .ToArray(),
             Brushes = project
-                .Brushes.Values
-                .Select(SerializedProjectBrush.FromProjectBrush)
+                .Brushes
+                .Select(x => SerializedProjectBrush.FromProjectBrush(x.Value))
                 .ToArray(),
-            ImageName = project.TileSheetImage.Name,
         }, project.TileSheetImage.Image);
 
 
@@ -51,23 +58,23 @@ public partial class SerializableProject
             throw new InvalidOperationException($"Cannot deserialize project with version {Version}");
         }
 
-        return new Project(
-            Id<Project>.Parse(Id),
-            new ProjectName(Name),
-            DateTimeOffset.FromUnixTimeSeconds(CreatedAt),
-            DateTimeOffset.FromUnixTimeSeconds(LastAccessedAt),
-            TileSheetImage.ToFileContent(tileSheetImage),
-            ActiveTileIds
-                ?
+        return new Project
+        {
+            Id = Id<Project>.Parse(Id),
+            Name = new ProjectName(Name),
+            CreatedAt = DateTimeOffset.FromUnixTimeSeconds(CreatedAt),
+            LastAccessedAt = DateTimeOffset.FromUnixTimeSeconds(LastAccessedAt),
+            TileSheetImage = TileSheetImage.ToFileContent(tileSheetImage),
+            GridConfiguration = GridConfiguration.ToGridConfiguration(),
+            AdjacencyLookup = AdjacencyLookup.ToAdjacencyLookup(),
+            BrushLookup = BrushLookup.ToBrushLookup(),
+            WeightLookup = WeightLookup.ToWeightLookup(),
+            ActiveTiles = ActiveTileIds
                 .Select(x => new TileIndex(x))
-                .ToHashSet()
-            ?? [ ],
-            Brushes
-                ?
-                .Select(x => x.ToProjectBrush())
-                .ToDictionary(x => x.Id)
-            ?? [ ],
-            new TileAtlasBuilder(TileAtlasBuilder.ToTileAtlasConfiguration()));
+                .ToHashSet(),
+            Brushes = Brushes.ToDictionary(x => new BrushId(x.Id),
+                x => x.ToProjectBrush()),
+        };
     }
 }
 

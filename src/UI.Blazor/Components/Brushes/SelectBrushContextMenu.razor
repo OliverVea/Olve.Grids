@@ -7,42 +7,44 @@
 @inject SetBrushForTileCornerOperation SetBrushForTileCornerOperation
 @inject CreateNewBrushOperation CreateNewBrushOperation
 
-
 @{
     var firstText = $"Select brush for tile {TileIndex.Index}";
 }
 
 <ContextMenuText Text="@firstText"/>
-<ContextMenuBrushColor ProjectBrushOrAny="@ProjectBrushOrAny"/>
-
+<ContextMenuBrushColor ProjectBrushOrAny="@ProjectBrushOrAny">
+    @if (ProjectBrushOrAny.TryPickT0(out var currentBrush, out _))
+    {
+        <Icon IconDescriptor="IconDescriptor.Edit"
+              OnClick="@(e => HandleEditBrush(e, currentBrush))"
+              StopPropagation="@true"/>
+    }
+</ContextMenuBrushColor>
 <ContextMenuDivider/>
 
-@foreach (var brush in _brushes)
+@foreach (var brush in SelectableBrushes)
 {
-    <ContextMenuOption OnClick="@(() => HandleSelectBrush(brush.Id))">
+    var (color, displayName) = brush.TryPickT0(out var projectBrush, out _)
+        ? (projectBrush.Color, projectBrush.DisplayName)
+        : (ColorString.Transparent, "No brush");
+
+    <ContextMenuOption OnClick="@(() => HandleSelectBrush(brush))">
         <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
-            <ColorDot Color="@brush.Color"/>
+            <ColorDot Color="@color"/>
 
             <span class="@TW(FlexGrow)">
-                        @brush.DisplayName
+                        @displayName
                     </span>
 
-            <Icon IconDescriptor="IconDescriptor.Edit"
-                  OnClick="@(e => HandleEditBrush(e, brush))"
-                  StopPropagation="@true"/>
+            @if (brush.TryPickT0(out projectBrush, out _))
+            {
+                <Icon IconDescriptor="IconDescriptor.Edit"
+                      OnClick="@(e => HandleEditBrush(e, projectBrush))"
+                      StopPropagation="@true"/>
+            }
         </div>
     </ContextMenuOption>
 }
-
-<ContextMenuOption OnClick="@(() => HandleSelectBrush(BrushIdOrAny.Any))">
-    <div class="@TW(Flex, FlexRow, ItemsCenter, Gap(2))">
-        <ColorDot Color="@ColorString.Transparent"/>
-
-        <span class="@TW(FlexGrow)">
-            No brush
-        </span>
-    </div>
-</ContextMenuOption>
 
 <ContextMenuDivider/>
 
@@ -55,7 +57,9 @@
     [Parameter] [EditorRequired] public ProjectBrushOrAny ProjectBrushOrAny { get; set; } = ProjectBrushOrAny.Any;
     [Parameter] [EditorRequired] public Corner Corner { get; set; }
 
-    private IReadOnlyList<ProjectBrush> _brushes = [ ];
+    private IReadOnlyList<ProjectBrushOrAny> _brushes = [ ];
+
+    private IEnumerable<ProjectBrushOrAny> SelectableBrushes => _brushes.Where(x => !x.Equals(ProjectBrushOrAny));
 
     protected override async Task OnParametersSetAsync()
     {
@@ -67,7 +71,10 @@
             return;
         }
 
-        _brushes = brushes.Brushes.ToArray();
+        _brushes = brushes
+            .Brushes.Select(x => (ProjectBrushOrAny)x)
+            .Append(ProjectBrushOrAny.Any)
+            .ToArray();
     }
 
     private async Task HandleEditBrush(MouseEventArgs mouseEventArgs, ProjectBrush brush)

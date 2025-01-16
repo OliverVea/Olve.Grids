@@ -46,7 +46,7 @@
     private async Task HandleClick(MouseEventArgs e)
     {
         await ContextMenuService.ShowAsync(e,
-            @<BrushContextMenu TileIndex="@TileIndex" Corner="@Corner" ProjectBrushOrAny="@CurrentBrush"/>);
+            @<SelectBrushContextMenu TileIndex="@TileIndex" Corner="@Corner" ProjectBrushOrAny="@CurrentBrush"/>);
     }
 
 

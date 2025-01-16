@@ -48,12 +48,12 @@ public partial class SerializableTileAtlasConfiguration
             AdjacencyLookup =
                 AdjacencyLookup is null
                     ? new AdjacencyLookup()
-                    : SerializableAdjacencyLookup.ToAdjacencyLookup(AdjacencyLookup),
+                    : AdjacencyLookup.ToAdjacencyLookup(),
             BrushLookup = BrushLookup is null
                 ? new BrushLookup()
-                : SerializableBrushLookup.ToBrushLookup(BrushLookup),
+                : BrushLookup.ToBrushLookup(),
             WeightLookup = WeightLookup is null
                 ? new WeightLookup()
-                : SerializableWeightLookup.ToWeightLookup(WeightLookup),
+                : WeightLookup.ToWeightLookup(),
         };
 }

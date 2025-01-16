@@ -28,9 +28,6 @@ public partial class SerializableBrushLookup
     ));
 
 
-    public static FrozenBrushLookup ToFrozenBrushLookup(SerializableBrushLookup serializableBrushLookup) =>
-        new(serializableBrushLookup.Items);
-
-    public static BrushLookup ToBrushLookup(SerializableBrushLookup serializableBrushLookup) =>
-        new(serializableBrushLookup.Items);
+    public FrozenBrushLookup ToFrozenBrushLookup() => new(Items);
+    public BrushLookup ToBrushLookup() => new(Items);
 }

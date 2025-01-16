@@ -1,4 +1,7 @@
-﻿using Olve.Grids.IO.TileAtlasBuilder;
+﻿using Olve.Grids.Adjacencies;
+using Olve.Grids.Brushes;
+using Olve.Grids.Grids;
+using Olve.Grids.Weights;
 using Olve.Utilities.Operations;
 using UI.Core.Projects.Repositories;
 
@@ -23,18 +26,23 @@ public class CreateNewProjectOperation(
         var lastAccessedAt = createdAt;
         var imageSize = new Size(request.TileSheetImage.Image.Width, request.TileSheetImage.Image.Height);
 
-        var tileAtlasBuilder = new TileAtlasBuilder()
-            .WithTileSize(request.TileSize)
-            .WithImageSize(imageSize);
 
-        var project = new Project(id,
-            projectName,
-            createdAt,
-            lastAccessedAt,
-            request.TileSheetImage,
-            [ ],
-            [ ],
-            tileAtlasBuilder);
+        var gridConfiguration = GetGridConfiguration(request, imageSize);
+
+        var project = new Project
+        {
+            Id = id,
+            Name = projectName,
+            CreatedAt = createdAt,
+            LastAccessedAt = lastAccessedAt,
+            TileSheetImage = request.TileSheetImage,
+            GridConfiguration = gridConfiguration,
+            WeightLookup = new WeightLookup(),
+            AdjacencyLookup = new AdjacencyLookup(),
+            BrushLookup = new BrushLookup(),
+            ActiveTiles = new HashSet<TileIndex>(),
+            Brushes = new Dictionary<BrushId, ProjectBrush>(),
+        };
 
         var createResult = await projectSettingRepository.SetProjectAsync(project, ct);
         if (createResult.TryPickProblems(out var problems))
@@ -57,5 +65,13 @@ public class CreateNewProjectOperation(
         }
 
         return new Response(projectSummary);
+    }
+
+    private GridConfiguration GetGridConfiguration(Request request, Size imageSize)
+    {
+        var rows = imageSize.Height / request.TileSize.Height;
+        var columns = imageSize.Width / request.TileSize.Width;
+
+        return new GridConfiguration(request.TileSize, rows, columns);
     }
 }

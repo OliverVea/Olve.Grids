@@ -13,7 +13,7 @@ public class TileAtlasConfiguration
     public int? Rows { get; internal set; }
     public TileIndex? FallbackTileIndex { get; internal set; }
 
-    public IAdjacencyLookup? AdjacencyLookup { get; internal set; }
-    public IBrushLookup? BrushLookup { get; internal set; }
-    public IWeightLookup? WeightLookup { get; internal set; }
+    public IAdjacencyLookup AdjacencyLookup { get; internal set; } = new AdjacencyLookup();
+    public IBrushLookup BrushLookup { get; internal set; } = new BrushLookup();
+    public IWeightLookup WeightLookup { get; internal set; } = new WeightLookup();
 }

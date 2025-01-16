@@ -52,7 +52,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
     }
 
     public TileAtlasBuilder ConfigureAdjacencyLookupBuilder(
-        Action<IAdjacencyLookup?> configurationAction
+        Action<IAdjacencyLookup> configurationAction
     )
     {
         return Modify(config => configurationAction(config.AdjacencyLookup));
@@ -64,7 +64,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
     }
 
     public TileAtlasBuilder ConfigureBrushLookupBuilder(
-        Action<IBrushLookup?> configurationAction
+        Action<IBrushLookup> configurationAction
     )
     {
         return Modify(config => configurationAction(config.BrushLookup));
@@ -76,7 +76,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
     }
 
     public TileAtlasBuilder ConfigureWeightLookupBuilder(
-        Action<IWeightLookup?> configurationAction
+        Action<IWeightLookup> configurationAction
     )
     {
         return Modify(config => configurationAction(config.WeightLookup));
@@ -98,14 +98,12 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
             Configuration.Columns ?? Configuration.ImageSize!.Value.Width / tileSize.Width
         );
 
-        ThrowIfNull(Configuration.BrushLookup, "Brush lookup builder must be set.");
         var frozenBrushLookup = new FrozenBrushLookup(Configuration.BrushLookup.Entries);
 
-        ThrowIfNull(Configuration.AdjacencyLookup, "Adjacency lookup must be set.");
         var frozenAdjacencyLookup = new FrozenAdjacencyLookup(Configuration.AdjacencyLookup.Adjacencies);
 
-        var weightLookup = Configuration.WeightLookup ?? new WeightLookup();
-        var frozenWeightLookup = new FrozenWeightLookup(weightLookup.Weights, weightLookup.DefaultWeight);
+        var frozenWeightLookup = new FrozenWeightLookup(Configuration.WeightLookup.Weights,
+            Configuration.WeightLookup.DefaultWeight);
 
         return new TileAtlas(
             gridConfiguration,
