@@ -1,5 +1,4 @@
 ﻿using Olve.Utilities.Operations;
-using UI.Core.Projects.Repositories;
 
 namespace UI.Core.Projects.Operations;
 
@@ -41,35 +40,4 @@ public class UpdateProjectOperation(GetProjectOperation getProjectOperation, Set
     }
 
     private static ProjectSummary MapToSummary(Project project) => new(project.Id, project.Name, project.LastAccessedAt);
-}
-
-public static class ResultFuncExtensions
-{
-    public static Func<T, Result> ToFunc<T>(this Action<T> action) => t =>
-    {
-        action(t);
-        return Result.Success();
-    };
-}
-
-public class SetProjectOperation(IProjectSettingRepository projectSettingRepository, ProjectCache projectCache)
-    : IAsyncOperation<SetProjectOperation.Request>
-{
-    public record Request(Project Project);
-
-    public async Task<Result> ExecuteAsync(Request request, CancellationToken ct = default)
-    {
-        var projectSummary = ProjectMapper.ToProjectSummary(request.Project);
-
-        var saveSummaryResult =
-            await projectSettingRepository.SetProjectAndSummaryAsync(request.Project, projectSummary, ct);
-        if (saveSummaryResult.TryPickProblems(out var problems))
-        {
-            return Result.Failure(problems);
-        }
-
-        projectCache.AddProject(request.Project);
-
-        return Result.Success();
-    }
 }

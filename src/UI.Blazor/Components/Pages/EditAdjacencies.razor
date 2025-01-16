@@ -1,36 +1,30 @@
 ﻿@page "/project/{projectId}/edit-adjacencies/{tileIndex:int}"
 @using Olve.Grids.Grids
-@using SixLabors.ImageSharp
-@using SixLabors.ImageSharp.Formats.Png
 @using UI.Blazor.Navigation
 @using UI.Core.Projects.Operations
-@using UI.Core.Tiles
 @inject GetProjectOperation GetProjectOperation
 @inject LoggingService LoggingService
-@inject GetTileInformationOperation GetTileInformationOperation
 @inject NavigationService NavigationService
 
-<img class="@TW(W(px(80)), H(px(80)))" src="@_tileInformation.Image.ToBase64String(PngFormat.Instance)" alt="Tile"/>
+@if (_tileIndex == null || _project == null)
+{
+    <span>Loading...</span>
+    return;
+}
 
-<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
-    <TitleBar Title="@Title" OnLeft="HandleBack"/>
+<EditAdjacenciesRoot Project="@_project" TileIndex="@_tileIndex.Value"/>
 
-</div>
 
 @code {
     [Parameter] public required string ProjectId { get; set; }
     [Parameter] public required int TileIndex { get; set; }
 
-    private Project Project { get; set; } = null!;
-    private TileIndex ParsedTileIndex { get; set; }
-
-    private string Title => $"{Project.Name.Value} / Tile {TileIndex} Adjacencies";
-
-    private TileInformation _tileInformation;
+    private TileIndex? _tileIndex;
+    private Project? _project;
 
     protected override async Task OnParametersSetAsync()
     {
-        ParsedTileIndex = new TileIndex(TileIndex);
+        _tileIndex = new TileIndex(TileIndex);
 
         var projectIdResult = Id<Project>.TryParse(ProjectId, out var projectId);
         if (!projectIdResult)
@@ -45,45 +39,13 @@
 
         GetProjectOperation.Request getProjectRequest = new(projectId);
         var currentProjectResult = await GetProjectOperation.ExecuteAsync(getProjectRequest);
-        if (currentProjectResult.TryPickProblems(out var problems, out var project))
+        if (currentProjectResult.TryPickProblems(out var problems, out _project))
         {
             LoggingService.Show(problems);
 
             var navigationTarget = new NavigationTargets.Home();
             NavigationService.NavigateTo(navigationTarget);
-            return;
         }
-
-        if (project.Id != projectId)
-        {
-            var problem = new ResultProblem("Project '{0}' is not the current project.", projectId);
-            LoggingService.Show(problem);
-
-            var navigationTarget = new NavigationTargets.Home();
-            NavigationService.NavigateTo(navigationTarget);
-            return;
-        }
-
-        GetTileInformationOperation.Request request = new(projectId, ParsedTileIndex);
-        var tileInformationResult = await GetTileInformationOperation.ExecuteAsync(request);
-        if (tileInformationResult.TryPickProblems(out problems, out var tileInformationResponse))
-        {
-            LoggingService.Show(problems);
-
-            var navigationTarget = new NavigationTargets.ProjectDashboard(projectId);
-            NavigationService.NavigateTo(navigationTarget);
-            return;
-        }
-        
-        Project = project;
-
-        _tileInformation = tileInformationResponse.TileInformation;
-    }
-
-    private void HandleBack()
-    {
-        var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
-        NavigationService.NavigateTo(navigationTarget);
     }
 
 }

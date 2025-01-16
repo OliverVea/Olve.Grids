@@ -3,7 +3,7 @@
 public class ProjectCache(int capacity = 1)
 {
 
-    private readonly HashSet<Id<Project>> _projectIds = new();
+    private readonly HashSet<Id<Project>> _projectIds = [ ];
     private readonly LinkedList<Project> _projects = [ ];
 
     public OneOf<Project, NotFound> GetProject(Id<Project> projectId)

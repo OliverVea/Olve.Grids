@@ -27,6 +27,6 @@ public static class TileInformationExtractionHelper
         var neighbors = project.AdjacencyLookup.GetNeighbors(tileIndex);
         var active = project.ActiveTiles.Contains(tileIndex);
 
-        return new TileInformation(project.Id, tileIndex, image, weight, cornerBrushes, neighbors, active);
+        return new TileInformation(project.Id, tileIndex, image, cornerBrushes, active);
     }
 }

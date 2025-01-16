@@ -20,7 +20,7 @@ public static class ServiceExtensions
         services.AddTransient<DeleteProjectOperation>();
         services.AddTransient<CreateNewProjectOperation>();
         services.AddTransient<SaveProjectAndSummaryOperation>();
-        services.AddTransient<SaveProjectAndSummaryOperation.Factory>();
+        services.AddSingleton<SaveProjectAndSummaryOperation.Factory>();
         services.AddTransient<GetProjectOperation>();
         services.AddTransient<UpdateProjectOperation>();
         services.AddTransient<SetProjectOperation>();

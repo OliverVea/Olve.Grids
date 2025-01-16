@@ -10,7 +10,5 @@ public readonly record struct TileInformation(
     Id<Project> ProjectId,
     TileIndex TileIndex,
     Image Image,
-    float Weight,
     CornerBrushes CornerBrushes,
-    IEnumerable<(TileIndex tileIndex, Direction direction)> Adjacencies,
     bool Active);

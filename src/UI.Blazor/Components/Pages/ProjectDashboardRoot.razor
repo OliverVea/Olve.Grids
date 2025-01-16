@@ -3,6 +3,7 @@
 @using UI.Core.Tiles
 @inject LoggingService LoggingService
 @inject NavigationService NavigationService
+@inject ProjectDashboardContainer ProjectDashboardContainer
 
 <div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
     <TitleBar Title="@Project.Name.Value" OnLeft="HandleBack"/>
@@ -40,8 +41,12 @@
 
     private void HandleBack()
     {
-        var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
+        var navigationTarget = new NavigationTargets.Home();
         NavigationService.NavigateTo(navigationTarget);
     }
+
+    protected override void OnInitialized() => ProjectDashboardContainer.SetProvider(this);
+
+    public Task StateHasChangedAsync() => InvokeAsync(StateHasChanged);
 
 }

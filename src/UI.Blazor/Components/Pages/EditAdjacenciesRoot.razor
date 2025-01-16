@@ -1,0 +1,22 @@
+﻿@using UI.Blazor.Navigation
+@using Olve.Grids.Grids
+@inject NavigationService NavigationService
+
+<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
+    <TitleBar Title="@Title" OnLeft="HandleBack"/>
+
+</div>
+
+@code {
+    [Parameter] [EditorRequired] public required Project Project { get; set; }
+    [Parameter] [EditorRequired] public required TileIndex TileIndex { get; set; }
+
+    private string Title => $"{Project.Name.Value} / Tile {TileIndex.Index} Adjacencies";
+
+    private void HandleBack()
+    {
+        var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
+        NavigationService.NavigateTo(navigationTarget);
+    }
+
+}
