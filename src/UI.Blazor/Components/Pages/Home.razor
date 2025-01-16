@@ -1,9 +1,10 @@
 ﻿@page "/"
+@using UI.Blazor.Navigation
 @using UI.Core.Projects.Operations
 @inject ListProjectSummariesOperation ListProjectSummariesOperation
 @inject DeleteProjectOperation DeleteProjectOperation
 @inject LoggingService LoggingService
-@inject NavigationManager NavigationManager
+@inject NavigationService NavigationService
 
 <div class="@TW(Flex, FlexRow, Gap(2), ItemsCenter, JustifyCenter, MinHScreen, MinWScreen)">
     <div
@@ -131,8 +132,17 @@
         await LoadProjects();
     }
 
-    private void NavigateToCreateNewProject() => NavigationManager.NavigateTo("create-project");
-    private void NavigateToProjectDashboard(Id<Project> projectId) => NavigationManager.NavigateTo($"project/{projectId}");
+    private void NavigateToCreateNewProject()
+    {
+        var navigationTarget = new NavigationTargets.CreateProject();
+        NavigationService.NavigateTo(navigationTarget);
+    }
+
+    private void NavigateToProjectDashboard(Id<Project> projectId)
+    {
+        var navigationTarget = new NavigationTargets.ProjectDashboard(projectId);
+        NavigationService.NavigateTo(navigationTarget);
+    }
 
     private async Task HandleSearchPromptChange(string s)
     {

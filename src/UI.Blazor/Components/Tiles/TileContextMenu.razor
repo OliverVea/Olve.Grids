@@ -1,12 +1,13 @@
-﻿@using UI.Core.Tiles
+﻿@using UI.Blazor.Navigation
+@using UI.Core.Tiles
 @inject DeactivateTileOperation DeactivateTileOperation
 @inject LoggingService LoggingService
-@inject NavigationManager NavigationManager
+@inject NavigationService NavigationService
 
 <ContextMenuText Text="@Title"/>
 <ContextMenuDivider/>
 <ContextMenuOption
-    OnClick="@(() => NavigationManager.NavigateTo($"/edit-adjacencies/{TileInformation.TileIndex.Index}"))">
+    OnClick="@HandleEditAdjacencies">
     Adjacencies
 </ContextMenuOption>
 <ContextMenuOption OnClick="DeactivateTile" TextColor="Colors.Active.Text.Danger">
@@ -28,6 +29,12 @@
         {
             LoggingService.Show(problems);
         }
+    }
+
+    private void HandleEditAdjacencies()
+    {
+        var navigationTarget = new NavigationTargets.EditTileAdjacencies(TileInformation.ProjectId, TileInformation.TileIndex);
+        NavigationService.NavigateTo(navigationTarget);
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿@page "/create-project"
+@using UI.Blazor.Navigation
 @using UI.Core.Projects.Operations
-@inject NavigationManager NavigationManager
+@inject NavigationService NavigationService
 @inject LoggingService LoggingService
 @inject CreateNewProjectOperation CreateNewProjectOperation
 
@@ -64,7 +65,8 @@
 
     private void HandleBack()
     {
-        NavigationManager.NavigateTo("/");
+        var navigationTarget = new NavigationTargets.Home();
+        NavigationService.NavigateTo(navigationTarget);
     }
 
     private void OnTileSheetFileChanged(FileContent tileSheetFile)
@@ -81,7 +83,8 @@
             return;
         }
 
-        NavigationManager.NavigateTo($"project/{projectId}");
+        var navigationTarget = new NavigationTargets.ProjectDashboard(projectId);
+        NavigationService.NavigateTo(navigationTarget);
     }
 
     private async Task<Result<Id<Project>>> CreateProjectAsync()

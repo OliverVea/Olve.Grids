@@ -33,7 +33,9 @@
         {
             _project = null;
             Logger.Show(problems);
-            NavigationService.NavigateTo(new ApplicationIndexNavigationTarget());
+
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
             return;
         }
 

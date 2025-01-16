@@ -39,7 +39,8 @@
             var problem = new ResultProblem("Invalid project id: '{0}'", ProjectId);
             LoggingService.Show(problem);
 
-            NavigationService.NavigateTo(new ApplicationIndexNavigationTarget());
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
             return;
         }
 
@@ -49,7 +50,8 @@
         {
             LoggingService.Show(problems);
 
-            NavigationService.NavigateTo(new ApplicationIndexNavigationTarget());
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
             return;
         }
 
@@ -58,7 +60,8 @@
             var problem = new ResultProblem("Project '{0}' is not the current project.", projectId);
             LoggingService.Show(problem);
 
-            NavigationService.NavigateTo(new ApplicationIndexNavigationTarget());
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
             return;
         }
 
@@ -68,7 +71,8 @@
         {
             LoggingService.Show(problems);
 
-            NavigationService.NavigateTo(new ProjectDashboardNavigationTarget(projectId));
+            var navigationTarget = new NavigationTargets.ProjectDashboard(projectId);
+            NavigationService.NavigateTo(navigationTarget);
             return;
         }
 
@@ -80,7 +84,8 @@
 
     private void HandleBack()
     {
-        NavigationService.NavigateTo(new ProjectDashboardNavigationTarget(Project.Id));
+        var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
+        NavigationService.NavigateTo(navigationTarget);
     }
 
 }

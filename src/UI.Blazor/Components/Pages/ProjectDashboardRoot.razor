@@ -40,7 +40,7 @@
 
     private void HandleBack()
     {
-        var navigationTarget = new ApplicationIndexNavigationTarget();
+        var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
         NavigationService.NavigateTo(navigationTarget);
     }
 
