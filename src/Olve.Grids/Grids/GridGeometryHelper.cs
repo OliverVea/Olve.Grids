@@ -3,7 +3,7 @@
 public static class GridGeometryHelper
 {
     /// <summary>
-    /// Returns the origins (top-left corner) of each cell in a grid.
+    ///     Returns the origins (top-left corner) of each cell in a grid.
     /// </summary>
     /// <param name="cellSize">The size of each cell.</param>
     /// <param name="rows">The number of rows in the grid.</param>

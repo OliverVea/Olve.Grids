@@ -1,7 +1,6 @@
 ﻿using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
 
-
 namespace Olve.Grids.Brushes;
 
 public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)>? entries = null) : IBrushLookup

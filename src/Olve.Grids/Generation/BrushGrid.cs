@@ -78,5 +78,4 @@ public class BrushGrid
 
     private static BrushId? GetBrushId(BrushIdOrAny brushIdOrAny) =>
         brushIdOrAny.TryPickT0(out var brushId, out _) ? brushId : null;
-
 }

@@ -28,6 +28,6 @@ public static class DirectionExtensions
 
         return opposite;
     }
-    
+
     public static Direction Combine(this IEnumerable<Direction> directions) => directions.Aggregate((a, b) => a | b);
 }

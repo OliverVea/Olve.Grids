@@ -2,13 +2,12 @@
 using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
 
-
 namespace Olve.Grids.Brushes;
 
 public class FrozenBrushLookup : IReadOnlyBrushLookup
 {
-    private readonly FrozenSet<BrushId> _brushes;
     private readonly FrozenDictionary<(BrushId, Corner), FrozenSet<TileIndex>> _brushCornerToTiles;
+    private readonly FrozenSet<BrushId> _brushes;
     private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
 
     public FrozenBrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)> items)
