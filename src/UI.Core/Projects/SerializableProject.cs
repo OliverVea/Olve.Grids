@@ -1,10 +1,8 @@
 ﻿using MemoryPack;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
-using Olve.Grids.IO.TileAtlasBuilder;
 using Olve.Grids.Serialization.Models;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Png;
 
 namespace UI.Core.Projects;
 

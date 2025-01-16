@@ -1,4 +1,5 @@
-﻿<i @onclick="@(e => OnClick.InvokeAsync(e))"
+﻿@using UI.Core
+<i @onclick="@(e => OnClick.InvokeAsync(e))"
    @onclick:stopPropagation="StopPropagation"
    @attributes="AdditionalAttributes"
    class="@AllClasses"></i>
