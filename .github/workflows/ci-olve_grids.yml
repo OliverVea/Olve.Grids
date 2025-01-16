@@ -2,8 +2,6 @@ name: Publish Olve.Utilities
 
 on:
   push:
-    paths:
-      - 'src/Olve.Grids/**'
     branches:
       - master
   workflow_dispatch:
