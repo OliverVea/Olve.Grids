@@ -25,11 +25,11 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation"/>
-        <PackageReference Include="SixLabors.ImageSharp"/>
+        <PackageReference Include="MemoryPack"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="SixLabors.ImageSharp"/>
         <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator"/>
         <PackageReference Include="YamlDotNet"/>
-        <PackageReference Include="MemoryPack"/>
     </ItemGroup>
 
 </Project>
