@@ -55,8 +55,9 @@ jobs:
       olve-grids-io: ${{ steps.filter.outputs.olve-grids-io }}
     steps:
     - uses: actions/checkout@v3
+
     - uses: dorny/paths-filter@v3
-      id: changes
+      id: filter
       with:
         filters: |
           olve-grids:
@@ -70,6 +71,10 @@ jobs:
           olve-grids-io:
             - 'src/Olve.Grids/**'
             - 'src/Olve.Grids.IO/**'
+
+    - name: Debug output
+      run: |
+        echo "Output value: ${{ steps.filter.outputs.olve-grids }}"
 
   dotnet_publish_olve_grids:
     runs-on: ubuntu-latest
