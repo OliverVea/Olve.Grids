@@ -1,4 +1,4 @@
-name: Publish Olve.Utilities
+name: Publish to NuGet
 
 on:
   push:
