@@ -1,0 +1,15 @@
+name: 'Setup .NET 🚀'
+description: 'Sets up .NET environment'
+runs:
+  using: "composite"
+  steps:
+    - name: Install .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.x
+
+    - name: .NET restore
+      shell: bash
+      run: |
+        dotnet restore
+        dotnet tool restore

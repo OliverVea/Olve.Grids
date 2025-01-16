@@ -1,0 +1,42 @@
+name: 'Publish .NET 🚀'
+description: 'Publishes a .NET project'
+inputs:
+  project:
+    description: 'The path to the project file'
+    required: true
+  package-name:
+    description: 'The name of the package to publish'
+    required: true
+  dry-run:
+    description: 'Whether to perform a dry run'
+    required: false
+    default: 'false'
+  version:
+    description: 'The version to publish'
+    required: false
+    default: '1.0.0'
+  nuget-api-key:
+    description: 'The NuGet API key'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Build
+      shell: bash
+      run: dotnet build --no-restore -c Release /p:Version="${{ inputs.version }}"
+
+    - name: pack nuget packages
+      shell: bash
+      run: dotnet pack ${{ inputs.project }} --output nupkgs/${{ inputs.package-name}} --no-restore --no-build -c Release /p:PackageVersion="${{ inputs.version }}"
+
+    - name: upload nuget package
+      if: ${{ inputs.dry-run == 'false' }}
+      shell: bash
+      run: dotnet nuget push nupkgs/${{ inputs.package-name}}/*.nupkg -k ${{ inputs.nuget-api-key }} -s https://api.nuget.org/v3/index.json
+
+    - name: dry run
+      if: ${{ inputs.dry-run == 'true' }}
+      shell: bash
+      run: |
+        echo "Dry run"
+        ls -l nupkgs/${{ inputs.package-name }}
