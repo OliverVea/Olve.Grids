@@ -1,10 +1,13 @@
 <div align="center">
 
-# Olve.Grids [![NuGet](https://img.shields.io/nuget/v/Olve.Grids?logo=nuget)](https://www.nuget.org/packages/Olve.Grids) [![GitHub](https://img.shields.io/github/license/OliverVea/Olve.Grids)](LICENSE)
-
 ![Grids Banner](https://raw.githubusercontent.com/OliverVea/Olve.Grids/refs/heads/master/docs/imgs/grids-banner.gif)
 
+[![NuGet](https://img.shields.io/nuget/v/Olve.Grids?logo=nuget)](https://www.nuget.org/packages/Olve.Grids)[![GitHub](https://img.shields.io/github/license/OliverVea/Olve.Grids)](LICENSE)![LOC](https://img.shields.io/endpoint?url=https%3A%2F%2Fghloc.vercel.app%2Fapi%2FOliverVea%2FOlve.Grids%2Fbadge)![NuGet Downloads](https://img.shields.io/nuget/dt/Olve.Grids)
+
+
 </div>
+
+# Olve.Grids
 
 ## Table of contents
 

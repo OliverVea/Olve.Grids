@@ -36,18 +36,28 @@ public class RunCommand : Command<RunCommandSettings>
 
     public override int Execute(CommandContext context, RunCommandSettings settings)
     {
-        var verbosityLevelResult = VerbosityLevels.Parse(settings.Verbosity);
-        if (verbosityLevelResult.TryPickProblems(out var problems, out var verbosityLevel))
+        var result = ExecuteInternal(settings);
+        if (result.TryPickProblems(out var problems))
         {
             problems.LogToAnsiConsole();
             return Error;
         }
 
+        return Success;
+    }
+
+    private static Result ExecuteInternal(RunCommandSettings settings)
+    {
+        var verbosityLevelResult = VerbosityLevels.Parse(settings.Verbosity);
+        if (verbosityLevelResult.TryPickProblems(out var problems, out var verbosityLevel))
+        {
+            return problems;
+        }
+
         var sizeResult = SizeParser.Parse(settings.TileSize);
         if (sizeResult.TryPickProblems(out problems, out var tileSize))
         {
-            problems.LogToAnsiConsole();
-            return Error;
+            return problems;
         }
 
         if (verbosityLevel.IsNormal)
@@ -63,8 +73,7 @@ public class RunCommand : Command<RunCommandSettings>
         var imageResult = new ImageLoader().LoadImage(settings.TileAtlasFile);
         if (imageResult.TryPickProblems(out problems, out var tileAtlasImage))
         {
-            problems.LogToAnsiConsole();
-            return Error;
+            return problems;
         }
 
         var tileAtlasSize = new Size(tileAtlasImage.Width, tileAtlasImage.Height);
@@ -76,15 +85,13 @@ public class RunCommand : Command<RunCommandSettings>
             settings.TileAtlasConfigFile);
         if (tileAtlasResult.TryPickProblems(out problems, out var tileAtlas))
         {
-            problems.LogToAnsiConsole();
-            return Error;
+            return problems;
         }
 
         var brushGridResult = new InputBrushFileReader(settings.InputBrushesFile).Load();
         if (brushGridResult.TryPickProblems(out problems, out var brushGrid))
         {
-            problems.LogToAnsiConsole();
-            return Error;
+            return problems;
         }
 
         var request = new GenerationRequest(tileAtlas, brushGrid);
@@ -110,10 +117,9 @@ public class RunCommand : Command<RunCommandSettings>
 
         if (result.Result.TryPickProblems(out problems))
         {
-            problems.LogToAnsiConsole();
-            return Error;
+            return problems;
         }
 
-        return Success;
+        return Result.Success();
     }
 }
