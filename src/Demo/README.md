@@ -2,6 +2,25 @@
 
 This is a demo CLI application showcasing the [Olve.Grids](https://github.com/OliverVea/Olve.grids) nuget package. It can be downloaded in the newest [release](https://github.com/OliverVea/Olve.Grids/releases/latest).
 
+## Table of Contents
+
+- [How to use this demo](#how-to-use-this-demo)
+    - [Tile atlas](#tile-atlas)
+    - [Tile atlas brushes](#tile-atlas-brushes)
+    - [Input brushes](#input-brushes)
+    - [Example](#example)
+- [Commands](#commands)
+    - [`run`](#run)
+        - [Options](#options)
+        - [Example Usage](#example-usage)
+    - [`pack`](#pack)
+        - [Options](#options-1)
+        - [Example Usage](#example-usage-1)
+    - [`runpacked`](#runpacked)
+        - [Arguments](#arguments)
+        - [Options](#options-2)
+        - [Example Usage](#example-usage-2)
+
 ## How to use this demo
 
 Run the `grid-demo` executable with the following arguments:
@@ -101,7 +120,7 @@ The characters are retrieved from the tile atlas brushes file above.
 Here is an example command to generate an output:
 
 ```bash
-grid-demo --tile-atlas "tile-atlas.png" --tile-atlas-brushes "tile-atlas.brushes.txt" --input-brushes "input.brushes.txt" --output "output.png"
+grid-demo run --tile-atlas "tile-atlas.png" --tile-atlas-brushes "tile-atlas.brushes.txt" --input "input.brushes.txt" --output "output.png"
 ```
 
 This will generate an output based on the input brushes and the tile atlas.
@@ -109,3 +128,134 @@ This will generate an output based on the input brushes and the tile atlas.
 For example, the input brushes above will generate the following output:
 
 ![Example output](https://raw.githubusercontent.com/OliverVea/Olve.Grids/refs/heads/master/docs/imgs/example-output.png)
+
+### `run`
+
+The `run` command generates an output image based on the provided tile atlas, tile atlas brushes, and input brushes. Below are the available options for the `run` command:
+
+#### Options
+
+- **`-a, --tile-atlas`**  
+  The tile atlas file. This is a `.png` file that contains all the tiles used in the output.  
+  **Default:** `assets/tile-atlas.png`
+
+- **`-s, --tile-size`**  
+  The size of each tile in the tile atlas, specified as `widthxheight`.  
+  **Default:** `4x4`
+
+- **`-b, --tile-atlas-brushes`**  
+  The tile atlas brushes file containing brush definitions for each tile in the tile atlas.  
+  **Default:** `assets/tile-atlas.brushes.txt`
+
+- **`-c, --tile-atlas-config`**  
+  An optional configuration file for additional tile atlas settings. If not provided, the application will proceed without additional configurations.  
+  **Default:** None
+
+- **`-i, --input`**  
+  The input file containing brushes used to generate the output.  
+  **Default:** `assets/input.brushes.txt`
+
+- **`-o, --output`**  
+  The file path for the generated output image. The file must have a `.png` extension.  
+  **Default:** `output.png`
+
+- **`-v, --verbosity`**  
+  The verbosity level of the command output. Available values are:
+    - `Quiet`: Suppresses most output.
+    - `Normal`: Shows basic output, including progress messages.
+    - `Verbose`: Provides detailed output, including generation times and additional debug information.  
+      **Default:** `Normal`
+
+- **`--overwrite`**  
+  Allows overwriting the output file if it already exists.  
+  **Default:** Disabled (output file will not be overwritten unless this flag is provided).
+
+#### Example Usage
+
+```bash
+grid-demo run --tile-atlas "tile-atlas.png" --tile-size "8x8" --tile-atlas-brushes "tile-atlas.brushes.txt" --input "input.brushes.txt" --output "output.png" --verbosity "Verbose" --overwrite
+```
+
+### `pack`
+
+The `pack` command generates a packed tile atlas based on the provided tile atlas image, tile atlas brushes, and optional configuration file. Below are the available options for the `pack` command:
+
+#### Options
+
+- **`-a, --tile-atlas`**  
+  The tile atlas file. This is a `.png` file that contains all the tiles to be packed.  
+  **Default:** `assets/tile-atlas.png`
+
+- **`-s, --tile-size`**  
+  The size of each tile in the tile atlas, specified as `widthxheight`.  
+  **Default:** `4x4`
+
+- **`-b, --tile-atlas-brushes`**  
+  The tile atlas brushes file containing brush definitions for each tile in the tile atlas.  
+  **Default:** `assets/tile-atlas.brushes.txt`
+
+- **`-o, --output`**  
+  The file path for the generated packed tile atlas.  
+  **Default:** `output.grids`
+
+- **`-v, --verbosity`**  
+  The verbosity level of the command output. Available values are:
+    - `Quiet`: Suppresses most output.
+    - `Normal`: Shows basic output, including progress messages.
+    - `Verbose`: Provides detailed output, including additional debug information.  
+      **Default:** `Normal`
+
+- **`--overwrite`**  
+  Allows overwriting the output file if it already exists.  
+  **Default:** Disabled (output file will not be overwritten unless this flag is provided).
+
+- **`-c, --tile-atlas-config`**  
+  An optional configuration file for additional tile atlas settings. If not provided, the application will proceed without additional configurations.  
+  **Default:** None
+
+#### Example Usage
+
+```bash
+grid-demo pack --tile-atlas "tile-atlas.png" --tile-size "8x8" --tile-atlas-brushes "tile-atlas.brushes.txt" --output "packed.grids" --verbosity "Verbose" --overwrite
+```
+
+### `runpacked`
+
+The `runpacked` command generates an output image based on a pre-packed tile atlas file, input brushes, and a tile atlas image. Below are the available options and arguments for the `runpacked` command:
+
+#### Arguments
+
+- **`<packed-tile-atlas>`**  
+  The packed tile atlas file to use. This file must have a `.grids` extension.  
+  **Required**
+
+#### Options
+
+- **`-a, --tile-atlas`**  
+  The tile atlas file. This is a `.png` file containing the image data for the tiles used in the packed tile atlas.  
+  **Default:** None (must be explicitly specified)
+
+- **`-i, --input`**  
+  The input file containing brushes used to generate the output.  
+  **Default:** `assets/input.brushes.txt`
+
+- **`-o, --output`**  
+  The file path for the generated output image. The file must have a `.png` extension.  
+  **Default:** `output.png`
+
+- **`-v, --verbosity`**  
+  The verbosity level of the command output. Available values are:
+    - `Quiet`: Suppresses most output.
+    - `Normal`: Shows basic output, including progress messages.
+    - `Verbose`: Provides detailed output, including additional debug information.  
+      **Default:** `Normal`
+
+- **`--overwrite`**  
+  Allows overwriting the output file if it already exists.  
+  **Default:** Disabled (output file will not be overwritten unless this flag is provided).
+
+#### Example Usage
+
+```bash
+grid-demo runpacked "packed.grids" --tile-atlas "tile-atlas.png" --input "input.brushes.txt" --output "output.png" --verbosity "Verbose" --overwrite
+```
