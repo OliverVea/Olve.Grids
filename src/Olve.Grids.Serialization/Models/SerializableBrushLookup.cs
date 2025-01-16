@@ -8,25 +8,17 @@ namespace Olve.Grids.Serialization.Models;
 [MemoryPackable]
 public partial class SerializableBrushLookup
 {
-    public IEnumerable<(int TileIndex, int Corner, string BrushId)> Entries { get; set; } = [ ];
+    public SerializableTileBrush[] Entries { get; set; } = [ ];
 
     public static SerializableBrushLookup FromBrushLookup(IReadOnlyBrushLookup brushLookup) =>
         new()
         {
-            Entries = brushLookup.Entries.Select(x =>
-                (
-                    x.TileIndex.Index,
-                    (int)x.Corner, x.Brush.Value)
-            ),
+            Entries = brushLookup
+                .Entries.Select(SerializableTileBrush.FromTileBrush)
+                .ToArray(),
         };
 
-    private IEnumerable<(TileIndex, Corner, BrushId)> Items => Entries.Select(x =>
-    (
-        new TileIndex(x.TileIndex),
-        (Corner)x.Corner,
-        new BrushId(x.BrushId)
-    ));
-
+    private IEnumerable<(TileIndex, Corner, BrushId)> Items => Entries.Select(x => x.ToTileBrush());
 
     public FrozenBrushLookup ToFrozenBrushLookup() => new(Items);
     public BrushLookup ToBrushLookup() => new(Items);

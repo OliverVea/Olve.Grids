@@ -41,7 +41,7 @@ jobs:
       run: dotnet build --no-restore -c Release /p:Version=1.0.0
 
     - name: Verify trimming
-      run: dotnet publish ./tests/Olve.Utilities.Trimming --no-restore -c Release -r linux-x64 --self-contained
+      run: dotnet publish ./tests/Olve.Grids.Trimming --no-restore -c Release -r linux-x64 --self-contained
 
     - name: Test
       run: dotnet test --no-build -c Release

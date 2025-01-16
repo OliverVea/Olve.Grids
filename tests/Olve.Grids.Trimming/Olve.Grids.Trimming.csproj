@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <PublishTrimmed>true</PublishTrimmed>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Olve.Grids\Olve.Grids.csproj"/>
+        <ProjectReference Include="..\..\src\Olve.Grids.Serialization\Olve.Grids.Serialization.csproj"/>
+        <TrimmerRootAssembly Include="Olve.Grids"/>
+    </ItemGroup>
+
+</Project>
