@@ -82,9 +82,9 @@ public static class ProjectSummaryFileHelper
         return Result.Success();
     }
 
-    public static Result Delete(ProjectSummary projectSummary)
+    public static Result Delete(Id<Project> projectId)
     {
-        var projectFilePath = PathHelper.GetSummaryPath(projectSummary);
+        var projectFilePath = PathHelper.GetSummaryPath(projectId);
 
         try
         {

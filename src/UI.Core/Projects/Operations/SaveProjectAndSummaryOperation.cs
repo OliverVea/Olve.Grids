@@ -6,7 +6,6 @@ namespace UI.Core.Projects.Operations;
 
 public class SaveProjectAndSummaryOperation(
     LoggingService loggingService,
-    IProjectGettingRepository projectGettingRepository,
     IProjectSettingRepository projectSettingRepository)
     : IAsyncOperation<SaveProjectAndSummaryOperation.Request>
 {
@@ -22,16 +21,10 @@ public class SaveProjectAndSummaryOperation(
             LastAccessedAt = DateTimeOffset.Now,
         };
 
-        var projectPathResult = await projectGettingRepository.GetProjectPathAsync(projectToSave.Id, ct);
-        if (projectPathResult.TryPickProblems(out var problems, out var projectPath))
-        {
-            return problems;
-        }
-
-        var projectSummary = ProjectMapper.ToProjectSummary(projectToSave, projectPath);
+        var projectSummary = ProjectMapper.ToProjectSummary(projectToSave);
 
         var saveSummaryResult = await projectSettingRepository.SetProjectSummaryAsync(projectSummary, ct);
-        if (saveSummaryResult.TryPickProblems(out problems))
+        if (saveSummaryResult.TryPickProblems(out var problems))
         {
             return Result.Failure(problems);
         }

@@ -10,6 +10,7 @@
 </div>
 
 @code {
+    [Parameter] [EditorRequired] public Id<Project> ProjectId { get; set; }
     [Parameter] [EditorRequired] public required TileIndex TileIndex { get; set; }
     [Parameter] [EditorRequired] public required Corner Corner { get; set; }
     [Parameter] [EditorRequired] public required BrushIdOrAny CurrentBrushId { get; set; } = BrushIdOrAny.Any;
@@ -26,7 +27,7 @@
             return;
         }
 
-        GetBrushOperation.Request request = new(brushId);
+        GetBrushOperation.Request request = new(ProjectId, brushId);
         var brushResult = await GetBrushOperation.ExecuteAsync(request);
 
         if (brushResult.TryPickProblems(out var problems, out var brush))
@@ -46,7 +47,10 @@
     private async Task HandleClick(MouseEventArgs e)
     {
         await ContextMenuService.ShowAsync(e,
-            @<SelectBrushContextMenu TileIndex="@TileIndex" Corner="@Corner" ProjectBrushOrAny="@CurrentBrush"/>);
+            @<SelectBrushContextMenu ProjectId="@ProjectId"
+                                     TileIndex="@TileIndex"
+                                     Corner="@Corner"
+                                     ProjectBrushOrAny="@CurrentBrush"/>);
     }
 
 

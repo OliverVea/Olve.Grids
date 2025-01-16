@@ -5,10 +5,9 @@
 @using UI.Blazor.Navigation
 @using UI.Core.Projects.Operations
 @using UI.Core.Tiles
-
+@inject GetProjectOperation GetProjectOperation
 @inject LoggingService LoggingService
 @inject GetTileInformationOperation GetTileInformationOperation
-@inject GetCurrentProjectOperation GetCurrentProjectOperation
 @inject NavigationService NavigationService
 
 <img class="@TW(W(px(80)), H(px(80)))" src="@_tileInformation.Image.ToBase64String(PngFormat.Instance)" alt="Tile"/>
@@ -44,9 +43,9 @@
             return;
         }
 
-        GetCurrentProjectOperation.Request currentProjectRequest = new();
-        var currentProjectResult = await GetCurrentProjectOperation.ExecuteAsync(currentProjectRequest);
-        if (currentProjectResult.TryPickProblems(out var problems, out var currentProjectResponse))
+        GetProjectOperation.Request getProjectRequest = new(projectId);
+        var currentProjectResult = await GetProjectOperation.ExecuteAsync(getProjectRequest);
+        if (currentProjectResult.TryPickProblems(out var problems, out var project))
         {
             LoggingService.Show(problems);
 
@@ -55,7 +54,7 @@
             return;
         }
 
-        if (currentProjectResponse.Project.Id != projectId)
+        if (project.Id != projectId)
         {
             var problem = new ResultProblem("Project '{0}' is not the current project.", projectId);
             LoggingService.Show(problem);
@@ -65,7 +64,7 @@
             return;
         }
 
-        GetTileInformationOperation.Request request = new(ParsedTileIndex);
+        GetTileInformationOperation.Request request = new(projectId, ParsedTileIndex);
         var tileInformationResult = await GetTileInformationOperation.ExecuteAsync(request);
         if (tileInformationResult.TryPickProblems(out problems, out var tileInformationResponse))
         {
@@ -75,9 +74,8 @@
             NavigationService.NavigateTo(navigationTarget);
             return;
         }
-
-
-        Project = currentProjectResponse.Project;
+        
+        Project = project;
 
         _tileInformation = tileInformationResponse.TileInformation;
     }

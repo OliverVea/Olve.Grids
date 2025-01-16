@@ -1,12 +1,9 @@
 ﻿@page "/project/{projectId}"
 @using UI.Blazor.Navigation
 @using UI.Core.Projects.Operations
-@using UI.Core.Projects.Repositories
-@inject LoadProjectOperation LoadProjectOperation
 @inject LoggingService Logger
 @inject NavigationService NavigationService
-@inject SetCurrentProjectOperation SetCurrentProjectOperation
-@inject ICurrentProjectRepository CurrentProjectRepository
+@inject GetProjectOperation GetProjectOperation
 
 @if (_project is not { } project)
 {
@@ -20,11 +17,6 @@
     [Parameter] public required string ProjectId { get; set; }
 
     private Project? _project;
-
-    protected override void OnInitialized()
-    {
-        CurrentProjectRepository.OnCurrentProjectChanged.Add(async _ => { await InvokeAsync(StateHasChanged); });
-    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -51,22 +43,15 @@
             return problem;
         }
 
-        LoadProjectOperation.Request request = new(projectId);
-        var result = await LoadProjectOperation.ExecuteAsync(request);
+        GetProjectOperation.Request request = new(projectId);
+        var result = await GetProjectOperation.ExecuteAsync(request);
 
-        if (result.TryPickProblems(out var problems, out var response))
+        if (result.TryPickProblems(out var problems, out var project))
         {
             return problems;
         }
 
-        SetCurrentProjectOperation.Request setCurrentProjectRequest = new(response.Project);
-        var setCurrentProjectResult = await SetCurrentProjectOperation.ExecuteAsync(setCurrentProjectRequest);
-        if (setCurrentProjectResult.TryPickProblems(out problems))
-        {
-            return problems;
-        }
-
-        return response.Project;
+        return project;
     }
 
 }

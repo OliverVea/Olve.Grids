@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Olve.Utilities.AsyncOnStartup;
 using UI.Core.Logging;
 using UI.Core.Brushes;
 using UI.Core.Projects;
@@ -22,9 +21,11 @@ public static class ServiceExtensions
         services.AddTransient<CreateNewProjectOperation>();
         services.AddTransient<SaveProjectAndSummaryOperation>();
         services.AddTransient<SaveProjectAndSummaryOperation.Factory>();
-        services.AddTransient<UpdateCurrentProjectOperation>();
-        services.AddTransient<GetCurrentProjectOperation>();
-        services.AddTransient<SetCurrentProjectOperation>();
+        services.AddTransient<GetProjectOperation>();
+        services.AddTransient<UpdateProjectOperation>();
+        services.AddTransient<SetProjectOperation>();
+
+        services.AddSingleton<ProjectCache>();
 
         // Tiles
         services.AddTransient<ActivateTileOperation>();
@@ -38,8 +39,6 @@ public static class ServiceExtensions
         services.AddTransient<ListBrushesOperation>();
         services.AddTransient<SetBrushForTileCornerOperation>();
 
-        services.AddSingleton<ICurrentProjectRepository, InMemoryCurrentProjectRepository>();
-
         services.AddTransient<IProjectSearchingRepository, FileBasedProjectSearchingRepository>();
         services.AddTransient<IProjectSettingRepository, FileBasedProjectSettingRepository>();
         services.AddTransient<IProjectGettingRepository, FileBasedProjectGettingRepository>();
@@ -48,8 +47,5 @@ public static class ServiceExtensions
         // Logging
         services.AddTransient<LoggingService>();
         services.AddTransient<ILoggingProvider, ConsoleLoggingProvider>();
-
-
-        services.AddTransient<IAsyncOnStartup, RegisterSaveProjectOnProjectChangeStartup>();
     }
 }

@@ -52,4 +52,7 @@ public static class PathHelper
 
     public static string GetTileSheetPath(Id<Project> projectId, string extension) =>
         Path.Combine(ProjectsFolder, $"{projectId}{extension}");
+
+    public static IEnumerable<string> GetProjectPaths(Id<Project> projectId) =>
+        ProjectFolderHelper.Search($"{ProjectsFolderName}/{projectId}*");
 }

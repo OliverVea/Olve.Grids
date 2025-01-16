@@ -7,14 +7,14 @@ using UI.Core.Projects.Operations;
 
 namespace UI.Core.Brushes;
 
-public class SetBrushForTileCornerOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
+public class SetBrushForTileCornerOperation(UpdateProjectOperation updateCurrentProjectOperation)
     : IAsyncOperation<SetBrushForTileCornerOperation.Request>
 {
-    public record Request(TileIndex TileIndex, Corner Corner, BrushIdOrAny BrushId);
+    public record Request(Id<Project> ProjectId, TileIndex TileIndex, Corner Corner, BrushIdOrAny BrushId);
 
     public async Task<Result> ExecuteAsync(Request request, CancellationToken ct = new())
     {
-        UpdateCurrentProjectOperation.Request updateRequest = new(p => SetBrushForTileCorner(request, p));
+        UpdateProjectOperation.Request updateRequest = new(request.ProjectId, p => SetBrushForTileCorner(request, p));
         var updateResult = await updateCurrentProjectOperation.ExecuteAsync(updateRequest, ct);
         if (updateResult.TryPickProblems(out var problems))
         {

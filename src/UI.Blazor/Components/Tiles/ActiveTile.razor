@@ -19,7 +19,8 @@
         var thisCorner = corner;
         var brushId = CornerBrushes[corner];
 
-        <TileBrush TileIndex="@TileInformation.TileIndex"
+        <TileBrush ProjectId="@TileInformation.ProjectId"
+                   TileIndex="@TileInformation.TileIndex"
                    Corner="@thisCorner"
                    CurrentBrushId="@brushId"
                    Class="@TW(Absolute,

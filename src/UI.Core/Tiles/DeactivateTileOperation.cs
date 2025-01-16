@@ -5,18 +5,22 @@ using UI.Core.Projects.Operations;
 
 namespace UI.Core.Tiles;
 
-public class DeactivateTileOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
+public class DeactivateTileOperation(UpdateProjectOperation updateCurrentProjectOperation)
     : IAsyncOperation<DeactivateTileOperation.Request>
 {
-    public record Request(TileIndex TileIndex);
+    public record Request(Id<Project> ProjectId, TileIndex TileIndex);
 
     public Task<Result> ExecuteAsync(Request request, CancellationToken ct = new())
     {
-        var updateRequest = new UpdateCurrentProjectOperation.Request(project =>
-        {
-            project.ActiveTiles.Remove(request.TileIndex);
-        });
+        UpdateProjectOperation.Request updateRequest = new(
+            request.ProjectId,
+            p => DeactivateTile(p, request.TileIndex));
 
         return updateCurrentProjectOperation.ExecuteAsync(updateRequest, ct);
+    }
+
+    private static void DeactivateTile(Project project, TileIndex tileIndex)
+    {
+        project.ActiveTiles.Remove(tileIndex);
     }
 }

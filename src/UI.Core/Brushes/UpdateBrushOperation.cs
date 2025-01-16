@@ -5,17 +5,17 @@ using UI.Core.Projects.Operations;
 
 namespace UI.Core.Brushes;
 
-public class UpdateBrushOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
+public class UpdateBrushOperation(UpdateProjectOperation updateCurrentProjectOperation)
     : IAsyncOperation<UpdateBrushOperation.Request>
 {
-    public record Request(BrushId BrushId, string? DisplayName, ColorString? Color);
+    public record Request(Id<Project> ProjectId, BrushId BrushId, string? DisplayName, ColorString? Color);
 
     public record Response;
 
 
     public async Task<Result> ExecuteAsync(Request request, CancellationToken ct = new())
     {
-        UpdateCurrentProjectOperation.Request updateRequest = new(p => UpdateBrushInProject(p, request));
+        UpdateProjectOperation.Request updateRequest = new(request.ProjectId, p => UpdateBrushInProject(p, request));
         var updateResult = await updateCurrentProjectOperation.ExecuteAsync(updateRequest, ct);
         if (updateResult.TryPickProblems(out var problems))
         {

@@ -74,21 +74,16 @@
 
     private RenderFragment GetProjectOverviewRight(ProjectSummary projectSummary) => __builder =>
     {
-        <div class="@TW(Flex, FlexCol)">
-            <div class="@TW(Flex, FlexRow, JustifyBetween)">
-                <span @onclick="() => NavigateToProjectDashboard(projectSummary.ProjectId)"
-                      class="@TW(Text(Colors.Active.Text.More),
-                                 FlexGrow,
-                                 Hover(Underline),
-                                 CursorPointer,
-                                 FontSemibold)">@projectSummary.Name.Value</span>
-                <Icon @onclick="() => HandleDelete(projectSummary.ProjectId)"
-                      Class="@TW(Hover(Text(Colors.Active.Text.Most)), CursorPointer)"
-                      IconDescriptor="@IconDescriptor.Trash"/>
-            </div>
-            <span title="@projectSummary.Path.Value" class="@TW(FontLight, TextXs)">
-                @(new FileInfo(projectSummary.Path.Value).Name)
-            </span>
+        <div class="@TW(Flex, FlexRow, JustifyBetween)">
+            <span @onclick="() => NavigateToProjectDashboard(projectSummary.ProjectId)"
+                  class="@TW(Text(Colors.Active.Text.More),
+                             FlexGrow,
+                             Hover(Underline),
+                             CursorPointer,
+                             FontSemibold)">@projectSummary.Name.Value</span>
+            <Icon @onclick="() => HandleDelete(projectSummary.ProjectId)"
+                  Class="@TW(Hover(Text(Colors.Active.Text.Most)), CursorPointer)"
+                  IconDescriptor="@IconDescriptor.Trash"/>
         </div>
     };
 

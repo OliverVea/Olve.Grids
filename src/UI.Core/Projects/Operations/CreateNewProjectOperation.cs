@@ -7,9 +7,7 @@ using UI.Core.Projects.Repositories;
 
 namespace UI.Core.Projects.Operations;
 
-public class CreateNewProjectOperation(
-    IProjectSettingRepository projectSettingRepository,
-    IProjectGettingRepository projectGettingRepository)
+public class CreateNewProjectOperation(IProjectSettingRepository projectSettingRepository)
     : IAsyncOperation<
         CreateNewProjectOperation.Request,
         CreateNewProjectOperation.Response>
@@ -40,8 +38,8 @@ public class CreateNewProjectOperation(
             WeightLookup = new WeightLookup(),
             AdjacencyLookup = new AdjacencyLookup(),
             BrushLookup = new BrushLookup(),
-            ActiveTiles = new HashSet<TileIndex>(),
-            Brushes = new Dictionary<BrushId, ProjectBrush>(),
+            ActiveTiles = [ ],
+            Brushes = [ ],
         };
 
         var createResult = await projectSettingRepository.SetProjectAsync(project, ct);
@@ -50,13 +48,7 @@ public class CreateNewProjectOperation(
             return problems;
         }
 
-        var projectPathResult = await projectGettingRepository.GetProjectPathAsync(id, ct);
-        if (!projectPathResult.TryPickValue(out var projectPath, out problems))
-        {
-            return problems;
-        }
-
-        var projectSummary = new ProjectSummary(id, projectName, projectPath, lastAccessedAt);
+        var projectSummary = new ProjectSummary(id, projectName, lastAccessedAt);
 
         var summaryResult = await projectSettingRepository.SetProjectSummaryAsync(projectSummary, ct);
         if (summaryResult.TryPickProblems(out problems))

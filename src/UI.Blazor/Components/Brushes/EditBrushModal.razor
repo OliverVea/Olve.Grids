@@ -14,11 +14,13 @@
 </Modal>
 
 @code {
-    [Parameter] public ProjectBrush Brush { get; set; }
+    private readonly ColorStringValidator _colorStringValidator = new();
+
+    [Parameter] [EditorRequired] public Id<Project> ProjectId { get; set; }
+    [Parameter] [EditorRequired] public ProjectBrush Brush { get; set; }
 
     private string _name = string.Empty;
     private string _colorString = string.Empty;
-    private ColorStringValidator _colorStringValidator = new();
 
     private bool ColorStringIsValid => _colorStringValidator.Validate(_colorString)
         .IsValid;
@@ -58,7 +60,7 @@
             return;
         }
 
-        var request = new UpdateBrushOperation.Request(Brush.Id, _name, color);
+        var request = new UpdateBrushOperation.Request(ProjectId, Brush.Id, _name, color);
         var result = await UpdateBrushOperation.ExecuteAsync(request);
         if (result.TryPickProblems(out problems))
         {

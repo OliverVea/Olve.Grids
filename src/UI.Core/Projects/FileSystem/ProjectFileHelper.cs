@@ -139,29 +139,35 @@ public static class ProjectFileHelper
         return Result.Success();
     }
 
-    public static Result Delete(Project project)
+    public static Result Delete(Id<Project> projectId)
     {
-        var projectFilePath = PathHelper.GetProjectPath(project);
-        try
+        var projectFile = PathHelper.GetProjectPath(projectId);
+        var projectTileSheetFile = PathHelper.GetTileSheetPath(projectId, ".png");
+
+        if (File.Exists(projectFile))
         {
-            File.Delete(projectFilePath);
-        }
-        catch (Exception ex)
-        {
-            var problem = new ResultProblem(ex, "Failed to delete project file: {0}", projectFilePath);
-            return Result.Failure(problem);
+            try
+            {
+                File.Delete(projectFile);
+            }
+            catch (Exception ex)
+            {
+                var problem = new ResultProblem(ex, "Failed to delete project file: {0}", projectFile);
+                return Result.Failure(problem);
+            }
         }
 
-        var tileSheetExtension = Path.GetExtension(project.TileSheetImage.Name);
-        var imageFilePath = PathHelper.GetTileSheetPath(project.Id, tileSheetExtension);
-        try
+        if (File.Exists(projectTileSheetFile))
         {
-            File.Delete(imageFilePath);
-        }
-        catch (Exception ex)
-        {
-            var problem = new ResultProblem(ex, "Failed to delete tile sheet image file: {0}", imageFilePath);
-            return Result.Failure(problem);
+            try
+            {
+                File.Delete(projectTileSheetFile);
+            }
+            catch (Exception ex)
+            {
+                var problem = new ResultProblem(ex, "Failed to delete tile sheet image file: {0}", projectTileSheetFile);
+                return Result.Failure(problem);
+            }
         }
 
         return Result.Success();

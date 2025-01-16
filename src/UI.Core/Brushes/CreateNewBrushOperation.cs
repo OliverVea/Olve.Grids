@@ -5,10 +5,10 @@ using UI.Core.Projects.Operations;
 
 namespace UI.Core.Brushes;
 
-public class CreateNewBrushOperation(UpdateCurrentProjectOperation updateCurrentProjectOperation)
+public class CreateNewBrushOperation(UpdateProjectOperation updateCurrentProjectOperation)
     : IAsyncOperation<CreateNewBrushOperation.Request, CreateNewBrushOperation.Response>
 {
-    public record Request(string? DisplayName = null);
+    public record Request(Id<Project> ProjectId, string? DisplayName = null);
 
     public record Response(ProjectBrush Brush);
 
@@ -22,7 +22,7 @@ public class CreateNewBrushOperation(UpdateCurrentProjectOperation updateCurrent
 
         var brush = NewBrush(request);
 
-        UpdateCurrentProjectOperation.Request updateRequest = new(AddBrushToProject);
+        UpdateProjectOperation.Request updateRequest = new(request.ProjectId, p => AddBrushToProject(p, brush));
         var updateResult = await updateCurrentProjectOperation.ExecuteAsync(updateRequest, ct);
         if (updateResult.TryPickProblems(out var problems))
         {
@@ -30,11 +30,11 @@ public class CreateNewBrushOperation(UpdateCurrentProjectOperation updateCurrent
         }
 
         return new Response(brush);
-
-        Result AddBrushToProject(Project project) => project.Brushes.TryAdd(brush.Id, brush)
-            ? Result.Success()
-            : new ResultProblem("Brush with id already exists");
     }
+
+    private static Result AddBrushToProject(Project project, ProjectBrush brush) => project.Brushes.TryAdd(brush.Id, brush)
+        ? Result.Success()
+        : new ResultProblem("Brush with id already exists");
 
     private static ProjectBrush NewBrush(Request request)
     {

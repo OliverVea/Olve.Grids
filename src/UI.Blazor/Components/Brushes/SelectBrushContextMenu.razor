@@ -53,6 +53,7 @@
 </ContextMenuOption>
 
 @code {
+    [Parameter] [EditorRequired] public Id<Project> ProjectId { get; set; }
     [Parameter] [EditorRequired] public TileIndex TileIndex { get; set; }
     [Parameter] [EditorRequired] public ProjectBrushOrAny ProjectBrushOrAny { get; set; } = ProjectBrushOrAny.Any;
     [Parameter] [EditorRequired] public Corner Corner { get; set; }
@@ -63,7 +64,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        var request = new ListBrushesOperation.Request();
+        var request = new ListBrushesOperation.Request(ProjectId);
         var listBrushesResult = await ListBrushesOperation.ExecuteAsync(request);
         if (listBrushesResult.TryPickProblems(out var problems, out var brushes))
         {
@@ -81,14 +82,14 @@
     {
         await ContextMenuService.HideAsync();
         await ModalService.ShowAsync(
-            @<EditBrush Brush="@brush"/>,
+            @<EditBrushModal ProjectId="@ProjectId" Brush="@brush"/>,
             "Edit Brush");
     }
 
 
     private async Task HandleSelectBrush(BrushIdOrAny brushId)
     {
-        SetBrushForTileCornerOperation.Request request = new(TileIndex, Corner, brushId);
+        SetBrushForTileCornerOperation.Request request = new(ProjectId, TileIndex, Corner, brushId);
         var result = await SetBrushForTileCornerOperation.ExecuteAsync(request);
         if (result.TryPickProblems(out var problems))
         {
@@ -98,7 +99,7 @@
 
     private async Task HandleNewBrush()
     {
-        CreateNewBrushOperation.Request request = new();
+        CreateNewBrushOperation.Request request = new(ProjectId);
         var result = await CreateNewBrushOperation.ExecuteAsync(request);
         if (result.TryPickProblems(out var problems))
         {

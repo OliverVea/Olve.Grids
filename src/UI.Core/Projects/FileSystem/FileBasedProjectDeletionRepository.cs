@@ -1,35 +1,24 @@
-﻿using UI.Core.Projects.Operations;
-using UI.Core.Projects.Repositories;
+﻿using UI.Core.Projects.Repositories;
 
 namespace UI.Core.Projects.FileSystem;
 
-public class FileBasedProjectDeletionRepository(
-    LoadProjectSummaryOperation loadProjectSummaryOperation,
-    LoadProjectOperation loadProjectOperation) : IProjectDeletionRepository
+public class FileBasedProjectDeletionRepository : IProjectDeletionRepository
 {
-    public async Task<Result> DeleteProjectAsync(Id<Project> projectId, CancellationToken ct = default)
+    public Task<Result> DeleteProjectAsync(Id<Project> projectId, CancellationToken ct = default)
     {
-        LoadProjectOperation.Request loadProjectRequest = new(projectId);
-        var loadProjectResult = await loadProjectOperation.ExecuteAsync(loadProjectRequest, ct);
-        if (loadProjectResult.TryPickProblems(out var problems, out var project))
+        var result = DeleteProject(projectId);
+        return Task.FromResult(result);
+    }
+
+    private Result DeleteProject(Id<Project> projectId)
+    {
+        var projectResult = ProjectFileHelper.Delete(projectId);
+        if (projectResult.TryPickProblems(out var problems))
         {
             return Result.Failure(problems);
         }
 
-        LoadProjectSummaryOperation.Request loadSummaryRequest = new(projectId);
-        var loadSummaryResult = await loadProjectSummaryOperation.ExecuteAsync(loadSummaryRequest, ct);
-        if (!loadSummaryResult.TryPickValue(out var projectSummary, out problems))
-        {
-            return Result.Failure(problems);
-        }
-
-        var projectResult = ProjectFileHelper.Delete(project.Project);
-        if (projectResult.TryPickProblems(out problems))
-        {
-            return Result.Failure(problems);
-        }
-
-        var projectSummaryResult = ProjectSummaryFileHelper.Delete(projectSummary.ProjectSummary);
+        var projectSummaryResult = ProjectSummaryFileHelper.Delete(projectId);
         if (projectSummaryResult.TryPickProblems(out problems))
         {
             return Result.Failure(problems);

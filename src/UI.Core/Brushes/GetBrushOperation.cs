@@ -6,23 +6,23 @@ using UI.Core.Projects.Repositories;
 
 namespace UI.Core.Brushes;
 
-public class GetBrushOperation(GetCurrentProjectOperation getCurrentProjectOperation)
+public class GetBrushOperation(GetProjectOperation getCurrentProjectOperation)
     : IAsyncOperation<GetBrushOperation.Request, GetBrushOperation.Response>
 {
-    public record Request(BrushId BrushId);
+    public record Request(Id<Project> ProjectId, BrushId BrushId);
 
     public record Response(ProjectBrush Brush);
 
     public async Task<Result<Response>> ExecuteAsync(Request request, CancellationToken ct = new())
     {
-        GetCurrentProjectOperation.Request currentProjectRequest = new();
+        GetProjectOperation.Request currentProjectRequest = new(request.ProjectId);
         var projectResult = await getCurrentProjectOperation.ExecuteAsync(currentProjectRequest, ct);
-        if (projectResult.TryPickProblems(out var problems, out var projectResponse))
+        if (projectResult.TryPickProblems(out var problems, out var project))
         {
             return problems;
         }
 
-        var brushes = projectResponse.Project.Brushes;
+        var brushes = project.Brushes;
         if (brushes.TryGetValue(request.BrushId, out var brush))
         {
             return new Response(brush);

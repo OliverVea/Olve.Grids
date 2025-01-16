@@ -22,7 +22,7 @@
 
     private async Task DeactivateTile()
     {
-        var request = new DeactivateTileOperation.Request(TileInformation.TileIndex);
+        var request = new DeactivateTileOperation.Request(TileInformation.ProjectId, TileInformation.TileIndex);
         var result = await DeactivateTileOperation.ExecuteAsync(request);
 
         if (result.TryPickProblems(out var problems))

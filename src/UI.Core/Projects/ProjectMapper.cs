@@ -2,6 +2,6 @@
 
 public static class ProjectMapper
 {
-    public static ProjectSummary ToProjectSummary(Project project, ProjectPath projectPath) =>
-        new(project.Id, project.Name, projectPath, project.LastAccessedAt);
+    public static ProjectSummary ToProjectSummary(Project project) =>
+        new(project.Id, project.Name, project.LastAccessedAt);
 }
