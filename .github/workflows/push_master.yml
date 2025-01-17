@@ -1,0 +1,68 @@
+name: Push to master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  bump-version:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    runs-on: ubuntu-latest
+    name: "Bump version and create changelog with commitizen"
+    outputs:
+      version: ${{ steps.cz.outputs.version }}
+      changed: ${{ steps.version-changed.outputs.changed }}
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+
+      - id: cz
+        name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - id: version-changed
+        name: Check if version changed
+        run: |
+          [[ $REVISION = $PREVIOUS_REVISION ]] && CHANGED="false" || CHANGED="true"
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+          [[ $CHANGED = "true" ]] && echo "::notice::Version changed ($PREVIOUS_REVISION -> $REVISION)" || echo "::notice::Version did not change"
+
+      - name: Release
+        id: release
+        uses: softprops/action-gh-release@v2
+        if: "${{ steps.version-changed.outputs.changed == 'true' }}"
+        with:
+          body_path: ${{ github.workspace }}/CHANGELOG.md
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          tag_name: v${{ steps.cz.outputs.version }}
+
+      - name: Echo release id
+        if: "${{ steps.version-changed.outputs.changed == 'true' }}"
+        run: echo "::notice::id=${{ steps.release.outputs.id }}"
+
+  publish-nuget-packages:
+    needs:
+      - bump-version
+    runs-on: ubuntu-latest
+    name: "Publish packages to NuGet"
+    if: "${{ needs.bump-version.outputs.changed == 'true' }}"
+    strategy:
+      matrix:
+        package-name: [Olve.Grids, Olve.Grids.IO, Olve.Grids.Serialization, Olve.Grids.DeBroglie]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish ${{ matrix.package-name }}
+        uses: ./.github/actions/dotnet-publish-nuget
+        with:
+          project: ${{ matrix.package-name }}/${{ matrix.package-name }}.csproj
+          package-name: ${{ matrix.package-name }}
+          version: ${{ needs.bump-version.outputs.version }}
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}

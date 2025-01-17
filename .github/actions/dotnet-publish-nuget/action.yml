@@ -21,6 +21,17 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: .NET restore
+      shell: bash
+      run: |
+        dotnet restore
+        dotnet tool restore
+
     - name: Build
       shell: bash
       run: dotnet build --no-restore -c Release /p:Version="${{ inputs.version }}"
@@ -38,5 +49,5 @@ runs:
       if: ${{ inputs.dry-run == 'true' }}
       shell: bash
       run: |
-        echo "Dry run"
-        ls -l nupkgs/${{ inputs.package-name }}
+        echo "::notice::Dry run"
+        ls -l nupkgs/${{ inputs.package-name }} | echo "::notice::nupkgs/${{ inputs.package-name }}"
