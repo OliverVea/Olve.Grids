@@ -7,7 +7,7 @@ public class UpdateProjectOperation(GetProjectOperation getProjectOperation, Set
 {
     public record Request(Id<Project> ProjectId, Func<Project, Result> UpdateAction)
     {
-        public Request(Id<Project> projectId, Action<Project> updateAction) : this(projectId, updateAction.ToFunc())
+        public Request(Id<Project> projectId, Action<Project> updateAction) : this(projectId, updateAction.ToResultFunc())
         {
         }
     }

@@ -1,7 +1,7 @@
 <Project>
     <ItemGroup>
         <!-- Olve.Grids -->
-        <PackageVersion Include="Olve.Utilities" Version="0.0.15"/>
+        <PackageVersion Include="Olve.Utilities" Version="0.2.0"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.2.0"/>
