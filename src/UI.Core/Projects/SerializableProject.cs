@@ -17,12 +17,12 @@ public partial class SerializableProject
     public required long CreatedAt { get; init; }
     public required long LastAccessedAt { get; init; }
     public required SerializableGridConfiguration GridConfiguration { get; init; }
-    public required SerializedFileContent TileSheetImage { get; init; }
+    public required SerializableFileContent TileSheetImage { get; init; }
     public required SerializableAdjacencyLookup AdjacencyLookup { get; init; }
     public required SerializableBrushLookup BrushLookup { get; init; }
     public required SerializableWeightLookup WeightLookup { get; init; }
     public required int[] ActiveTileIds { get; init; }
-    public required SerializedProjectBrush[] Brushes { get; init; }
+    public required SerializableProjectBrush[] Brushes { get; init; }
     public string ImageName { get; init; } = string.Empty;
 
     public static (SerializableProject Project, Image Image) FromProject(Project project) =>
@@ -32,7 +32,7 @@ public partial class SerializableProject
             Name = project.Name.Value,
             CreatedAt = project.CreatedAt.ToUnixTimeSeconds(),
             LastAccessedAt = project.CreatedAt.ToUnixTimeSeconds(),
-            TileSheetImage = SerializedFileContent.FromFileContent(project.TileSheetImage),
+            TileSheetImage = SerializableFileContent.FromFileContent(project.TileSheetImage),
             GridConfiguration = SerializableGridConfiguration.FromGridConfiguration(project.GridConfiguration),
             AdjacencyLookup = SerializableAdjacencyLookup.FromAdjacencyLookup(project.AdjacencyLookup),
             BrushLookup = SerializableBrushLookup.FromBrushLookup(project.BrushLookup),
@@ -44,7 +44,7 @@ public partial class SerializableProject
                 .ToArray(),
             Brushes = project
                 .Brushes
-                .Select(x => SerializedProjectBrush.FromProjectBrush(x.Value))
+                .Select(x => SerializableProjectBrush.FromProjectBrush(x.Value))
                 .ToArray(),
         }, project.TileSheetImage.Image);
 
@@ -74,37 +74,4 @@ public partial class SerializableProject
                 x => x.ToProjectBrush()),
         };
     }
-}
-
-[MemoryPackable]
-public partial class SerializedProjectBrush
-{
-    public required string Id { get; init; }
-    public required string DisplayName { get; init; }
-    public required string Color { get; init; }
-
-    public static SerializedProjectBrush FromProjectBrush(ProjectBrush projectBrush) =>
-        new()
-        {
-            Id = projectBrush.Id.Value,
-            DisplayName = projectBrush.DisplayName,
-            Color = projectBrush.Color.Value,
-        };
-
-    public ProjectBrush ToProjectBrush() => new(new BrushId(Id), DisplayName, new ColorString(Color));
-}
-
-[MemoryPackable]
-public partial class SerializedFileContent
-{
-    public required string Name { get; init; }
-
-    public static SerializedFileContent FromFileContent(FileContent fileContent) =>
-        new()
-        {
-            Name = fileContent.Name,
-        };
-
-    public FileContent ToFileContent(Image image) =>
-        new(Name, image);
 }

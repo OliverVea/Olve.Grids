@@ -1,5 +1,6 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
+using Olve.Utilities.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using UI.Core.Projects;
@@ -18,13 +19,11 @@ public static class TileInformationExtractionHelper
             project.GridConfiguration.TileSize.Width,
             project.GridConfiguration.TileSize.Height)));
 
-        var weight = project.WeightLookup.GetWeight(tileIndex);
-
         var cornerBrushes = project
             .BrushLookup
             .GetBrushes(tileIndex)
             .GetT0OrDefault(new CornerBrushes());
-        var neighbors = project.AdjacencyLookup.GetNeighbors(tileIndex);
+
         var active = project.ActiveTiles.Contains(tileIndex);
 
         return new TileInformation(project.Id, tileIndex, image, cornerBrushes, active);
