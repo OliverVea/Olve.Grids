@@ -2,6 +2,7 @@
 using UI.Blazor.Components.ContextMenus;
 using UI.Blazor.Components.Modals;
 using UI.Blazor.Components.Pages;
+using UI.Blazor.Components.ProjectDashboard;
 using UI.Blazor.Interop;
 using UI.Blazor.Navigation;
 

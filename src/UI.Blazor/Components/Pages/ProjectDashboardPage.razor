@@ -1,0 +1,58 @@
+﻿@page "/project/{projectId}"
+@using UI.Core.Logging
+@using UI.Core.Projects
+@using UI.Core.Projects.Operations
+@inject LoggingService Logger
+@inject NavigationService NavigationService
+@inject GetProjectOperation GetProjectOperation
+
+@if (_project is not { } project)
+{
+    <span>Loading...</span>
+    return;
+}
+
+<ProjectDashboard Project="@project"/>
+
+@code {
+    [Parameter] public required string ProjectId { get; set; }
+
+    private Project? _project;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var projectResult = await LoadProjectAsync();
+        if (projectResult.TryPickProblems(out var problems, out var project))
+        {
+            _project = null;
+            Logger.Show(problems);
+
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
+            return;
+        }
+
+        _project = project;
+    }
+
+    private async Task<Result<Project>> LoadProjectAsync()
+    {
+        var parsingResult = Id<Project>.TryParse(ProjectId, out var projectId);
+        if (!parsingResult)
+        {
+            var problem = new ResultProblem("Invalid project id: '{0}'", ProjectId);
+            return problem;
+        }
+
+        GetProjectOperation.Request request = new(projectId);
+        var result = await GetProjectOperation.ExecuteAsync(request);
+
+        if (result.TryPickProblems(out var problems, out var project))
+        {
+            return problems;
+        }
+
+        return project;
+    }
+
+}

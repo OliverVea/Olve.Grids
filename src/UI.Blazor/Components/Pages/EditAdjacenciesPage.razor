@@ -1,0 +1,52 @@
+﻿@page "/project/{projectId}/edit-adjacencies/{tileIndex:int}"
+@using Olve.Grids.Grids
+@using UI.Core.Logging
+@using UI.Core.Projects
+@using UI.Core.Projects.Operations
+@inject GetProjectOperation GetProjectOperation
+@inject LoggingService LoggingService
+@inject NavigationService NavigationService
+
+@if (_tileIndex == null || _project == null)
+{
+    <span>Loading...</span>
+    return;
+}
+
+<EditAdjacencies Project="@_project" TileIndex="@_tileIndex.Value"/>
+
+
+@code {
+    [Parameter] public required string ProjectId { get; set; }
+    [Parameter] public required int TileIndex { get; set; }
+
+    private TileIndex? _tileIndex;
+    private Project? _project;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _tileIndex = new TileIndex(TileIndex);
+
+        var projectIdResult = Id<Project>.TryParse(ProjectId, out var projectId);
+        if (!projectIdResult)
+        {
+            var problem = new ResultProblem("Invalid project id: '{0}'", ProjectId);
+            LoggingService.Show(problem);
+
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
+            return;
+        }
+
+        GetProjectOperation.Request getProjectRequest = new(projectId);
+        var currentProjectResult = await GetProjectOperation.ExecuteAsync(getProjectRequest);
+        if (currentProjectResult.TryPickProblems(out var problems, out _project))
+        {
+            LoggingService.Show(problems);
+
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
+        }
+    }
+
+}

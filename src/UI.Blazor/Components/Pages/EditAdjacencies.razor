@@ -1,52 +1,23 @@
-﻿@page "/project/{projectId}/edit-adjacencies/{tileIndex:int}"
-@using Olve.Grids.Grids
-@using UI.Core.Logging
+﻿@using Olve.Grids.Grids
+@using UI.Core
 @using UI.Core.Projects
-@using UI.Core.Projects.Operations
-@inject GetProjectOperation GetProjectOperation
-@inject LoggingService LoggingService
 @inject NavigationService NavigationService
 
-@if (_tileIndex == null || _project == null)
-{
-    <span>Loading...</span>
-    return;
-}
+<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
+    <TitleBar Title="@Title" OnLeft="HandleBack"/>
 
-<EditAdjacenciesRoot Project="@_project" TileIndex="@_tileIndex.Value"/>
-
+</div>
 
 @code {
-    [Parameter] public required string ProjectId { get; set; }
-    [Parameter] public required int TileIndex { get; set; }
+    [Parameter] [EditorRequired] public required Project Project { get; set; }
+    [Parameter] [EditorRequired] public required TileIndex TileIndex { get; set; }
 
-    private TileIndex? _tileIndex;
-    private Project? _project;
+    private string Title => $"{Project.Name.Value} / Tile {TileIndex.Index} Adjacencies";
 
-    protected override async Task OnParametersSetAsync()
+    private void HandleBack()
     {
-        _tileIndex = new TileIndex(TileIndex);
-
-        var projectIdResult = Id<Project>.TryParse(ProjectId, out var projectId);
-        if (!projectIdResult)
-        {
-            var problem = new ResultProblem("Invalid project id: '{0}'", ProjectId);
-            LoggingService.Show(problem);
-
-            var navigationTarget = new NavigationTargets.Home();
-            NavigationService.NavigateTo(navigationTarget);
-            return;
-        }
-
-        GetProjectOperation.Request getProjectRequest = new(projectId);
-        var currentProjectResult = await GetProjectOperation.ExecuteAsync(getProjectRequest);
-        if (currentProjectResult.TryPickProblems(out var problems, out _project))
-        {
-            LoggingService.Show(problems);
-
-            var navigationTarget = new NavigationTargets.Home();
-            NavigationService.NavigateTo(navigationTarget);
-        }
+        var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
+        NavigationService.NavigateTo(navigationTarget);
     }
 
 }

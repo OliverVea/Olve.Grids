@@ -1,58 +1,55 @@
-﻿@page "/project/{projectId}"
+﻿@using Olve.Grids.Grids
+@using UI.Blazor.Components.ProjectDashboard
+@using UI.Core
 @using UI.Core.Logging
 @using UI.Core.Projects
-@using UI.Core.Projects.Operations
-@inject LoggingService Logger
+@using UI.Core.Tiles
+@inject LoggingService LoggingService
 @inject NavigationService NavigationService
-@inject GetProjectOperation GetProjectOperation
+@inject ProjectDashboardContainer ProjectDashboardContainer
 
-@if (_project is not { } project)
-{
-    <span>Loading...</span>
-    return;
-}
+<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
+    <TitleBar Title="@Project.Name.Value" OnLeft="HandleBack"/>
 
-<ProjectDashboardRoot Project="@project"/>
+    <div class="@TW(FlexGrow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
+        <div class="@TW(Grid, GridCols($"repeat({Columns},auto)"), Gap(2))">
+            @foreach (var tileInformation in GetTileInformation())
+            {
+                <Tile TileInformation="@tileInformation"/>
+            }
+        </div>
+    </div>
+</div>
 
 @code {
-    [Parameter] public required string ProjectId { get; set; }
+    [Parameter] [EditorRequired] public required Project Project { get; set; }
 
-    private Project? _project;
+    private int Columns => Project.GridConfiguration.Columns;
+    private IEnumerable<TileIndex> TileIndices => Project.GridConfiguration.GetTileIndices();
 
-    protected override async Task OnParametersSetAsync()
+    private IEnumerable<TileInformation> GetTileInformation()
     {
-        var projectResult = await LoadProjectAsync();
-        if (projectResult.TryPickProblems(out var problems, out var project))
+        foreach (var tileIndex in TileIndices)
         {
-            _project = null;
-            Logger.Show(problems);
+            var result = TileInformationExtractionHelper.ExtractTileInformation(Project, tileIndex);
+            if (result.TryPickProblems(out var problems, out var tileInformation))
+            {
+                LoggingService.Show(problems);
+                continue;
+            }
 
-            var navigationTarget = new NavigationTargets.Home();
-            NavigationService.NavigateTo(navigationTarget);
-            return;
+            yield return tileInformation;
         }
-
-        _project = project;
     }
 
-    private async Task<Result<Project>> LoadProjectAsync()
+    private void HandleBack()
     {
-        var parsingResult = Id<Project>.TryParse(ProjectId, out var projectId);
-        if (!parsingResult)
-        {
-            var problem = new ResultProblem("Invalid project id: '{0}'", ProjectId);
-            return problem;
-        }
-
-        GetProjectOperation.Request request = new(projectId);
-        var result = await GetProjectOperation.ExecuteAsync(request);
-
-        if (result.TryPickProblems(out var problems, out var project))
-        {
-            return problems;
-        }
-
-        return project;
+        var navigationTarget = new NavigationTargets.Home();
+        NavigationService.NavigateTo(navigationTarget);
     }
+
+    protected override void OnInitialized() => ProjectDashboardContainer.SetProvider(this);
+
+    public Task StateHasChangedAsync() => InvokeAsync(StateHasChanged);
 
 }
