@@ -63,6 +63,8 @@ public readonly record struct ColorString(string Value)
 
     public static readonly ColorString White = new("#ffffff");
     public static readonly ColorString Red = new("#FF0000");
+    public static readonly ColorString Green = new("#00FF00");
+    public static readonly ColorString Blue = new("#0000FF");
     public static readonly ColorString Black = new("#000000");
     public static readonly ColorString Black50 = new("#00000080");
     public static readonly ColorString Black25 = new("#00000040");
