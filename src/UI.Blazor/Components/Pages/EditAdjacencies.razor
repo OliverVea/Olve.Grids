@@ -1,18 +1,37 @@
 ﻿@using Olve.Grids.Grids
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats.Png
 @using UI.Core
 @using UI.Core.Projects
 @inject NavigationService NavigationService
 
-<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
+<div class="@TW(Flex, FlexCol, WFull, HFull)">
     <TitleBar Title="@Title" OnLeft="HandleBack"/>
+
+    <div class="@TW(Flex, FlexRow, WFull, HFull)">
+        <div class="@TW(Flex, FlexCol)">
+            <div class="@TW(Bg(ColorString.Blue))">
+                <img src="@TileInformation.Image.ToBase64String(PngFormat.Instance)"/>
+            </div>
+            <div class="@TW(FlexGrow, Bg(ColorString.Red))">
+
+            </div>
+
+        </div>
+
+        <div class="@TW(Flex, FlexCol, WFull, HFull, Bg(ColorString.Green))">
+
+        </div>
+
+    </div>
 
 </div>
 
 @code {
     [Parameter] [EditorRequired] public required Project Project { get; set; }
-    [Parameter] [EditorRequired] public required TileIndex TileIndex { get; set; }
+    [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
 
-    private string Title => $"{Project.Name.Value} / Tile {TileIndex.Index} Adjacencies";
+    private string Title => $"{Project.Name.Value} / Tile {TileInformation.TileIndex.Index} Adjacencies";
 
     private void HandleBack()
     {
