@@ -1,31 +1,34 @@
 ﻿@page "/project/{projectId}/edit-adjacencies/{tileIndex:int}"
 @using Olve.Grids.Grids
+@using UI.Core
 @using UI.Core.Logging
 @using UI.Core.Projects
 @using UI.Core.Projects.Operations
+@using UI.Core.Tiles
 @inject GetProjectOperation GetProjectOperation
 @inject LoggingService LoggingService
 @inject NavigationService NavigationService
+@inject GetTileInformationOperation GetTileInformationOperation
 
-@if (_tileIndex == null || _project == null)
+@if (_tileInformation == null || _project == null)
 {
     <span>Loading...</span>
     return;
 }
 
-<EditAdjacencies Project="@_project" TileIndex="@_tileIndex.Value"/>
+<EditAdjacencies Project="@_project" TileInformation="@_tileInformation.Value"/>
 
 
 @code {
     [Parameter] public required string ProjectId { get; set; }
     [Parameter] public required int TileIndex { get; set; }
 
-    private TileIndex? _tileIndex;
+    private TileInformation? _tileInformation;
     private Project? _project;
 
     protected override async Task OnParametersSetAsync()
     {
-        _tileIndex = new TileIndex(TileIndex);
+        var tileIndex = new TileIndex(TileIndex);
 
         var projectIdResult = Id<Project>.TryParse(ProjectId, out var projectId);
         if (!projectIdResult)
@@ -46,7 +49,23 @@
 
             var navigationTarget = new NavigationTargets.Home();
             NavigationService.NavigateTo(navigationTarget);
+
+            return;
         }
+
+        GetTileInformationOperation.Request getTileInformationRequest = new(_project.Id, tileIndex);
+        var tileInformationResult = await GetTileInformationOperation.ExecuteAsync(getTileInformationRequest);
+        if (tileInformationResult.TryPickProblems(out var tileInformationProblems, out var response))
+        {
+            LoggingService.Show(tileInformationProblems);
+
+            var navigationTarget = new NavigationTargets.ProjectDashboard(_project.Id);
+            NavigationService.NavigateTo(navigationTarget);
+
+            return;
+        }
+
+        _tileInformation = response.TileInformation;
     }
 
 }
