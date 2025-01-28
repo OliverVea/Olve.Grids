@@ -1,0 +1,69 @@
+﻿@using Olve.Grids.Adjacencies
+@using Olve.Grids.Primitives
+@using UI.Core.Projects
+@using UI.Core.Projects.Operations
+@using UI.Core
+@inject UpdateProjectOperation UpdateProjectOperation
+
+<TileBase TileInformation="@TileTileInformation"
+
+          class="@Class"
+          @onclick="HandleClick">
+    @if (IsCurrent)
+    {
+        <div class="@TW(WFull, HFull, Flex, ItemsCenter, JustifyCenter)">
+            <Icon Disabled="@true" IconDescriptor="@IconDescriptor"/>
+        </div>
+    }
+</TileBase>
+
+@code {
+    [Parameter] [EditorRequired] public required TileInformation CurrentTileInformation { get; set; }
+    [Parameter] [EditorRequired] public required TileInformation TileTileInformation { get; set; }
+    [Parameter] [EditorRequired] public required Direction Direction { get; set; }
+    [Parameter] [EditorRequired] public required Project Project { get; set; }
+
+    private bool IsSelected => Project
+        .AdjacencyLookup.Get(CurrentTileInformation.TileIndex, TileTileInformation.TileIndex)
+        .HasFlag(Direction);
+
+    private string Class => TW(GetClasses());
+
+    private bool IsCurrent => CurrentTileInformation.TileIndex == TileTileInformation.TileIndex;
+    private bool IsEnabled => Project.ActiveTiles.Contains(TileTileInformation.TileIndex);
+
+    private IconDescriptor IconDescriptor => Direction switch
+    {
+        Direction.Down => IconDescriptor.ChevronDown,
+        Direction.Up => IconDescriptor.ChevronUp,
+        Direction.Left => IconDescriptor.ChevronLeft,
+        Direction.Right => IconDescriptor.ChevronRight,
+        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
+    };
+
+    private Task HandleClick()
+    {
+        UpdateProjectOperation.Request request = new(Project.Id, ToggleAdjacency);
+        return UpdateProjectOperation.ExecuteAsync(request);
+    }
+
+    private void ToggleAdjacency(Project project)
+    {
+        project.AdjacencyLookup.Toggle(
+            CurrentTileInformation.TileIndex,
+            TileTileInformation.TileIndex,
+            Direction);
+
+        StateHasChanged();
+    }
+
+    private IEnumerable<TailwindClass> GetClasses()
+    {
+        if (IsSelected || IsCurrent)
+        {
+            if (IsCurrent) yield return Border(ColorString.Blue);
+            yield return border;
+        }
+    }
+
+}
