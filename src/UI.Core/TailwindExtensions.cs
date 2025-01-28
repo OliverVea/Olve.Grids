@@ -103,6 +103,9 @@ public static class TailwindExtensions
     public static readonly TailwindClass BreakWords = new("break-words");
 
     public static readonly TailwindClass CursorPointer = new("cursor-pointer");
+    public static readonly TailwindClass CursorDefault = new("cursor-default");
+    public static readonly TailwindClass CursorText = new("cursor-text");
+    public static readonly TailwindClass CursorNone = new("cursor-none");
 
     public static readonly TailwindClass MarginAuto = new("m-auto");
 
