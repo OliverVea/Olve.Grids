@@ -12,7 +12,7 @@
     @if (IsCurrent)
     {
         <div class="@TW(WFull, HFull, Flex, ItemsCenter, JustifyCenter)">
-            <Icon Disabled="@true" IconDescriptor="@IconDescriptor"/>
+            <Icon Disabled="@true" IconDescriptor="@Direction.ToChevron()"/>
         </div>
     }
 </TileBase>
@@ -31,15 +31,6 @@
 
     private bool IsCurrent => CurrentTileInformation.TileIndex == TileTileInformation.TileIndex;
     private bool IsEnabled => Project.ActiveTiles.Contains(TileTileInformation.TileIndex);
-
-    private IconDescriptor IconDescriptor => Direction switch
-    {
-        Direction.Down => IconDescriptor.ChevronDown,
-        Direction.Up => IconDescriptor.ChevronUp,
-        Direction.Left => IconDescriptor.ChevronLeft,
-        Direction.Right => IconDescriptor.ChevronRight,
-        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
-    };
 
     private Task HandleClick()
     {
