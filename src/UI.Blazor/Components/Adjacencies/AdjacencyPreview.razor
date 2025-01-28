@@ -14,9 +14,14 @@ Direction: @Direction
 <div class="@TW(Grow, Grid, GridCols(4), GridRows(8), WFull, Gap(2))">
     @foreach (var neighbor in _neighbors)
     {
-        <div class="@TW(ContainerClasses)">
-            <img class="@TW(Grow)" src="@TileInformation.Image.ToBase64String(PngFormat.Instance)" alt="This"/>
-            <img class="@TW(Grow)" src="@neighbor.Image.ToBase64String(PngFormat.Instance)" alt="Neighbor Image"/>
+        <div class="transparency-background @TW(ContainerClasses)">
+            <img class="@TW(Grow)"
+                 src="@TileInformation.Image.ToBase64String(PngFormat.Instance)"
+                 alt="This">
+
+            <img class="@TW(Grow)"
+                 src="@neighbor.Image.ToBase64String(PngFormat.Instance)"
+                 alt="Neighbor Image"/>
         </div>
     }
 </div>
@@ -39,7 +44,7 @@ Direction: @Direction
             ? FlexRowReverse
             : FlexRow;
 
-    private TailwindClass[] ContainerClasses => [ Flex, FlexStyle, Vertical ? RowSpan(2) : ColSpan(2), ];
+    private TailwindClass[] ContainerClasses => [ Flex, FlexStyle, Vertical ? RowSpan(2) : ColSpan(2), border, ];
 
     private int WidthPercent => Vertical ? 50 : 25;
 

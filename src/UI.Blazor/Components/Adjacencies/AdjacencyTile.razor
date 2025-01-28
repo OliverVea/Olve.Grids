@@ -6,7 +6,6 @@
 @inject UpdateProjectOperation UpdateProjectOperation
 
 <TileBase TileInformation="@TileTileInformation"
-
           class="@Class"
           @onclick="HandleClick">
     @if (IsCurrent)
@@ -34,6 +33,8 @@
 
     private Task HandleClick()
     {
+        if (!IsEnabled) return Task.CompletedTask;
+
         UpdateProjectOperation.Request request = new(Project.Id, ToggleAdjacency);
         return UpdateProjectOperation.ExecuteAsync(request);
     }
@@ -54,6 +55,16 @@
         {
             if (IsCurrent) yield return Border(ColorString.Blue);
             yield return border;
+        }
+
+        if (!IsEnabled)
+        {
+            yield return CursorDefault;
+            yield return Opacity(50);
+        }
+        else
+        {
+            yield return CursorPointer;
         }
     }
 

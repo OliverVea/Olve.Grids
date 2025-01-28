@@ -5,7 +5,13 @@
 @inject LoggingService LoggingService
 
 <TileBase TileInformation="@TileInformation"
-          class="@TW(Relative, WFull, ShadowXl, TransitionTransform, Transform, Hover(Z(10)), Opacity(50))"
+          class="@TW(Relative,
+                     WFull,
+                     ShadowXl,
+                     TransitionTransform,
+                     Transform,
+                     Hover(Z(10)),
+                     Opacity(50))"
           @onclick="HandleClick"
           @oncontextmenu="HandleRightClick"
 />
