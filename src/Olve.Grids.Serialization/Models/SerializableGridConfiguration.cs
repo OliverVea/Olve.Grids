@@ -22,5 +22,5 @@ public partial class SerializableGridConfiguration
             Rows = gridConfiguration.Rows,
         };
 
-    public GridConfiguration ToGridConfiguration() => new(new Size(TileWidth, TileHeight), Columns, Rows);
+    public GridConfiguration ToGridConfiguration() => new(new Size(TileWidth, TileHeight), Rows, Columns);
 }
