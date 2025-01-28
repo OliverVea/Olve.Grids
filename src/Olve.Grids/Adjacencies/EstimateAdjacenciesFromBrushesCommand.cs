@@ -1,22 +1,27 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
+using Olve.Utilities.Operations;
 
 namespace Olve.Grids.Adjacencies;
 
-public class AdjacencyFromTileBrushEstimator
+public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenciesFromBrushesCommand.Request>
 {
-    public void SetAdjacencies(
-        IAdjacencyLookup adjacencyLookup,
-        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
-    )
+    public record Request(
+        IAdjacencyLookup AdjacencyLookup,
+        IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)> TileBrushes)
+    {
+        public IEnumerable<(TileIndex TileIndex, Direction Direction)> LockedAdjacencies { get; set; } = [ ];
+    }
+
+    public Result Execute(Request request)
     {
         var tileIndices = new HashSet<TileIndex>();
         var brushIds = new HashSet<BrushId>();
 
         var lookup = new Dictionary<(TileIndex, Corner), BrushIdOrAny>();
 
-        foreach (var (tileIndex, corner, brushId) in brushConfiguration)
+        foreach (var (tileIndex, corner, brushId) in request.TileBrushes)
         {
             tileIndices.Add(tileIndex);
             brushIds.Add(brushId);
@@ -55,20 +60,36 @@ public class AdjacencyFromTileBrushEstimator
             }
         }
 
+        var lockedAdjacencies = request.LockedAdjacencies.ToHashSet();
+
         foreach (var ((side, brush1, brush2), tilesFrom) in dict)
         {
             var direction = side.ToAdjacencyDirection();
+            var oppositeDirection = direction.Opposite();
+
             var oppositeSide = side.Opposite();
 
             var otherTiles = dict.GetValueOrDefault((oppositeSide, brush1, brush2), [ ]);
 
             foreach (var tileFrom in tilesFrom)
             {
+                if (lockedAdjacencies.Contains((tileFrom, direction)))
+                {
+                    continue;
+                }
+
                 foreach (var tileTo in otherTiles)
                 {
-                    adjacencyLookup.Add(tileFrom, tileTo, direction);
+                    if (lockedAdjacencies.Contains((tileTo, oppositeDirection)))
+                    {
+                        continue;
+                    }
+
+                    request.AdjacencyLookup.Add(tileFrom, tileTo, direction);
                 }
             }
         }
+
+        return Result.Success();
     }
 }
