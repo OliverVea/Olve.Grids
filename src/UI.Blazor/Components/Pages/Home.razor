@@ -28,7 +28,7 @@
         <!-- Pagination -->
         @if (TotalPages > 1)
         {
-            <div class="@TW(Flex, FlexGrow, ItemsCenter, JustifyCenter, Gap(2), Text(Colors.Active.Text.Ordinary))">
+            <div class="@TW(Flex, Grow, ItemsCenter, JustifyCenter, Gap(2), Text(Colors.Active.Text.Ordinary))">
                 @if (HasPreviousPage)
                 {
                     <Button OnClick="DecrementPage">
@@ -79,7 +79,7 @@
         <div class="@TW(Flex, FlexRow, JustifyBetween)">
             <span @onclick="() => NavigateToProjectDashboard(projectSummary.ProjectId)"
                   class="@TW(Text(Colors.Active.Text.More),
-                             FlexGrow,
+                             Grow,
                              Hover(Underline),
                              CursorPointer,
                              FontSemibold)">@projectSummary.Name.Value</span>

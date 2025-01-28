@@ -1,0 +1,98 @@
+﻿@using Olve.Grids.Primitives
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats.Png
+@using UI.Core
+@using UI.Core.Logging
+@using UI.Core.Tiles
+@using UI.Core.Projects
+@inject GetTileInformationOperation GetTileInformationOperation
+@inject LoggingService LoggingService
+@implements IDisposable
+
+Direction: @Direction
+
+<div class="@TW(Grow, Grid, GridCols(4), GridRows(8), WFull, Gap(2))">
+    @foreach (var neighbor in _neighbors)
+    {
+        <div class="transparency-background @TW(ContainerClasses)">
+            <img class="@TW(Grow)"
+                 src="@TileInformation.Image.ToBase64String(PngFormat.Instance)"
+                 alt="This">
+
+            <img class="@TW(Grow)"
+                 src="@neighbor.Image.ToBase64String(PngFormat.Instance)"
+                 alt="Neighbor Image"/>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] [EditorRequired] public required Project Project { get; set; }
+    [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
+    [Parameter] [EditorRequired] public required Direction Direction { get; set; } = Direction.Left;
+
+    private TileInformation[] _neighbors = [ ];
+
+    private bool Vertical => Direction is Direction.Up or Direction.Down;
+    private bool Opposite => Direction is Direction.Left or Direction.Up;
+
+    private TailwindClass FlexStyle => Vertical
+        ? Opposite
+            ? FlexColReverse
+            : FlexCol
+        : Opposite
+            ? FlexRowReverse
+            : FlexRow;
+
+    private TailwindClass[] ContainerClasses => [ Flex, FlexStyle, Vertical ? RowSpan(2) : ColSpan(2), border, ];
+
+    private int WidthPercent => Vertical ? 50 : 25;
+
+    protected override Task OnParametersSetAsync() => ReloadNeighbors();
+
+    protected override void OnInitialized()
+    {
+        Events.ProjectChanged += HandleProjectChanged;
+    }
+
+    public void Dispose()
+    {
+        Events.ProjectChanged -= HandleProjectChanged;
+    }
+
+    private void HandleProjectChanged(Id<Project> projectId)
+    {
+        if (Project.Id == projectId)
+        {
+            ReloadNeighbors()
+                .Wait();
+            StateHasChanged();
+        }
+    }
+
+    private async Task ReloadNeighbors()
+    {
+        var neighborTileIndices = Project
+            .AdjacencyLookup
+            .GetNeighborsInDirection(
+                TileInformation.TileIndex,
+                Direction)
+            .ToArray();
+
+        var tasks = neighborTileIndices
+            .Select(x => GetTileInformationOperation.ExecuteAsync(new GetTileInformationOperation.Request(Project.Id, x)))
+            .ToArray();
+
+        var results = await Task.WhenAll(tasks);
+        if (results.TryPickProblems(out var problems, out var neighborResponses))
+        {
+            LoggingService.Show(problems);
+            return;
+        }
+
+        _neighbors = neighborResponses
+            .Select(x => x.TileInformation)
+            .ToArray();
+    }
+
+}

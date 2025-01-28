@@ -2,12 +2,11 @@
 @using Olve.Grids.Primitives
 @using UI.Core
 @using UI.Core.Logging
-@using UI.Core.Projects
 @inject ContextMenuService ContextMenuService
 @inject LoggingService LoggingService
 
-<TileBase Image="@TileInformation.Image"
-          Class="@TW(Relative,
+<TileBase TileInformation="@TileInformation"
+          class="@TW(Relative,
                      WFull,
                      ShadowXl,
                      TransitionTransform,
@@ -16,7 +15,7 @@
                      Border(ColorString.White),
                      BorderOpacity(15),
                      Hover(BorderOpacity(100), Scale(110), Z(10)))"
-          OnClick="HandleClick">
+          @onclick="HandleClick">
 
     @foreach (var (corner, top, left) in GetCorners())
     {

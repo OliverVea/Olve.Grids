@@ -10,7 +10,7 @@
     @foreach (var (left, right) in GetItems())
     {
         <div class="@TW(Flex,
-                        FlexGrow,
+                        Grow,
                         JustifyEnd,
                         ItemsCenter,
                         Text(Colors.Active.Text.Most))">
@@ -18,7 +18,7 @@
         </div>
         <div
             class="@TW(Flex,
-                       FlexGrow,
+                       Grow,
                        JustifyStart,
                        ItemsCenter)">
             @right

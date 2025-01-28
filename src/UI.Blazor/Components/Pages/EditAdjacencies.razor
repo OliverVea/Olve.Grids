@@ -1,23 +1,90 @@
-﻿@using Olve.Grids.Grids
+﻿@using Olve.Grids.DeBroglie
+@using Olve.Grids.Grids
+@using Olve.Grids.Primitives
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats.Png
 @using UI.Core
 @using UI.Core.Projects
+@using UI.Blazor.Components.Adjacencies
+@using UI.Core.Logging
+@using UI.Core.Tiles
 @inject NavigationService NavigationService
+@inject LoggingService LoggingService
 
-<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
+<div class="@TW(Flex, FlexCol, MinWScreen, MinHScreen)">
     <TitleBar Title="@Title" OnLeft="HandleBack"/>
+
+    <div class="@TW(Flex, FlexRow, Grow, WFull)">
+        <div class="@TW(Flex, FlexCol, WFit, Border(Colors.Active.Panels.Most), BorderR)">
+            <div
+                class="@TW(ResizeBoth, P(4), OverflowAuto, H(px(440)), W(px(440)), Border(Colors.Active.Panels.Most), BorderB)">
+                <img class="@TW(WFull, HFull, ObjectContain)"
+                     src="@TileInformation.Image.ToBase64String(PngFormat.Instance)"
+                     alt="Tile Image"/>
+            </div>
+
+            <div class="@TW(Grow, Flex, FlexCol, P(4), Gap(4))">
+                <div class="@TW(Flex, FlexRow, Gap(2))">
+                    @foreach (var direction in Directions.All)
+                    {
+                        <Button Class="@TW(Grow)" OnClick="() => SelectedDirection = direction"
+                                Disabled="@(SelectedDirection == direction)">
+                            @direction
+                        </Button>
+                    }
+                </div>
+
+                <AdjacencyPreview TileInformation="@TileInformation"
+                                  Direction="@SelectedDirection"
+                                  Project="@Project"/>
+            </div>
+
+        </div>
+        <div class="@TW(Grow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
+            <div class="@TW(Grid, GridCols($"repeat({Columns},auto)"), Gap(2))">
+                @foreach (var tileInformation in GetTileInformation())
+                {
+                    <AdjacencyTile CurrentTileInformation="@TileInformation"
+                                   TileTileInformation="@tileInformation"
+                                   Direction="@SelectedDirection"
+                                   Project="@Project"/>
+                }
+            </div>
+        </div>
+
+    </div>
 
 </div>
 
 @code {
     [Parameter] [EditorRequired] public required Project Project { get; set; }
-    [Parameter] [EditorRequired] public required TileIndex TileIndex { get; set; }
+    [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
 
-    private string Title => $"{Project.Name.Value} / Tile {TileIndex.Index} Adjacencies";
+    private Direction SelectedDirection { get; set; } = Directions.All.FirstOrDefault();
+
+    private int Columns => Project.GridConfiguration.Columns;
+    private IEnumerable<TileIndex> TileIndices => Project.GridConfiguration.GetTileIndices();
+    private string Title => $"{Project.Name.Value} / Tile {TileInformation.TileIndex.Index} Adjacencies";
 
     private void HandleBack()
     {
         var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
         NavigationService.NavigateTo(navigationTarget);
+    }
+
+    private IEnumerable<TileInformation> GetTileInformation()
+    {
+        foreach (var tileIndex in TileIndices)
+        {
+            var result = TileInformationExtractionHelper.ExtractTileInformation(Project, tileIndex);
+            if (result.TryPickProblems(out var problems, out var tileInformation))
+            {
+                LoggingService.Show(problems);
+                continue;
+            }
+
+            yield return tileInformation;
+        }
     }
 
 }

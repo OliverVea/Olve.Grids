@@ -1,4 +1,6 @@
-﻿namespace UI.Core.Logging;
+﻿using Olve.Utilities.Types.Results;
+
+namespace UI.Core.Logging;
 
 public class LoggingService(IEnumerable<ILoggingProvider> loggingProviders)
 {
