@@ -4,10 +4,10 @@
 @inject ActivateTileOperation ActivateTileOperation
 @inject LoggingService LoggingService
 
-<TileBase Image="@TileInformation.Image"
-          Class="@TW(Relative, WFull, ShadowXl, TransitionTransform, Transform, Hover(Z(10)), Opacity(50))"
-          OnClick="HandleClick"
-          OnRightClick="HandleRightClick"
+<TileBase TileInformation="@TileInformation"
+          class="@TW(Relative, WFull, ShadowXl, TransitionTransform, Transform, Hover(Z(10)), Opacity(50))"
+          @onclick="HandleClick"
+          @oncontextmenu="HandleRightClick"
 />
 
 @code {

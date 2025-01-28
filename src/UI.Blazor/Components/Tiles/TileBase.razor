@@ -1,35 +1,31 @@
-﻿@using Olve.Grids.Grids
-@using SixLabors.ImageSharp
+﻿@using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats.Png
 @using UI.Core
 
-<div class="transparency-background @Class"
-     @onclick="@(e => OnClick.InvokeAsync(e))"
-     @oncontextmenu="OnRightClick">
-    <img src="@Image.ToBase64String(PngFormat.Instance)" alt="Tile" class="@TW(WFull, HFull)"/>
+<div style="background: repeating-conic-gradient(#1E1C21 0% 25%, #29272C 0% 50%) 50% / 20px 20px; position: relative;"
+     @attributes="AdditionalAttributes">
+    <img src="@TileInformation.Image.ToBase64String(PngFormat.Instance)"
+         alt="Tile"
+         class="@TW(WFull, HFull)"/>
 
-    @if (TileIndex.HasValue)
-    {
-        <span class="@TW(Absolute, Bottom(0), Right(0), Text(TextColor), P(1), FontLight)">
-            @TileIndex.Value.Index
-        </span>
-    }
+    <span class="@TW(Absolute, Bottom(0), Right(0), Text(TextColor), P(1), FontLight)">
+        @TileInformation.TileIndex.Index
+    </span>
 
     <div class="@TW(Absolute, Inset(0))">
         @ChildContent
     </div>
-
 </div>
 
 
 @code {
-    [Parameter] [EditorRequired] public Image Image { get; set; } = null!;
-    [Parameter] public TileIndex? TileIndex { get; set; }
+    [Parameter] public TileInformation TileInformation { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; } = _ => { };
-    [Parameter] public string Class { get; set; } = string.Empty;
     [Parameter] public ColorString TextColor { get; set; } = Colors.Active.Text.Ordinary;
-    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
-    [Parameter] public EventCallback<MouseEventArgs> OnRightClick { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
+
 }
 
 
