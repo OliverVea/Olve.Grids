@@ -7,9 +7,15 @@ public static class TailwindExtensions
     public static readonly TailwindClass Flex = new("flex");
     public static readonly TailwindClass Grow = new("grow");
     public static readonly TailwindClass FlexRow = new("flex-row");
+    public static readonly TailwindClass FlexRowReverse = new("flex-row-reverse");
     public static readonly TailwindClass FlexCol = new("flex-col");
+    public static readonly TailwindClass FlexColReverse = new("flex-col-reverse");
 
     public static readonly TailwindClass Hidden = new("hidden");
+
+    public static readonly TailwindClass ResizeBoth = new("resize");
+    public static readonly TailwindClass ResizeX = new("resize-x");
+    public static readonly TailwindClass ResizeY = new("resize-y");
 
     public static readonly TailwindClass Absolute = new("absolute");
     public static readonly TailwindClass Relative = new("relative");
@@ -25,6 +31,13 @@ public static class TailwindExtensions
     public static readonly TailwindClass OverflowYHidden = new("overflow-y-hidden");
 
     public static readonly TailwindClass border = new("border");
+    public static readonly TailwindClass BorderL = new("border-l");
+    public static readonly TailwindClass BorderR = new("border-r");
+    public static readonly TailwindClass BorderT = new("border-t");
+    public static readonly TailwindClass BorderB = new("border-b");
+    public static readonly TailwindClass BorderSolid = new("border-solid");
+
+    public static readonly TailwindClass ObjectContain = new("object-contain");
 
     public static readonly TailwindClass Grid = new("grid");
 
@@ -102,6 +115,10 @@ public static class TailwindExtensions
 
     public static TailwindClass GridCols(string value) => new($"grid-cols-[{value}]");
     public static TailwindClass GridCols(int value) => new($"grid-cols-{value}");
+    public static TailwindClass GridRows(string value) => new($"grid-rows-[{value}]");
+    public static TailwindClass GridRows(int value) => new($"grid-rows-{value}");
+    public static TailwindClass ColSpan(int value) => new($"col-span-{value}");
+    public static TailwindClass RowSpan(int value) => new($"row-span-{value}");
 
     public static TailwindClass Opacity(int value) => new($"opacity-{value}");
     public static TailwindClass Scale(int value) => new($"scale-{value}");
@@ -130,6 +147,10 @@ public static class TailwindExtensions
     public static TailwindClass Bg(ColorString color) => new($"bg-[{color.Value}]");
     public static TailwindClass Border(ColorString color) => new($"border-[{color.Value}]");
     public static TailwindClass Border(int value) => new($"border-{value}");
+    public static TailwindClass BorderLeft(string value) => new($"border-l-[{value}]");
+    public static TailwindClass BorderRight(string value) => new($"border-r-[{value}]");
+    public static TailwindClass BorderTop(string value) => new($"border-t-[{value}]");
+    public static TailwindClass BorderBottom(string value) => new($"border-b-[{value}]");
 
     public static TailwindClass BorderOpacity(int value) => new($"border-opacity-{value}");
     public static TailwindClass BorderY(int value) => new($"border-y-{value}");
