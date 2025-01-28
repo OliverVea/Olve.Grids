@@ -11,7 +11,7 @@
 <div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
     <TitleBar Title="@Project.Name.Value" OnLeft="HandleBack"/>
 
-    <div class="@TW(FlexGrow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
+    <div class="@TW(Grow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
         <div class="@TW(Grid, GridCols($"repeat({Columns},auto)"), Gap(2))">
             @foreach (var tileInformation in GetTileInformation())
             {

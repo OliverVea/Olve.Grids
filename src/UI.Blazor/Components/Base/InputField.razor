@@ -1,7 +1,7 @@
 ﻿@using UI.Core
 @typeparam TValue
 
-<label class="@TW(FlexGrow, Flex, FlexRow, ItemsCenter, Gap(2))">
+<label class="@TW(Grow, Flex, FlexRow, ItemsCenter, Gap(2))">
     @if (IconDescriptor is { } iconDescriptor)
     {
         <Icon Disabled="true" IconDescriptor="iconDescriptor"/>
@@ -10,7 +10,7 @@
         @ref="Input"
         placeholder="@Placeholder"
         class="@TW(Bg(ColorString.Transparent),
-                   FlexGrow,
+                   Grow,
                    Border(ColorString.Transparent),
                    Text(Colors.Active.Text.More),
                    Focus(Text(Colors.Active.Text.Most), OutlineNone),

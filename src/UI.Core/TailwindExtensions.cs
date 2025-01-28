@@ -5,7 +5,7 @@ namespace UI.Core;
 public static class TailwindExtensions
 {
     public static readonly TailwindClass Flex = new("flex");
-    public static readonly TailwindClass FlexGrow = new("flex-grow");
+    public static readonly TailwindClass Grow = new("grow");
     public static readonly TailwindClass FlexRow = new("flex-row");
     public static readonly TailwindClass FlexCol = new("flex-col");
 
