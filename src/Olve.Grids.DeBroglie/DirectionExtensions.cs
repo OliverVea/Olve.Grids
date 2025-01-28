@@ -2,7 +2,7 @@
 
 namespace Olve.Grids.DeBroglie;
 
-public static class AdjacencyDirectionExtensions
+public static class DirectionExtensions
 {
 
     public static IEnumerable<global::DeBroglie.Topo.Direction> GetDeBroglieDirections(this Direction direction)
