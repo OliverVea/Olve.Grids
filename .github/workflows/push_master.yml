@@ -6,7 +6,34 @@ on:
       - master
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: "Run tests"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: .NET restore
+        shell: bash
+        run: |
+          dotnet restore
+          dotnet tool restore
+
+      - name: Build
+        shell: bash
+        run: dotnet build --no-restore -c Release /p:Version="${{ inputs.version }}"
+
+      - name: Test
+        shell: bash
+        run: dotnet test --no-restore --no-build -c Release
+
   bump-version:
+    needs:
+      - test
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     name: "Bump version and create changelog with commitizen"
