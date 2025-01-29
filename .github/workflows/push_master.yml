@@ -25,7 +25,7 @@ jobs:
 
       - name: Build
         shell: bash
-        run: dotnet build --no-restore -c Release /p:Version="${{ inputs.version }}"
+        run: dotnet build --no-restore -c Release /p:Version="1.0.0"
 
       - name: Test
         shell: bash
