@@ -7,6 +7,7 @@ on:
 
 jobs:
   test:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     name: "Run tests"
     steps:
@@ -34,7 +35,6 @@ jobs:
   bump-version:
     needs:
       - test
-    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     name: "Bump version and create changelog with commitizen"
     outputs:
