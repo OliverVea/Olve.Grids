@@ -45,22 +45,14 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
 
         if (adjacencyConfiguration.GenerateFromBrushes)
         {
-            GenerateFromBrushes(adjacencyLookup, brushConfiguration);
+            EstimateAdjacenciesFromBrushesCommand.Request request = new(adjacencyLookup, brushConfiguration);
+            new EstimateAdjacenciesFromBrushesCommand().Execute(request);
         }
 
         ClearAdjacenciesToOverwrite(adjacencyConfiguration, adjacencyLookup);
         SetConfiguredAdjacencies(adjacencyConfiguration, adjacencyLookup);
 
         return Result.Success();
-    }
-
-    private static void GenerateFromBrushes(
-        IAdjacencyLookup adjacencyLookup,
-        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
-    )
-    {
-        var b = new AdjacencyFromTileBrushEstimator();
-        b.SetAdjacencies(adjacencyLookup, brushConfiguration);
     }
 
     private static void ClearAdjacenciesToOverwrite(
