@@ -18,10 +18,7 @@ FrozenBrushLookup frozenBrushLookup = new([ (new TileIndex(13), Corner.UpperLeft
 FrozenAdjacencyLookup frozenAdjacencyLookup =
     new([ (new TileIndex(13), new TileIndex(14), Direction.Left | Direction.Down), ]);
 FrozenWeightLookup frozenWeightLookup =
-    new([
-            new KeyValuePair<TileIndex, float>(new TileIndex(13), 10),
-            new KeyValuePair<TileIndex, float>(new TileIndex(14), 5),
-        ],
+    new(TileWeights.FromEnumerable([ new TileWeight(new TileIndex(13), 10), new TileWeight(new TileIndex(14), 5), ]),
         42);
 
 TileAtlas tileAtlas = new(gridConfiguration, frozenBrushLookup, frozenAdjacencyLookup, frozenWeightLookup);

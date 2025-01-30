@@ -6,6 +6,6 @@ public interface IReadOnlyWeightLookup
 {
     float DefaultWeight { get; }
 
-    IEnumerable<KeyValuePair<TileIndex, float>> Weights { get; }
+    TileWeights Weights { get; }
     float GetWeight(TileIndex tileIndex);
 }

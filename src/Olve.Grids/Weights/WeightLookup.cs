@@ -3,22 +3,23 @@
 namespace Olve.Grids.Weights;
 
 public class WeightLookup(
-    IEnumerable<KeyValuePair<TileIndex, float>>? weights = null,
+    TileWeights? weights = null,
     float defaultWeight = 1f) : IWeightLookup
 {
     public WeightLookup(IEnumerable<TileIndex> tileIndices, float? weight = null, float defaultWeight = 1f)
-        : this(tileIndices.Select(tileIndex => new KeyValuePair<TileIndex, float>(tileIndex, weight ?? defaultWeight)),
+        : this(TileWeights.FromEnumerable(
+                tileIndices.Select(tileIndex => new TileWeight(tileIndex, weight ?? defaultWeight))),
             defaultWeight)
     {
     }
 
     private Dictionary<TileIndex, float> Lookup { get; } =
-        weights?.ToDictionary(pair => pair.Key, pair => pair.Value)
+        weights?.ToDictionary(tileWeight => tileWeight.TileIndex, pair => pair.Weight)
         ?? new Dictionary<TileIndex, float>();
 
     public float DefaultWeight { get; private set; } = defaultWeight;
     public float GetWeight(TileIndex tileIndex) => Lookup.GetValueOrDefault(tileIndex, DefaultWeight);
-    public IEnumerable<KeyValuePair<TileIndex, float>> Weights => Lookup;
+    public TileWeights Weights => TileWeights.FromEnumerable(Lookup.Select(x => new TileWeight(x.Key, x.Value)));
 
     public void ModifyWeight(TileIndex tileIndex, Func<float, float> modifier, float defaultValue = 1f)
     {

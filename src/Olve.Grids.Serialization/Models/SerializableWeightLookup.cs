@@ -9,15 +9,16 @@ public partial class SerializableWeightLookup
 {
     public float DefaultWeight { get; set; }
     public IEnumerable<KeyValuePair<TileIndex, float>> Weights { get; set; } = [ ];
+    private TileWeights TileWeights => TileWeights.FromEnumerable(Weights.Select(x => new TileWeight(x.Key, x.Value)));
 
     public static SerializableWeightLookup FromWeightLookup(IReadOnlyWeightLookup weightLookup) =>
         new()
         {
             DefaultWeight = weightLookup.DefaultWeight,
-            Weights = weightLookup.Weights,
+            Weights = weightLookup.Weights.Select(x => new KeyValuePair<TileIndex, float>(x.TileIndex, x.Weight)),
         };
 
-    public FrozenWeightLookup ToFrozenWeightLookup() => new(Weights, DefaultWeight);
+    public FrozenWeightLookup ToFrozenWeightLookup() => new(TileWeights, DefaultWeight);
 
-    public WeightLookup ToWeightLookup() => new(Weights, DefaultWeight);
+    public WeightLookup ToWeightLookup() => new(TileWeights, DefaultWeight);
 }
