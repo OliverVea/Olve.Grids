@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repo", "repo", "{F2F8BC4F-E
 		.editorconfig = .editorconfig
 		global.json = global.json
 		VERSION = VERSION
+		.cz.yaml = .cz.yaml
+		CHANGELOG.md = CHANGELOG.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BE6D0662-C36C-499F-A6AC-E277251F8146}"
