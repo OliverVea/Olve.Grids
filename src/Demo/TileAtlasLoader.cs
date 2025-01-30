@@ -5,7 +5,6 @@ using Olve.Grids.Grids;
 using Olve.Grids.IO.Configuration;
 using Olve.Grids.IO.Readers;
 using Olve.Grids.IO.TileAtlasBuilder;
-using Olve.Grids.Primitives;
 using Olve.Grids.Weights;
 using Spectre.Console;
 

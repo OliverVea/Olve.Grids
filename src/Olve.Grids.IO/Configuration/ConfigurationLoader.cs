@@ -3,7 +3,6 @@ using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.IO.Configuration.Parsing;
-using Olve.Grids.Primitives;
 using Olve.Grids.Weights;
 
 
