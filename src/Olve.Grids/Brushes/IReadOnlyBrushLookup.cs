@@ -13,7 +13,7 @@ public interface IReadOnlyBrushLookup
     /// <summary>
     /// Get the entries in the lookup
     /// </summary>
-    IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)> Entries { get; }
+    TileBrushes TileBrushes { get; }
 
     /// <summary>
     /// Get the brushes for a tile

@@ -12,7 +12,7 @@ public partial class SerializableTileBrush
     public required Corner Corner { get; init; }
     public required string BrushId { get; init; }
 
-    public static SerializableTileBrush FromTileBrush((TileIndex TileIndex, Corner Corner, BrushId BrushId) tileBrush) =>
+    public static SerializableTileBrush FromTileBrush(TileBrush tileBrush) =>
         new()
         {
             TileIndex = tileBrush.TileIndex.Index,
@@ -20,6 +20,6 @@ public partial class SerializableTileBrush
             BrushId = tileBrush.BrushId.Value,
         };
 
-    public (TileIndex TileIndex, Corner Corner, BrushId BrushId) ToTileBrush() =>
+    public TileBrush ToTileBrush() =>
         (new TileIndex(TileIndex), Corner, new BrushId(BrushId));
 }

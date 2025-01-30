@@ -10,13 +10,13 @@ public class FrozenBrushLookup : IReadOnlyBrushLookup
     private readonly FrozenSet<BrushId> _brushes;
     private readonly FrozenDictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush;
 
-    public FrozenBrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)> items)
+    public FrozenBrushLookup(IEnumerable<TileBrush> tileBrushes)
     {
         var brushCornerToTiles = new Dictionary<(BrushId, Corner), HashSet<TileIndex>>();
         var tileCornerToBrush = new Dictionary<(TileIndex, Corner), BrushId>();
         var brushes = new HashSet<BrushId>();
 
-        foreach (var (tileIndex, corner, brushId) in items)
+        foreach (var (tileIndex, corner, brushId) in tileBrushes)
         {
             if (!brushCornerToTiles.TryGetValue((brushId, corner), out var tiles))
             {
@@ -71,9 +71,9 @@ public class FrozenBrushLookup : IReadOnlyBrushLookup
     public IEnumerable<BrushId> Brushes => _brushes;
 
     /// <inheritdoc />
-    public IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)> Entries => GetEntries();
+    public TileBrushes TileBrushes => TileBrushes.FromEnumerable(GetTileBrushes());
 
-    private IEnumerable<(TileIndex, Corner, BrushId)> GetEntries()
+    private IEnumerable<TileBrush> GetTileBrushes()
     {
         foreach (var (tileCorner, brushId) in _tileCornerToBrush)
         {

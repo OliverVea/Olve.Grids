@@ -14,11 +14,11 @@ public partial class SerializableBrushLookup
         new()
         {
             Entries = brushLookup
-                .Entries.Select(SerializableTileBrush.FromTileBrush)
+                .TileBrushes.Select(SerializableTileBrush.FromTileBrush)
                 .ToArray(),
         };
 
-    private IEnumerable<(TileIndex, Corner, BrushId)> Items => Entries.Select(x => x.ToTileBrush());
+    private TileBrushes Items => TileBrushes.FromEnumerable(Entries.Select(x => x.ToTileBrush()));
 
     public FrozenBrushLookup ToFrozenBrushLookup() => new(Items);
     public BrushLookup ToBrushLookup() => new(Items);

@@ -29,13 +29,13 @@ public class TileAtlasLoader
         }
 
         var tileIndices = brushes
-            .Entries
+            .TileBrushes
             .Select(x => x.TileIndex)
             .Distinct()
             .ToArray();
 
         var adjacencyAndWeightLookupResult =
-            LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, brushes.Entries);
+            LoadAdjacencyLookupAndWeightLookup(tileAtlasConfigFile, tileIndices, brushes.TileBrushes);
         if (adjacencyAndWeightLookupResult.TryPickProblems(out problems, out var adjacencyAndWeightLookup))
         {
             return problems;
@@ -67,7 +67,7 @@ public class TileAtlasLoader
     private Result<(AdjacencyLookup, WeightLookup?)> LoadAdjacencyLookupAndWeightLookup(
         string? tileAtlasConfigFile,
         IEnumerable<TileIndex> tileIndices,
-        IEnumerable<(TileIndex, Corner, BrushId)> tileAtlasBrushes)
+        TileBrushes tileAtlasBrushes)
     {
         var adjacencyLookup = new AdjacencyLookup();
 

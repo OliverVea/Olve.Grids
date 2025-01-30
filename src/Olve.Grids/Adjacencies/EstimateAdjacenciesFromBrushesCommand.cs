@@ -10,7 +10,7 @@ public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenc
 {
     public record Request(
         IAdjacencyLookup AdjacencyLookup,
-        IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)> TileBrushes)
+        TileBrushes TileBrushes)
     {
         public IEnumerable<(TileIndex TileIndex, Direction Direction)> LockedAdjacencies { get; set; } = [ ];
     }

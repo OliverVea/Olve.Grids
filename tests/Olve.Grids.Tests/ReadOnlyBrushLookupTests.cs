@@ -7,22 +7,20 @@ namespace Olve.Grids.Tests;
 [InheritsTests]
 public class BrushLookupReadOnlyBrushLookupTests : ReadOnlyBrushLookupTests<BrushLookup>
 {
-    protected override BrushLookup CreateLookup(
-        IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)>? items = null) => new(items);
+    protected override BrushLookup CreateLookup(IEnumerable<TileBrush>? tileBrushes = null) => new(tileBrushes);
 }
 
 [InheritsTests]
 public class FrozenBrushLookupReadOnlyBrushLookupTests : ReadOnlyBrushLookupTests<FrozenBrushLookup>
 {
-    protected override FrozenBrushLookup CreateLookup(
-        IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)>? items = null) => new(items ?? [ ]);
+    protected override FrozenBrushLookup CreateLookup(IEnumerable<TileBrush>? tileBrushes = null) =>
+        new(tileBrushes ?? [ ]);
 }
 
 public abstract class ReadOnlyBrushLookupTests<TReadOnlyBrushLookup>
     where TReadOnlyBrushLookup : IReadOnlyBrushLookup
 {
-    protected abstract TReadOnlyBrushLookup CreateLookup(
-        IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)>? items = null);
+    protected abstract TReadOnlyBrushLookup CreateLookup(IEnumerable<TileBrush>? tileBrushes = null);
 
 
     [Test]

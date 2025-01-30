@@ -43,7 +43,7 @@ public class ConfigurationLoader(
         IAdjacencyLookup adjacencyLookup,
         IWeightLookup weightLookup,
         IEnumerable<TileIndex> tileIndices,
-        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration)
+        TileBrushes brushConfiguration)
     {
         var configurationModelFileResult = configurationModelFileReader.Read(configurationFilePath);
         if (configurationModelFileResult.TryPickProblems(out var problems, out var configurationModel))

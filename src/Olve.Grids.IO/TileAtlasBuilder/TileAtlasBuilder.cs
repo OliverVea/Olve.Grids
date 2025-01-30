@@ -98,7 +98,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
             Configuration.Columns ?? Configuration.ImageSize!.Value.Width / tileSize.Width
         );
 
-        var frozenBrushLookup = new FrozenBrushLookup(Configuration.BrushLookup.Entries);
+        var frozenBrushLookup = new FrozenBrushLookup(Configuration.BrushLookup.TileBrushes);
 
         var frozenAdjacencyLookup = new FrozenAdjacencyLookup(Configuration.AdjacencyLookup.Adjacencies);
 

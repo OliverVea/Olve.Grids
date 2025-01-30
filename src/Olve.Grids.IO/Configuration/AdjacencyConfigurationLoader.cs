@@ -1,9 +1,7 @@
 ﻿using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
-using Olve.Grids.Grids;
 using Olve.Grids.IO.Configuration.Models;
 using Olve.Grids.IO.Configuration.Parsing;
-using Olve.Grids.Primitives;
 
 
 namespace Olve.Grids.IO.Configuration;
@@ -12,8 +10,7 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
 {
     public Result<IAdjacencyLookup> LoadAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
-        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
-    )
+        TileBrushes brushConfiguration)
     {
         var adjacencyLookupBuilder = new AdjacencyLookup();
 
@@ -34,7 +31,7 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
     public Result ConfigureAdjacencyLookupBuilder(
         ConfigurationModel configurationModel,
         IAdjacencyLookup adjacencyLookup,
-        IEnumerable<(TileIndex, Corner, BrushId)> brushConfiguration
+        TileBrushes brushConfiguration
     )
     {
         var adjacencyConfigurationResult = adjacencyConfigurationParser.Parse(configurationModel);
