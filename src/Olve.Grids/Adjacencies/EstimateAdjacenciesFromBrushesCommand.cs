@@ -1,6 +1,7 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
+using Olve.Utilities.CollectionExtensions;
 using Olve.Utilities.Operations;
 
 namespace Olve.Grids.Adjacencies;
@@ -60,7 +61,10 @@ public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenc
             }
         }
 
-        var lockedAdjacencies = request.LockedAdjacencies.ToHashSet();
+        if (!request.LockedAdjacencies.TryAsReadOnlySet(out var lockedAdjacencies))
+        {
+            lockedAdjacencies = new HashSet<(TileIndex TileIndex, Direction Direction)>(request.LockedAdjacencies);
+        }
 
         foreach (var ((side, brush1, brush2), tilesFrom) in dict)
         {
