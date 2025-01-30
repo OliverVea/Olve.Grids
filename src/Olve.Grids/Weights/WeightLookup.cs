@@ -6,13 +6,6 @@ public class WeightLookup(
     TileWeights? weights = null,
     float defaultWeight = 1f) : IWeightLookup
 {
-    public WeightLookup(IEnumerable<TileIndex> tileIndices, float? weight = null, float defaultWeight = 1f)
-        : this(TileWeights.FromEnumerable(
-                tileIndices.Select(tileIndex => new TileWeight(tileIndex, weight ?? defaultWeight))),
-            defaultWeight)
-    {
-    }
-
     private Dictionary<TileIndex, float> Lookup { get; } =
         weights?.ToDictionary(tileWeight => tileWeight.TileIndex, pair => pair.Weight)
         ?? new Dictionary<TileIndex, float>();
