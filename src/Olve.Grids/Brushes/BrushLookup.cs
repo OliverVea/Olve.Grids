@@ -5,7 +5,7 @@ namespace Olve.Grids.Brushes;
 
 public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)>? entries = null) : IBrushLookup
 {
-    private readonly Dictionary<(TileIndex, Corner), BrushId> _tileCornerToBrush = entries != null
+    private readonly Dictionary<(TileIndex TileIndex, Corner Corner), BrushId> _tileCornerToBrush = entries != null
         ? entries.ToDictionary(x => (x.TileIndex, x.Corner), x => x.Brush)
         : new Dictionary<(TileIndex TileIndex, Corner Corner), BrushId>();
 
@@ -53,7 +53,7 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
 
     /// <inheritdoc />
     public IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)> Entries =>
-        _tileCornerToBrush.Select(x => (x.Key.Item1, x.Key.Item2, x.Value));
+        _tileCornerToBrush.Select(x => (x.Key.TileIndex, x.Key.Corner, x.Value));
 
     /// <inheritdoc />
     public void SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes)
