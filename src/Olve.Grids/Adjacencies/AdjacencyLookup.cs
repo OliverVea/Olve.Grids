@@ -3,19 +3,24 @@ using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Adjacencies;
 
-public class AdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values = null)
-    : IAdjacencyLookup
+public class AdjacencyLookup : IAdjacencyLookup
 {
     private static readonly Dictionary<TileIndex, Direction> EmptyLookup = new();
 
-    private Dictionary<TileIndex, Dictionary<TileIndex, Direction>> Lookup { get; } =
-        values
-            ?.GroupBy(pair => pair.from)
-            .ToDictionary(
-                group => group.Key,
-                group => group.ToDictionary(pair => pair.to, pair => pair.direction)
-            )
-        ?? new Dictionary<TileIndex, Dictionary<TileIndex, Direction>>();
+    public AdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values = null)
+    {
+        Lookup = new Dictionary<TileIndex, Dictionary<TileIndex, Direction>>();
+
+        if (values is { })
+        {
+            foreach (var (from, to, direction) in values)
+            {
+                SetInternal(from, to, direction);
+            }
+        }
+    }
+
+    private Dictionary<TileIndex, Dictionary<TileIndex, Direction>> Lookup { get; }
 
     public Direction Get(TileIndex a, TileIndex b) =>
         Lookup
