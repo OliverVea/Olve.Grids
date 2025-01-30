@@ -63,7 +63,7 @@ public class FrozenBrushLookup : IReadOnlyBrushLookup
 
     /// <inheritdoc />
     public OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner) =>
-        _brushCornerToTiles.TryGetValue((brushId, corner), out var tiles)
+        _brushCornerToTiles.TryGetValue((brushId, corner.Opposite()), out var tiles)
             ? tiles
             : new NotFound();
 

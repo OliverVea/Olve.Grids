@@ -39,8 +39,10 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
     /// <inheritdoc />
     public OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner)
     {
+        var oppositeCorner = corner.Opposite();
+
         var set = _tileCornerToBrush
-            .Where(x => x.Value == brushId)
+            .Where(x => x.Value == brushId && x.Key.Corner == oppositeCorner)
             .Select(x => x.Key.Item1)
             .ToHashSet();
 
