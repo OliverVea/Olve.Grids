@@ -5,20 +5,20 @@ using Olve.Grids.Primitives;
 namespace Olve.Grids.Tests;
 
 [InheritsTests]
-public class BrushLookupReadOnlyBrushLookupTests : ReadonlyBrushLookupTests<BrushLookup>
+public class BrushLookupReadOnlyBrushLookupTests : ReadOnlyBrushLookupTests<BrushLookup>
 {
     protected override BrushLookup CreateLookup(
         IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)>? items = null) => new(items);
 }
 
 [InheritsTests]
-public class FrozenBrushLookupReadOnlyBrushLookupTests : ReadonlyBrushLookupTests<FrozenBrushLookup>
+public class FrozenBrushLookupReadOnlyBrushLookupTests : ReadOnlyBrushLookupTests<FrozenBrushLookup>
 {
     protected override FrozenBrushLookup CreateLookup(
         IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId BrushId)>? items = null) => new(items ?? [ ]);
 }
 
-public abstract class ReadonlyBrushLookupTests<TReadOnlyBrushLookup>
+public abstract class ReadOnlyBrushLookupTests<TReadOnlyBrushLookup>
     where TReadOnlyBrushLookup : IReadOnlyBrushLookup
 {
     protected abstract TReadOnlyBrushLookup CreateLookup(
