@@ -1,3 +1,20 @@
+## v1.2.1 (2025-01-30)
+
+### Fix
+
+- `GetTiles(BrushId brushId, Corner corner)` now uses the corner from the perspective of the brush and not the tile as expected
+- fixing bug in `items` not being parsed properly by `AdjacencyLookup` when the lookup was constructed, potentially resulting in an invalid state
+
+### Refactor
+
+- naming elements in `_tileCornerToBrush` tuple
+- add `Directions.All` for all possible directions
+- renaming `Directions.All` to `Directions.Cardinal`
+
+### Perf
+
+- using `TryAsReadOnlySet` in `EstimateAdjacenciesFromBrushesCommand` to reduce allocations
+
 ## v1.2.0 (2025-01-29)
 
 ### Feat
