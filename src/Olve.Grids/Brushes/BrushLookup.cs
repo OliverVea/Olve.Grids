@@ -11,6 +11,8 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
 
     public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct();
 
+
+    /// <inheritdoc />
     public OneOf<CornerBrushes, NotFound> GetBrushes(TileIndex tileIndex)
     {
         var cornerBrushes = new CornerBrushes();
@@ -28,11 +30,13 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
         return cornerBrushes;
     }
 
+    /// <inheritdoc />
     public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner) =>
         _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
             ? brushId
             : new NotFound();
 
+    /// <inheritdoc />
     public OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner)
     {
         var set = _tileCornerToBrush
@@ -45,9 +49,11 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
             : new NotFound();
     }
 
+    /// <inheritdoc />
     public IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)> Entries =>
         _tileCornerToBrush.Select(x => (x.Key.Item1, x.Key.Item2, x.Value));
 
+    /// <inheritdoc />
     public void SetCornerBrushes(TileIndex tileIndex, CornerBrushes cornerBrushes)
     {
         foreach (var corner in Corners.All)
@@ -56,6 +62,8 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
         }
     }
 
+
+    /// <inheritdoc />
     public void SetCornerBrush(
         TileIndex tileIndex,
         Corner corner,
@@ -72,11 +80,13 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
         }
     }
 
+    /// <inheritdoc />
     public void Clear()
     {
         _tileCornerToBrush.Clear();
     }
 
+    /// <inheritdoc />
     public void ClearTileBrushes(TileIndex tileIndex)
     {
         foreach (var corner in Corners.All)
@@ -85,6 +95,7 @@ public class BrushLookup(IEnumerable<(TileIndex TileIndex, Corner Corner, BrushI
         }
     }
 
+    /// <inheritdoc />
     public void ClearTileBrush(TileIndex tileIndex, Corner corner)
     {
         _tileCornerToBrush.Remove((tileIndex, corner));

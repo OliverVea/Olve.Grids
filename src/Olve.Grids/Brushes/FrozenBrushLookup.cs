@@ -37,6 +37,7 @@ public class FrozenBrushLookup : IReadOnlyBrushLookup
     }
 
 
+    /// <inheritdoc />
     public OneOf<CornerBrushes, NotFound> GetBrushes(TileIndex tileIndex)
     {
         var cornerBrushes = new CornerBrushes();
@@ -54,17 +55,22 @@ public class FrozenBrushLookup : IReadOnlyBrushLookup
         return cornerBrushes;
     }
 
+    /// <inheritdoc />
     public OneOf<BrushId, NotFound> GetBrushId(TileIndex tileIndex, Corner corner) =>
         _tileCornerToBrush.TryGetValue((tileIndex, corner), out var brushId)
             ? brushId
             : new NotFound();
 
+    /// <inheritdoc />
     public OneOf<IReadOnlySet<TileIndex>, NotFound> GetTiles(BrushId brushId, Corner corner) =>
         _brushCornerToTiles.TryGetValue((brushId, corner), out var tiles)
             ? tiles
             : new NotFound();
 
+    /// <inheritdoc />
     public IEnumerable<BrushId> Brushes => _brushes;
+
+    /// <inheritdoc />
     public IEnumerable<(TileIndex TileIndex, Corner Corner, BrushId Brush)> Entries => GetEntries();
 
     private IEnumerable<(TileIndex, Corner, BrushId)> GetEntries()
