@@ -1,3 +1,11 @@
+## v1.2.2 (2025-01-30)
+
+### Refactor
+
+- adding and using `TileWeight` and `TileWeights`
+- adding and using `TileAdjacency` and `TileAdjacencies`
+- creating and using `TileBrush` and `TileBrushes`
+
 ## v1.2.1 (2025-01-30)
 
 ### Fix
