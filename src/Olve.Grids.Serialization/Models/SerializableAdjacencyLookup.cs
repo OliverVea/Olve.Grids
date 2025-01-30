@@ -14,11 +14,11 @@ public partial class SerializableAdjacencyLookup
         new()
         {
             Adjacencies = adjacencyLookup
-                .Adjacencies.Select(SerializableTileAdjacency.FromTileAdjacency)
+                .TileAdjacencies.Select(SerializableTileAdjacency.FromTileAdjacency)
                 .ToArray(),
         };
 
-    private IEnumerable<(TileIndex From, TileIndex To, Direction Direction)> Items => Adjacencies
+    private IEnumerable<TileAdjacency> Items => Adjacencies
         .Select(adjacency => adjacency.ToTileAdjacency());
 
     public FrozenAdjacencyLookup ToFrozenAdjacencyLookup() => new(Items);
@@ -33,7 +33,7 @@ public partial class SerializableTileAdjacency
     public required Direction Direction { get; set; }
 
     public static SerializableTileAdjacency FromTileAdjacency(
-        (TileIndex From, TileIndex To, Direction Direction) tileAdjacency) =>
+        TileAdjacency tileAdjacency) =>
         new()
         {
             From = tileAdjacency.From.Index,
@@ -41,6 +41,6 @@ public partial class SerializableTileAdjacency
             Direction = tileAdjacency.Direction,
         };
 
-    public (TileIndex From, TileIndex To, Direction Direction) ToTileAdjacency() =>
+    public TileAdjacency ToTileAdjacency() =>
         (new TileIndex(From), new TileIndex(To), Direction);
 }

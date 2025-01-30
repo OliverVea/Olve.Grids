@@ -89,7 +89,8 @@ public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenc
                         continue;
                     }
 
-                    request.AdjacencyLookup.Add(tileFrom, tileTo, direction);
+                    TileAdjacency tileAdjacency = new(tileFrom, tileTo, direction);
+                    request.AdjacencyLookup.Add(tileAdjacency);
                 }
             }
         }

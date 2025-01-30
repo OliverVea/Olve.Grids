@@ -79,18 +79,13 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
                 {
                     foreach (var adjacentTile in adjacent.Tiles)
                     {
-                        if (adjacent.IsAdjacent)
-                        {
-                            adjacencyLookup.Set(adjacencyTile, adjacentTile, adjacent.Direction);
-                        }
-                        else
-                        {
-                            adjacencyLookup.Remove(
-                                adjacencyTile,
-                                adjacentTile,
-                                adjacent.Direction
-                            );
-                        }
+                        var tileAdjacency = new TileAdjacency(
+                            adjacencyTile,
+                            adjacentTile,
+                            adjacent.Direction
+                        );
+
+                        adjacencyLookup.Set(tileAdjacency, adjacent.IsAdjacent);
                     }
                 }
             }

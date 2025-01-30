@@ -8,17 +8,17 @@ namespace Olve.Grids.Tests;
 public class AdjacencyLookupReadOnlyAdjacencyLookupTests : ReadOnlyAdjacencyLookupTests<AdjacencyLookup>
 {
     protected override AdjacencyLookup CreateLookup(
-        IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values = null) => new(values);
+        IEnumerable<TileAdjacency>? values = null) => new(values);
 }
 
 [InheritsTests]
 public class FrozenAdjacencyLookupReadOnlyAdjacencyLookupTests : ReadOnlyAdjacencyLookupTests<FrozenAdjacencyLookup>
 {
     protected override FrozenAdjacencyLookup CreateLookup(
-        IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values = null) => new(GetFrozenValues(values));
+        IEnumerable<TileAdjacency>? values = null) => new(GetFrozenValues(values));
 
-    private static IEnumerable<(TileIndex from, TileIndex to, Direction direction)> GetFrozenValues(
-        IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values)
+    private static IEnumerable<TileAdjacency> GetFrozenValues(
+        IEnumerable<TileAdjacency>? values)
     {
         if (values is null)
         {
@@ -43,7 +43,7 @@ public class FrozenAdjacencyLookupReadOnlyAdjacencyLookupTests : ReadOnlyAdjacen
 public abstract class ReadOnlyAdjacencyLookupTests<TLookup>
     where TLookup : IReadOnlyAdjacencyLookup
 {
-    protected abstract TLookup CreateLookup(IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values =
+    protected abstract TLookup CreateLookup(IEnumerable<TileAdjacency>? values =
         null);
 
 

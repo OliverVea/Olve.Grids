@@ -1,5 +1,4 @@
 ﻿using Olve.Grids.Adjacencies;
-using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Tests;
@@ -8,13 +7,13 @@ namespace Olve.Grids.Tests;
 public class AdjacencyLookupAdjacencyLookupTests : AdjacencyLookupTests<AdjacencyLookup>
 {
     protected override AdjacencyLookup CreateLookup(
-        IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values = null) => new(values);
+        IEnumerable<TileAdjacency>? values = null) => new(values);
 }
 
 public abstract class AdjacencyLookupTests<TLookup>
     where TLookup : IAdjacencyLookup
 {
-    protected abstract TLookup CreateLookup(IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values =
+    protected abstract TLookup CreateLookup(IEnumerable<TileAdjacency>? values =
         null);
 
     [Test]
@@ -26,7 +25,7 @@ public abstract class AdjacencyLookupTests<TLookup>
 
         var lookup = CreateLookup([ (from, to, direction), ]);
 
-        lookup.Set(from, to, otherDirection);
+        lookup.Set((from, to, otherDirection));
 
         // Act
         var result = lookup.Get(from, to);

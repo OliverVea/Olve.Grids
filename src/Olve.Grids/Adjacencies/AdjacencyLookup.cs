@@ -7,7 +7,7 @@ public class AdjacencyLookup : IAdjacencyLookup
 {
     private static readonly Dictionary<TileIndex, Direction> EmptyLookup = new();
 
-    public AdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Direction direction)>? values = null)
+    public AdjacencyLookup(IEnumerable<TileAdjacency>? values = null)
     {
         Lookup = new Dictionary<TileIndex, Dictionary<TileIndex, Direction>>();
 
@@ -15,7 +15,7 @@ public class AdjacencyLookup : IAdjacencyLookup
         {
             foreach (var (from, to, direction) in values)
             {
-                SetInternal(from, to, direction);
+                SetInternal((from, to, direction));
             }
         }
     }
@@ -43,25 +43,27 @@ public class AdjacencyLookup : IAdjacencyLookup
             .Select(pair => pair.Key);
     }
 
-    public IEnumerable<(TileIndex from, TileIndex to, Direction direction)> Adjacencies =>
-        Lookup
+    public TileAdjacencies TileAdjacencies =>
+        TileAdjacencies.FromEnumerable(Lookup
             .SelectMany(pair =>
-                pair.Value.Select(innerPair => (pair.Key, innerPair.Key, innerPair.Value))
+                pair.Value.Select(innerPair => new TileAdjacency(pair.Key, innerPair.Key, innerPair.Value))
             )
-            .Distinct();
+            .Distinct());
 
-    public void Set(TileIndex a, TileIndex b, Direction direction)
+    public void Set(TileAdjacency tileAdjacency)
     {
-        SetInternal(a, b, direction);
+        SetInternal(tileAdjacency);
     }
 
-    public void Add(TileIndex a, TileIndex b, Direction direction)
+    public void Add(TileAdjacency tileAdjacency)
     {
-        Transform(a, b, x => x | direction);
+        Transform(tileAdjacency.From, tileAdjacency.To, x => x | tileAdjacency.Direction);
     }
 
-    public void Remove(TileIndex a, TileIndex b, Direction direction)
+    public void Remove(TileAdjacency tileAdjacency)
     {
+        var (a, b, direction) = tileAdjacency;
+
         Transform(a, b, x => a != b ? x & ~direction : x & ~direction & ~direction.Opposite());
     }
 
@@ -82,7 +84,7 @@ public class AdjacencyLookup : IAdjacencyLookup
 
         foreach (var neighbor in neighbors)
         {
-            Remove(tile, neighbor, direction);
+            Remove((tile, neighbor, direction));
         }
     }
 
@@ -96,11 +98,13 @@ public class AdjacencyLookup : IAdjacencyLookup
 
         var result = transform(value);
 
-        SetInternal(a, b, result);
+        SetInternal((a, b, result));
     }
 
-    private void SetInternal(TileIndex a, TileIndex b, Direction direction)
+    private void SetInternal(TileAdjacency tileAdjacency)
     {
+        var (a, b, direction) = tileAdjacency;
+
         if (direction == Direction.None)
         {
             Clear(a, b);

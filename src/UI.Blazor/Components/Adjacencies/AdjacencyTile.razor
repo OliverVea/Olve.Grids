@@ -22,6 +22,8 @@
     [Parameter] [EditorRequired] public required Direction Direction { get; set; }
     [Parameter] [EditorRequired] public required Project Project { get; set; }
 
+    private TileAdjacency TileAdjacency => (CurrentTileInformation.TileIndex, TileTileInformation.TileIndex, Direction);
+
     private bool IsSelected => Project
         .AdjacencyLookup.Get(CurrentTileInformation.TileIndex, TileTileInformation.TileIndex)
         .HasFlag(Direction);
@@ -41,11 +43,7 @@
 
     private void ToggleAdjacency(Project project)
     {
-        project.AdjacencyLookup.Toggle(
-            CurrentTileInformation.TileIndex,
-            TileTileInformation.TileIndex,
-            Direction);
-
+        project.AdjacencyLookup.Toggle(TileAdjacency);
         StateHasChanged();
     }
 

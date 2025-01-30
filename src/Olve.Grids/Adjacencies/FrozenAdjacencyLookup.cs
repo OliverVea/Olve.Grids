@@ -3,17 +3,17 @@ using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Adjacencies;
 
-public class FrozenAdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Direction direction)> values)
+public class FrozenAdjacencyLookup(IEnumerable<TileAdjacency> values)
     : IReadOnlyAdjacencyLookup
 {
     private static readonly Dictionary<TileIndex, Direction> Empty = new();
 
     private readonly Dictionary<TileIndex, Dictionary<TileIndex, Direction>> _adjacencies =
         values
-            .GroupBy(pair => pair.from)
+            .GroupBy(pair => pair.From)
             .ToDictionary(
                 group => group.Key,
-                group => group.ToDictionary(pair => pair.to, pair => pair.direction)
+                group => group.ToDictionary(pair => pair.To, pair => pair.Direction)
             );
 
     public Direction Get(TileIndex a, TileIndex b) =>
@@ -33,10 +33,10 @@ public class FrozenAdjacencyLookup(IEnumerable<(TileIndex from, TileIndex to, Di
             .Select(pair => pair.Key);
 
 
-    public IEnumerable<(TileIndex from, TileIndex to, Direction direction)> Adjacencies =>
-        _adjacencies
+    public TileAdjacencies TileAdjacencies =>
+        TileAdjacencies.FromEnumerable(_adjacencies
             .SelectMany(pair =>
-                pair.Value.Select(innerPair => (pair.Key, innerPair.Key, innerPair.Value))
+                pair.Value.Select(innerPair => new TileAdjacency(pair.Key, innerPair.Key, innerPair.Value))
             )
-            .Distinct();
+            .Distinct());
 }

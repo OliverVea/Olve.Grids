@@ -100,7 +100,7 @@ public class TileAtlasBuilder(TileAtlasConfiguration? configuration = null)
 
         var frozenBrushLookup = new FrozenBrushLookup(Configuration.BrushLookup.TileBrushes);
 
-        var frozenAdjacencyLookup = new FrozenAdjacencyLookup(Configuration.AdjacencyLookup.Adjacencies);
+        var frozenAdjacencyLookup = new FrozenAdjacencyLookup(Configuration.AdjacencyLookup.TileAdjacencies);
 
         var frozenWeightLookup = new FrozenWeightLookup(Configuration.WeightLookup.Weights,
             Configuration.WeightLookup.DefaultWeight);
