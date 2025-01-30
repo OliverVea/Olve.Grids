@@ -5,6 +5,8 @@
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271"/>
         <PackageVersion Include="StrictId" Version="1.2.0"/>
+        <!-- Olve.Grids.Tests -->
+        <PackageVersion Include="TUnit" Version="0.8.12"/>
         <!-- Olve.Grids.Generation -->
         <PackageVersion Include="DeBroglie" Version="2.0.0"/>
         <!-- Olve.Grids.Serialization -->
