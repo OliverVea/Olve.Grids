@@ -25,7 +25,7 @@
 
             <div class="@TW(Grow, Flex, FlexCol, P(4), Gap(4))">
                 <div class="@TW(Flex, FlexRow, Gap(2))">
-                    @foreach (var direction in Directions.All)
+                    @foreach (var direction in Directions.Cardinal)
                     {
                         <Button Class="@TW(Grow)" OnClick="() => SelectedDirection = direction"
                                 Disabled="@(SelectedDirection == direction)">
@@ -60,7 +60,7 @@
     [Parameter] [EditorRequired] public required Project Project { get; set; }
     [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
 
-    private Direction SelectedDirection { get; set; } = Directions.All.FirstOrDefault();
+    private Direction SelectedDirection { get; set; } = Directions.Cardinal.FirstOrDefault();
 
     private int Columns => Project.GridConfiguration.Columns;
     private IEnumerable<TileIndex> TileIndices => Project.GridConfiguration.GetTileIndices();
