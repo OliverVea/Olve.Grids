@@ -17,11 +17,11 @@ public abstract class AdjacencyLookupTests<TLookup>
         null);
 
     [Test]
-    [MethodDataSource<AdjacencyLookupTestHelper>(nameof(AdjacencyLookupTestHelper.GetDirectionsWithOtherDirections))]
+    [MethodDataSource<TestHelper>(nameof(TestHelper.GetDirectionsWithOtherDirections))]
     public async Task this_SetAndSetAgain_OverwritesDirection(Direction direction, Direction otherDirection)
     {
         // Arrange
-        var (from, to) = AdjacencyLookupTestHelper.GetTilePair();
+        var (from, to) = TestHelper.GetTilePair();
 
         var lookup = CreateLookup([ (from, to, direction), ]);
 

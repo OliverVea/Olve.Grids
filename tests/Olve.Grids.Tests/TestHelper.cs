@@ -3,9 +3,9 @@ using Olve.Grids.Primitives;
 
 namespace Olve.Grids.Tests;
 
-public class AdjacencyLookupTestHelper
+public class TestHelper
 {
-    public static IEnumerable<Func<Direction>> GetDirections()
+    public static IEnumerable<Func<Direction>> AllDirections()
     {
         return Directions.All.Select<Direction, Func<Direction>>(direction => () => direction);
     }

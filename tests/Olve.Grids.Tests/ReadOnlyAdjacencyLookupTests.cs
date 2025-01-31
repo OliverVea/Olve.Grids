@@ -53,7 +53,7 @@ public abstract class ReadOnlyAdjacencyLookupTests<TLookup>
         // Arrange
         var lookup = CreateLookup();
 
-        var (from, to) = AdjacencyLookupTestHelper.GetTilePair();
+        var (from, to) = TestHelper.GetTilePair();
 
         // Act
         var result = lookup.Get(from, to);
@@ -65,11 +65,11 @@ public abstract class ReadOnlyAdjacencyLookupTests<TLookup>
     }
 
     [Test]
-    [MethodDataSource<AdjacencyLookupTestHelper>(nameof(AdjacencyLookupTestHelper.GetDirections))]
+    [MethodDataSource<TestHelper>(nameof(TestHelper.AllDirections))]
     public async Task this_SetFromAndTo_ReturnsSetDirection(Direction direction)
     {
         // Arrange
-        var (from, to) = AdjacencyLookupTestHelper.GetTilePair();
+        var (from, to) = TestHelper.GetTilePair();
         var lookup = CreateLookup([ (from, to, direction), ]);
 
         // Act
@@ -82,11 +82,11 @@ public abstract class ReadOnlyAdjacencyLookupTests<TLookup>
     }
 
     [Test]
-    [MethodDataSource<AdjacencyLookupTestHelper>(nameof(AdjacencyLookupTestHelper.GetDirectionsWithOpposites))]
+    [MethodDataSource<TestHelper>(nameof(TestHelper.GetDirectionsWithOpposites))]
     public async Task this_SetFromAndTo_ReturnsOppositeDirection(Direction direction, Direction opposite)
     {
         // Arrange
-        var (from, to) = AdjacencyLookupTestHelper.GetTilePair();
+        var (from, to) = TestHelper.GetTilePair();
         var lookup = CreateLookup([ (from, to, direction), ]);
 
         // Act
@@ -99,7 +99,7 @@ public abstract class ReadOnlyAdjacencyLookupTests<TLookup>
     }
 
     [Test]
-    [MethodDataSource<AdjacencyLookupTestHelper>(nameof(AdjacencyLookupTestHelper.GetDirectionsWithOpposites))]
+    [MethodDataSource<TestHelper>(nameof(TestHelper.GetDirectionsWithOpposites))]
     public async Task this_SetOnSameTile_DirectionAndOppositeIsWritten(Direction direction, Direction opposite)
     {
         // Arrange
