@@ -5,10 +5,12 @@
 @using UI.Core
 @using UI.Core.Projects
 @using UI.Blazor.Components.Adjacencies
+@using UI.Core.Adjacencies
 @using UI.Core.Logging
 @using UI.Core.Tiles
 @inject NavigationService NavigationService
 @inject LoggingService LoggingService
+@inject SetLockedSideOperation SetLockedSideOperation
 
 <div class="@TW(Flex, FlexCol, MinWScreen, MinHScreen)">
     <TitleBar Title="@Title" OnLeft="HandleBack"/>
@@ -23,15 +25,19 @@
             </div>
 
             <div class="@TW(Grow, Flex, FlexCol, P(4), Gap(4))">
-                <div class="@TW(Flex, FlexRow, Gap(2))">
+                <div class="@TW(WFull, Flex, FlexRow, Gap(2))">
                     @foreach (var direction in Directions.Cardinal)
                     {
-                        <Button Class="@TW(Grow)" OnClick="() => SelectedDirection = direction"
-                                Disabled="@(SelectedDirection == direction)">
+                        <Button Class="@TW(Grow)"
+                                OnClick="() => SetDirection(direction)"
+                                Disabled="@(SelectedDirection == direction)"
+                        >
                             @direction
                         </Button>
                     }
                 </div>
+
+                <Checkbox Value="@IsLocked" ValueChanged="HandleToggleLocked" Label="Locked"/>
 
                 <AdjacencyPreview TileInformation="@TileInformation"
                                   Direction="@SelectedDirection"
@@ -59,11 +65,23 @@
     [Parameter] [EditorRequired] public required Project Project { get; set; }
     [Parameter] [EditorRequired] public required TileInformation TileInformation { get; set; }
 
-    private Direction SelectedDirection { get; set; } = Directions.Cardinal.FirstOrDefault();
+    private Direction SelectedDirection { get; set; }
+    private bool IsLocked { get; set; }
 
     private int Columns => Project.GridConfiguration.Columns;
     private IEnumerable<TileIndex> TileIndices => Project.GridConfiguration.GetTileIndices();
     private string Title => $"{Project.Name.Value} / Tile {TileInformation.TileIndex.Index} Adjacencies";
+
+    protected override void OnParametersSet()
+    {
+        SetDirection(Directions.Cardinal.FirstOrDefault());
+    }
+
+    private void SetDirection(Direction direction)
+    {
+        SelectedDirection = direction;
+        UpdateIsLocked();
+    }
 
     private void HandleBack()
     {
@@ -84,6 +102,20 @@
 
             yield return tileInformation;
         }
+    }
+
+    private async Task HandleToggleLocked(bool state)
+    {
+        var side = SelectedDirection.ToSide();
+        SetLockedSideOperation.Request request = new(Project.Id, TileInformation.TileIndex, side, state);
+        await SetLockedSideOperation.ExecuteAsync(request);
+        UpdateIsLocked();
+    }
+
+    private void UpdateIsLocked()
+    {
+        var side = SelectedDirection.ToSide();
+        IsLocked = Project.LockedSides.Contains((TileInformation.TileIndex, side));
     }
 
 }
