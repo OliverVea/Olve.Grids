@@ -1,3 +1,18 @@
+## v1.4.0 (2025-01-31)
+
+### Feat
+
+- **UI**: added support for toggling locked sides for each tile through the UI
+- added `SetLockedSideOperation` to set a locked side for a project
+- adding `Checkbox` component
+- adding `Direction.ToSide` method
+
+### Refactor
+
+- refactored tailwind classes of `Button` component to be an `IEnumerable<TailwindClass>` method for improved readability
+- renaming `Project.LastAccessedAt` to `Project.LastChangedAt`
+- renaming `EstimateAdjacenciesFromBrushesCommand` to `EstimateAdjacenciesFromBrushesOperation` to fit with the `IOperation` interface
+
 ## v1.3.0 (2025-01-31)
 
 ### Feat
