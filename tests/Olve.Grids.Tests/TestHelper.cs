@@ -10,6 +10,11 @@ public class TestHelper
         return Directions.All.Select<Direction, Func<Direction>>(direction => () => direction);
     }
 
+    public static IEnumerable<Func<Side>> AllSides()
+    {
+        return Sides.All.Select<Side, Func<Side>>(side => () => side);
+    }
+
     public static IEnumerable<Func<(Direction direction, Direction opposite)>> GetDirectionsWithOpposites()
     {
         return Directions.All.Select<Direction, Func<(Direction direction, Direction opposite)>>(
