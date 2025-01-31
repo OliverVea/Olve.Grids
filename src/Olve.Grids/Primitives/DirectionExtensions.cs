@@ -29,5 +29,14 @@ public static class DirectionExtensions
         return opposite;
     }
 
+    public static bool IsCardinal(this Direction direction) => direction switch
+    {
+        Direction.Up => true,
+        Direction.Left => true,
+        Direction.Right => true,
+        Direction.Down => true,
+        _ => false,
+    };
+
     public static Direction Combine(this IEnumerable<Direction> directions) => directions.Aggregate((a, b) => a | b);
 }
