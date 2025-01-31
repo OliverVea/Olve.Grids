@@ -11,7 +11,7 @@
 
 Direction: @Direction
 
-<div class="@TW(Grow, Grid, GridCols(4), GridRows(8), WFull, Gap(2))">
+<div class="@TW(Grow, Grid, GridCols(4), WFull, Gap(2), ItemsStart)">
     @foreach (var neighbor in _neighbors)
     {
         <div class="transparency-background @TW(ContainerClasses)">
@@ -44,9 +44,10 @@ Direction: @Direction
             ? FlexRowReverse
             : FlexRow;
 
-    private TailwindClass[] ContainerClasses => [ Flex, FlexStyle, Vertical ? RowSpan(2) : ColSpan(2), border, ];
+    private TailwindClass Span => Vertical ? RowSpan(2) : ColSpan(2);
+    private TailwindClass Aspect => Vertical ? Aspect("1/2") : Aspect("2/1");
 
-    private int WidthPercent => Vertical ? 50 : 25;
+    private TailwindClass[] ContainerClasses => [ WFull, Flex, FlexStyle, Span, Aspect, border, ];
 
     protected override Task OnParametersSetAsync() => ReloadNeighbors();
 
