@@ -18,7 +18,7 @@ public class SaveProjectAndSummaryOperation(
     {
         var projectToSave = request.Project with
         {
-            LastAccessedAt = DateTimeOffset.Now,
+            LastChangedAt = DateTimeOffset.Now,
         };
 
         var projectSummary = ProjectMapper.ToProjectSummary(projectToSave);

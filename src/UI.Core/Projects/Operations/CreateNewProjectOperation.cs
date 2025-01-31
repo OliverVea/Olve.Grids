@@ -32,7 +32,7 @@ public class CreateNewProjectOperation(IProjectSettingRepository projectSettingR
             Id = id,
             Name = projectName,
             CreatedAt = createdAt,
-            LastAccessedAt = lastAccessedAt,
+            LastChangedAt = lastAccessedAt,
             TileSheetImage = request.TileSheetImage,
             GridConfiguration = gridConfiguration,
             WeightLookup = new WeightLookup(),

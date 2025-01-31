@@ -27,6 +27,8 @@ public class UpdateProjectOperation(GetProjectOperation getProjectOperation, Set
             return problems;
         }
 
+        project.LastChangedAt = DateTimeOffset.Now;
+
         // Todo: check if project and summary were updated
 
         SetProjectOperation.Request setProjectRequest = new(project);
@@ -39,5 +41,5 @@ public class UpdateProjectOperation(GetProjectOperation getProjectOperation, Set
         return Result.Success();
     }
 
-    private static ProjectSummary MapToSummary(Project project) => new(project.Id, project.Name, project.LastAccessedAt);
+    private static ProjectSummary MapToSummary(Project project) => new(project.Id, project.Name, project.LastChangedAt);
 }

@@ -66,7 +66,7 @@ public partial class SerializableProject
             Id = Id<Project>.Parse(Id),
             Name = new ProjectName(Name),
             CreatedAt = DateTimeOffset.FromUnixTimeSeconds(CreatedAt),
-            LastAccessedAt = DateTimeOffset.FromUnixTimeSeconds(LastAccessedAt),
+            LastChangedAt = DateTimeOffset.FromUnixTimeSeconds(LastAccessedAt),
             TileSheetImage = TileSheetImage.ToFileContent(tileSheetImage),
             GridConfiguration = GridConfiguration.ToGridConfiguration(),
             AdjacencyLookup = AdjacencyLookup.ToAdjacencyLookup(),
