@@ -40,6 +40,7 @@ public class CreateNewProjectOperation(IProjectSettingRepository projectSettingR
             BrushLookup = new BrushLookup(),
             ActiveTiles = [ ],
             Brushes = [ ],
+            LockedSides = [ ],
         };
 
         var createResult = await projectSettingRepository.SetProjectAsync(project, ct);

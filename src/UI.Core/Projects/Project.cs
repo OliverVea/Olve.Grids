@@ -1,6 +1,7 @@
 ﻿using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 using Olve.Grids.Weights;
 using Olve.Utilities.Lookup;
 
@@ -18,5 +19,6 @@ public record Project : IHasId<Id<Project>>
     public required IAdjacencyLookup AdjacencyLookup { get; init; }
     public required IBrushLookup BrushLookup { get; init; }
     public required HashSet<TileIndex> ActiveTiles { get; init; }
+    public required HashSet<(TileIndex, Side)> LockedSides { get; init; }
     public required Dictionary<BrushId, ProjectBrush> Brushes { get; init; }
 }

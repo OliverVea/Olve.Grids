@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
+using Olve.Grids.Primitives;
 using Olve.Grids.Serialization.Models;
 using SixLabors.ImageSharp;
 
@@ -22,6 +23,7 @@ public partial class SerializableProject
     public required SerializableBrushLookup BrushLookup { get; init; }
     public required SerializableWeightLookup WeightLookup { get; init; }
     public required int[] ActiveTileIds { get; init; }
+    public required (int, int)[] LockedSides { get; init; }
     public required SerializableProjectBrush[] Brushes { get; init; }
     public string ImageName { get; init; } = string.Empty;
 
@@ -41,6 +43,9 @@ public partial class SerializableProject
             ActiveTileIds = project
                 .ActiveTiles
                 .Select(x => x.Index)
+                .ToArray(),
+            LockedSides = project
+                .LockedSides.Select(x => (x.Item1.Index, (int)x.Item2))
                 .ToArray(),
             Brushes = project
                 .Brushes
@@ -72,6 +77,9 @@ public partial class SerializableProject
                 .ToHashSet(),
             Brushes = Brushes.ToDictionary(x => new BrushId(x.Id),
                 x => x.ToProjectBrush()),
+            LockedSides = LockedSides
+                .Select(x => (new TileIndex(x.Item1), (Side)x.Item2))
+                .ToHashSet(),
         };
     }
 }
