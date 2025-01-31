@@ -1,6 +1,7 @@
 <Project>
     <ItemGroup>
         <!-- Olve.Grids -->
+        <PackageVersion Include="Meziantou.Analyzer" Version="2.0.186"/>
         <PackageVersion Include="Olve.Utilities" Version="0.6.0"/>
         <PackageVersion Include="OneOf" Version="3.0.271"/>
         <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271"/>

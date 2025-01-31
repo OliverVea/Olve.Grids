@@ -40,7 +40,3 @@ public static class GridGeometryHelper
         }
     }
 }
-
-public readonly record struct GridPoint(float X, float Y);
-
-public readonly record struct GridLine(GridPoint From, GridPoint To);

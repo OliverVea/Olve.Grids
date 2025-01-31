@@ -1,5 +1,8 @@
-﻿namespace Olve.Grids.Grids;
+﻿using System.Runtime.InteropServices;
 
+namespace Olve.Grids.Grids;
+
+[StructLayout(LayoutKind.Sequential)]
 public readonly record struct GridConfiguration(Size TileSize, int Rows, int Columns)
 {
     public int TileCount => Rows * Columns;

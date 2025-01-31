@@ -76,7 +76,10 @@ public class EstimateAdjacenciesFromBrushesOperationTests
 
         Request request = new(adjacencyLookup, brushLookup.TileBrushes)
         {
-            ToNotUpdate = [ (a, lockedSide), ],
+            ToNotUpdate = new HashSet<(TileIndex, Side)>
+            {
+                (a, lockedSide),
+            },
         };
 
         // Act
@@ -117,7 +120,10 @@ public class EstimateAdjacenciesFromBrushesOperationTests
         Request request = new(adjacencyLookup, brushLookup.TileBrushes);
         if (lockedSide.HasValue)
         {
-            request.ToNotUpdate = [ (a, lockedSide.Value), ];
+            request.ToNotUpdate = new HashSet<(TileIndex, Side)>
+            {
+                (a, lockedSide.Value),
+            };
         }
 
         // Act

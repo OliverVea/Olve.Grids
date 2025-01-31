@@ -13,25 +13,42 @@ public class EstimateAdjacenciesFromBrushesOperation : IOperation<EstimateAdjace
         TileBrushes TileBrushes)
     {
         public IEnumerable<(TileIndex, Side)>? ToUpdate { get; set; }
-        public HashSet<(TileIndex, Side)>? ToNotUpdate { get; set; }
+        public IReadOnlySet<(TileIndex, Side)>? ToNotUpdate { get; set; }
     }
 
     public Result Execute(Request request)
     {
-        var tileIndices = new HashSet<TileIndex>();
+        var tileIndices = ExtractTileIndices(request);
+        var lookup = CreateLookupDictionary(request);
+        var (tileSideToBrush, brushSideToTiles) = BuildBrushMappings(tileIndices, lookup);
+        var toUpdate = request.ToUpdate ?? tileIndices.SelectMany(x => Sides.All.Select(y => (x, y)));
+        var sidesByTile = toUpdate.GroupBy(x => x.Item1, x => x.Item2);
 
-        var lookup = new Dictionary<(TileIndex, Corner), BrushId>();
+        UpdateAdjacencyLookup(request, sidesByTile, tileIndices, tileSideToBrush, brushSideToTiles);
 
-        foreach (var (tileIndex, corner, brushId) in request.TileBrushes)
-        {
-            tileIndices.Add(tileIndex);
+        return Result.Success();
+    }
 
-            lookup[(tileIndex, corner)] = brushId;
-        }
+    private HashSet<TileIndex> ExtractTileIndices(Request request)
+    {
+        return request
+            .TileBrushes.Select(tb => tb.TileIndex)
+            .ToHashSet();
+    }
 
+    private Dictionary<(TileIndex, Corner), BrushId> CreateLookupDictionary(Request request)
+    {
+        return request.TileBrushes.ToDictionary(
+            tb => (tb.TileIndex, tb.Corner),
+            tb => tb.BrushId
+        );
+    }
+
+    private (Dictionary<(TileIndex, Side), (BrushId, BrushId)>, Dictionary<(BrushId, BrushId, Side), HashSet<TileIndex>>)
+        BuildBrushMappings(HashSet<TileIndex> tileIndices, Dictionary<(TileIndex, Corner), BrushId> lookup)
+    {
         var tileSideToBrush = new Dictionary<(TileIndex, Side), (BrushId, BrushId)>();
         var brushSideToTiles = new Dictionary<(BrushId, BrushId, Side), HashSet<TileIndex>>();
-
 
         foreach (var tileIndex in tileIndices)
         {
@@ -47,74 +64,89 @@ public class EstimateAdjacenciesFromBrushesOperation : IOperation<EstimateAdjace
 
                 tileSideToBrush[(tileIndex, side)] = (brush1, brush2);
 
-                var tiles = brushSideToTiles.GetOrAdd((brush1, brush2, side), () => [ ]);
+                var tiles = brushSideToTiles.GetOrAdd((brush1, brush2, side), () => new HashSet<TileIndex>());
                 tiles.Add(tileIndex);
             }
         }
 
-        var toUpdate = request.ToUpdate ?? tileIndices.SelectMany(x => Sides.All.Select(y => (x, y)));
+        return (tileSideToBrush, brushSideToTiles);
+    }
 
-        var sidesByTile = toUpdate
-            .GroupBy(x => x.Item1, x => x.Item2);
-
+    private void UpdateAdjacencyLookup(
+        Request request,
+        IEnumerable<IGrouping<TileIndex, Side>> sidesByTile,
+        HashSet<TileIndex> tileIndices,
+        Dictionary<(TileIndex, Side), (BrushId, BrushId)> tileSideToBrush,
+        Dictionary<(BrushId, BrushId, Side), HashSet<TileIndex>> brushSideToTiles)
+    {
         foreach (var grouping in sidesByTile)
         {
             var from = grouping.Key;
             var sides = grouping.ToArray();
 
-            foreach (var side in sides)
+            RemoveObsoleteAdjacencies(request, from, sides, tileIndices);
+            AddNewAdjacencies(request, from, sides, tileSideToBrush, brushSideToTiles);
+        }
+    }
+
+    private void RemoveObsoleteAdjacencies(Request request, TileIndex from, Side[] sides, HashSet<TileIndex> tileIndices)
+    {
+        foreach (var side in sides)
+        {
+            if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((from, side)))
             {
-                if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((from, side)))
-                {
-                    continue;
-                }
-
-                foreach (var to in tileIndices)
-                {
-                    var oppositeSide = side.Opposite();
-
-                    if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((to, oppositeSide)))
-                    {
-                        continue;
-                    }
-
-                    var tileAdjacency = new TileAdjacency(from, to, side.ToDirection());
-                    request.AdjacencyLookup.Remove(tileAdjacency);
-                }
+                continue;
             }
 
-            foreach (var side in sides)
+            foreach (var to in tileIndices)
             {
-                if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((from, side)))
-                {
-                    continue;
-                }
-
-                if (!tileSideToBrush.TryGetValue((from, side), out var fromBrushes))
-                {
-                    continue;
-                }
-
                 var oppositeSide = side.Opposite();
 
-                var tos = brushSideToTiles.TryGetValue((fromBrushes.Item1, fromBrushes.Item2, oppositeSide),
-                    out var toTiles)
-                    ? toTiles
-                    : [ ];
-
-                foreach (var to in tos)
+                if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((to, oppositeSide)))
                 {
-                    if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((to, oppositeSide)))
-                    {
-                        continue;
-                    }
-
-                    TileAdjacency tileAdjacency = new(from, to, side.ToDirection());
-                    request.AdjacencyLookup.Add(tileAdjacency);
+                    continue;
                 }
+
+                var tileAdjacency = new TileAdjacency(from, to, side.ToDirection());
+                request.AdjacencyLookup.Remove(tileAdjacency);
             }
         }
+    }
 
-        return Result.Success();
+    private void AddNewAdjacencies(
+        Request request,
+        TileIndex from,
+        Side[] sides,
+        Dictionary<(TileIndex, Side), (BrushId, BrushId)> tileSideToBrush,
+        Dictionary<(BrushId, BrushId, Side), HashSet<TileIndex>> brushSideToTiles)
+    {
+        foreach (var side in sides)
+        {
+            if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((from, side)))
+            {
+                continue;
+            }
+
+            if (!tileSideToBrush.TryGetValue((from, side), out var fromBrushes))
+            {
+                continue;
+            }
+
+            var oppositeSide = side.Opposite();
+            var tos = brushSideToTiles.TryGetValue((fromBrushes.Item1, fromBrushes.Item2, oppositeSide), out var toTiles)
+                ? toTiles
+                : new HashSet<TileIndex>();
+
+            foreach (var to in tos)
+            {
+                if (request.ToNotUpdate != null && request.ToNotUpdate.Contains((to, oppositeSide)))
+                {
+                    continue;
+                }
+
+                var tileAdjacency = new TileAdjacency(from, to, side.ToDirection());
+                request.AdjacencyLookup.Add(tileAdjacency);
+            }
+        }
     }
 }

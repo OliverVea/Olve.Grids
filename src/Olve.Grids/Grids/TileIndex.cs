@@ -11,7 +11,7 @@ public readonly record struct TileIndex(int Index)
     {
         if (start.Index > end.Index)
         {
-            throw new ArgumentException("Start index must be less than or equal to end index.");
+            throw new ArgumentException("Start index must be less than or equal to end index.", nameof(start));
         }
 
         for (var i = start.Index; i <= end.Index; i++)

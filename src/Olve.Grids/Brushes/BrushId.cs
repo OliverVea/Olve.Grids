@@ -3,14 +3,22 @@
 namespace Olve.Grids.Brushes;
 
 [DebuggerDisplay("{ToString()}")]
-public readonly record struct BrushId(string Value) : IComparable<BrushId>
+public readonly struct BrushId(string? value) : IComparable<BrushId>, IEquatable<BrushId>
 {
-    public int CompareTo(BrushId other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
-    public override string ToString() => Value;
-}
+    public string? Value { get; } = value;
 
-[GenerateOneOf]
-public partial class BrushIdOrAny : OneOfBase<BrushId, Any>
-{
-    public static readonly BrushIdOrAny Any = new Any();
+    public override string ToString() => Value ?? string.Empty;
+
+    public int CompareTo(BrushId other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
+    public static bool operator <(BrushId a, BrushId b) => a.CompareTo(b) < 0;
+    public static bool operator <=(BrushId a, BrushId b) => a.CompareTo(b) <= 0;
+    public static bool operator >(BrushId a, BrushId b) => a.CompareTo(b) > 0;
+    public static bool operator >=(BrushId a, BrushId b) => a.CompareTo(b) >= 0;
+    public static bool operator ==(BrushId a, BrushId b) => a.CompareTo(b) == 0;
+    public static bool operator !=(BrushId a, BrushId b) => a.CompareTo(b) != 0;
+
+    public override bool Equals(object? obj) => obj is BrushId other && Equals(other);
+    public override int GetHashCode() => Value == null ? 0 : StringComparer.Ordinal.GetHashCode(Value);
+
+    public bool Equals(BrushId other) => string.Equals(Value, other.Value, StringComparison.Ordinal);
 }
