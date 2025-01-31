@@ -51,6 +51,6 @@ public class CreateNewBrushOperation(UpdateProjectOperation updateCurrentProject
 
     private static ColorString GetInitialBrushColor(BrushId brushId) =>
         CachedColorHelper.GetColorStringFromInteger(
-            brushId.Value.GetHashCode(),
+            brushId.GetHashCode(),
             HsvNormal.Default);
 }

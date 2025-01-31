@@ -10,7 +10,7 @@ public partial class SerializableTileBrush
 {
     public required int TileIndex { get; init; }
     public required Corner Corner { get; init; }
-    public required string BrushId { get; init; }
+    public required string? BrushId { get; init; }
 
     public static SerializableTileBrush FromTileBrush(TileBrush tileBrush) =>
         new()
