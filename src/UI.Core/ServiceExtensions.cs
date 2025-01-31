@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Olve.Grids.Adjacencies;
 using UI.Core.Logging;
 using UI.Core.Brushes;
 using UI.Core.Projects;
@@ -13,6 +14,8 @@ public static class ServiceExtensions
 {
     public static void AddServices(this IServiceCollection services)
     {
+        services.AddTransient<EstimateAdjacenciesFromBrushesCommand>();
+
         // Projects
         services.AddTransient<ListProjectSummariesOperation>();
         services.AddTransient<LoadProjectOperation>();
