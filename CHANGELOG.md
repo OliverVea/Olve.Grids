@@ -1,3 +1,29 @@
+## v1.3.0 (2025-01-31)
+
+### Feat
+
+- adjacencies are automatically calculated based on brushes
+- `Project` now contains a set of locked tiles
+- `EstimateAdjacenciesFromBrushesCommand` now enforces `ToUpdate` and `ToNotUpdate`
+- adding `Direction.IsCardinal()`
+
+### Fix
+
+- fixing adjacency preview layout
+- **UI**: improving adjacency preview layout and preview image automatic sizing
+
+### Refactor
+
+- adding `Aspect` tailwind class
+- adding `Direction.X` and `Direction.Y` composite directions
+- adding constructor to `BrushLookup` for `IEnumerable<(TileIndex, CornerBrushes)>`
+- removed unecessary usings
+- removing unused constructor from `WeightLookup`
+
+### Perf
+
+- using `GetOrAdd` in `EstaimateAdjacencicesFromBrushesCommand`
+
 ## v1.2.2 (2025-01-30)
 
 ### Refactor
