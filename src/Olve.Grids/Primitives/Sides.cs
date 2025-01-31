@@ -28,7 +28,7 @@ public static class Sides
         };
     }
 
-    public static Direction ToAdjacencyDirection(this Side side)
+    public static Direction ToDirection(this Side side)
     {
         return side switch
         {
