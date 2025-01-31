@@ -13,6 +13,31 @@
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public string? Class { get; set; }
 
-    private string ButtonClass => TW(Bg(Colors.Active.Panels.More), BorderNone, Py(2), Px(4), RoundedMd, Hover(Bg(Colors.Active.Panels.Most)), Text(Colors.Active.Text.Most), Transition, Duration("75"), TextNoWrap);
-    private string AllClasses => Class is null ? ButtonClass : string.Join(" ", ButtonClass, Class);
+    private string AllClasses => Class is null ? TW(GetTailwindClasses()) : string.Join(" ", TW(GetTailwindClasses()), Class);
+
+    private IEnumerable<TailwindClass> GetTailwindClasses()
+    {
+        if (Disabled)
+        {
+            yield return CursorDefault;
+            yield return Bg(Colors.Active.Panels.Ordinary);
+            yield return Text(Colors.Active.Text.More);
+        }
+        else
+        {
+            yield return CursorPointer;
+            yield return Bg(Colors.Active.Panels.More);
+            yield return Text(Colors.Active.Text.Most);
+            yield return Hover(Bg(Colors.Active.Panels.Most));
+        }
+
+        yield return BorderNone;
+        yield return Py(2);
+        yield return Px(4);
+        yield return RoundedMd;
+        yield return Transition;
+        yield return Duration("75");
+        yield return TextNoWrap;
+    }
+
 }
