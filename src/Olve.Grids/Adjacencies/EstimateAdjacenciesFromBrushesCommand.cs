@@ -1,6 +1,7 @@
 ﻿using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
+using Olve.Utilities.CollectionExtensions;
 using Olve.Utilities.Operations;
 
 namespace Olve.Grids.Adjacencies;
@@ -29,7 +30,7 @@ public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenc
         }
 
         var tileSideToBrush = new Dictionary<(TileIndex, Side), (BrushId, BrushId)>();
-        var brushSideToTiles = new Dictionary<((BrushId, BrushId), Side), HashSet<TileIndex>>();
+        var brushSideToTiles = new Dictionary<(BrushId, BrushId, Side), HashSet<TileIndex>>();
 
 
         foreach (var tileIndex in tileIndices)
@@ -46,12 +47,7 @@ public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenc
 
                 tileSideToBrush[(tileIndex, side)] = (brush1, brush2);
 
-                if (!brushSideToTiles.TryGetValue(((brush1, brush2), side), out var tiles))
-                {
-                    tiles = [ ];
-                    brushSideToTiles[((brush1, brush2), side)] = tiles;
-                }
-
+                var tiles = brushSideToTiles.GetOrAdd((brush1, brush2, side), () => [ ]);
                 tiles.Add(tileIndex);
             }
         }
@@ -101,7 +97,8 @@ public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenc
 
                 var oppositeSide = side.Opposite();
 
-                var tos = brushSideToTiles.TryGetValue((fromBrushes, oppositeSide), out var toTiles)
+                var tos = brushSideToTiles.TryGetValue((fromBrushes.Item1, fromBrushes.Item2, oppositeSide),
+                    out var toTiles)
                     ? toTiles
                     : [ ];
 
