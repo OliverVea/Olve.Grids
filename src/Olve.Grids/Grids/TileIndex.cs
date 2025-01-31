@@ -1,5 +1,8 @@
-﻿namespace Olve.Grids.Grids;
+﻿using System.Diagnostics;
 
+namespace Olve.Grids.Grids;
+
+[DebuggerDisplay("Tile{Index}")]
 public readonly record struct TileIndex(int Index)
 {
     public static TileIndex operator ++(TileIndex index) => new(index.Index + 1);
