@@ -9,6 +9,14 @@ public class BrushLookup(IEnumerable<TileBrush>? tileBrushes = null) : IBrushLoo
         ? tileBrushes.ToDictionary(x => (x.TileIndex, x.Corner), x => x.BrushId)
         : new Dictionary<(TileIndex TileIndex, Corner Corner), BrushId>();
 
+    public BrushLookup(IEnumerable<(TileIndex, CornerBrushes)> cornerBrushes) : this()
+    {
+        foreach (var (tileIndex, brushes) in cornerBrushes)
+        {
+            SetCornerBrushes(tileIndex, brushes);
+        }
+    }
+
     public IEnumerable<BrushId> Brushes => _tileCornerToBrush.Values.Distinct();
 
 
