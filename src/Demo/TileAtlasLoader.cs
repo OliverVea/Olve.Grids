@@ -75,8 +75,8 @@ public class TileAtlasLoader
             AnsiConsole.MarkupLine(
                 "[yellow]No tile atlas configuration file provided, using default adjacency estimator.[/]");
 
-            EstimateAdjacenciesFromBrushesCommand.Request request = new(adjacencyLookup, tileAtlasBrushes);
-            new EstimateAdjacenciesFromBrushesCommand().Execute(request);
+            EstimateAdjacenciesFromBrushesOperation.Request request = new(adjacencyLookup, tileAtlasBrushes);
+            new EstimateAdjacenciesFromBrushesOperation().Execute(request);
             return (adjacencyLookup, null);
         }
 

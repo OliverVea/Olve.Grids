@@ -6,7 +6,7 @@ using Olve.Utilities.Operations;
 
 namespace Olve.Grids.Adjacencies;
 
-public class EstimateAdjacenciesFromBrushesCommand : IOperation<EstimateAdjacenciesFromBrushesCommand.Request>
+public class EstimateAdjacenciesFromBrushesOperation : IOperation<EstimateAdjacenciesFromBrushesOperation.Request>
 {
     public record Request(
         IAdjacencyLookup AdjacencyLookup,

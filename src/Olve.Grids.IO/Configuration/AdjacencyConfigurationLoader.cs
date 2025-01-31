@@ -42,8 +42,8 @@ public class AdjacencyConfigurationLoader(AdjacencyConfigurationParser adjacency
 
         if (adjacencyConfiguration.GenerateFromBrushes)
         {
-            EstimateAdjacenciesFromBrushesCommand.Request request = new(adjacencyLookup, brushConfiguration);
-            new EstimateAdjacenciesFromBrushesCommand().Execute(request);
+            EstimateAdjacenciesFromBrushesOperation.Request request = new(adjacencyLookup, brushConfiguration);
+            new EstimateAdjacenciesFromBrushesOperation().Execute(request);
         }
 
         ClearAdjacenciesToOverwrite(adjacencyConfiguration, adjacencyLookup);

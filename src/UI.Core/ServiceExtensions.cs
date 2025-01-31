@@ -14,8 +14,6 @@ public static class ServiceExtensions
 {
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddTransient<EstimateAdjacenciesFromBrushesCommand>();
-
         // Projects
         services.AddTransient<ListProjectSummariesOperation>();
         services.AddTransient<LoadProjectOperation>();
@@ -35,6 +33,8 @@ public static class ServiceExtensions
         services.AddTransient<DeactivateTileOperation>();
         services.AddTransient<GetTileInformationOperation>();
 
+        // Adjacencies
+        services.AddTransient<EstimateAdjacenciesFromBrushesOperation>();
         // Brushes
         services.AddTransient<GetBrushOperation>();
         services.AddTransient<CreateNewBrushOperation>();

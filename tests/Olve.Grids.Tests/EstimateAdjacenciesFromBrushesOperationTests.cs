@@ -3,15 +3,14 @@ using Olve.Grids.Adjacencies;
 using Olve.Grids.Brushes;
 using Olve.Grids.Grids;
 using Olve.Grids.Primitives;
-using Command = Olve.Grids.Adjacencies.EstimateAdjacenciesFromBrushesCommand;
-using Request = Olve.Grids.Adjacencies.EstimateAdjacenciesFromBrushesCommand.Request;
-using static Olve.Grids.Tests.EstimateAdjacenciesFromBrushesCommandTests.BrushPatterns;
+using Request = Olve.Grids.Adjacencies.EstimateAdjacenciesFromBrushesOperation.Request;
+using static Olve.Grids.Tests.EstimateAdjacenciesFromBrushesOperationTests.BrushPatterns;
 
 namespace Olve.Grids.Tests;
 
-public class EstimateAdjacenciesFromBrushesCommandTests
+public class EstimateAdjacenciesFromBrushesOperationTests
 {
-    private static Command Command => new();
+    private static EstimateAdjacenciesFromBrushesOperation Operation => new();
 
     [Test]
     public async Task Execute_WithValidRequest_ShouldReturnSuccessResult()
@@ -23,7 +22,7 @@ public class EstimateAdjacenciesFromBrushesCommandTests
         Request request = new(adjacencyLookup, brushLookup.TileBrushes);
 
         // Act
-        var result = Command.Execute(request);
+        var result = Operation.Execute(request);
 
         // Assert
         await Assert
@@ -46,7 +45,7 @@ public class EstimateAdjacenciesFromBrushesCommandTests
         Request request = new(adjacencyLookup, brushLookup.TileBrushes);
 
         // Act
-        var result = Command.Execute(request);
+        var result = Operation.Execute(request);
         var adjacency = adjacencyLookup.Get(a, b);
 
         // Assert
@@ -81,7 +80,7 @@ public class EstimateAdjacenciesFromBrushesCommandTests
         };
 
         // Act
-        var result = Command.Execute(request);
+        var result = Operation.Execute(request);
 
         var adjacency = adjacencyLookup.Get(a, b);
 
@@ -122,7 +121,7 @@ public class EstimateAdjacenciesFromBrushesCommandTests
         }
 
         // Act
-        var result = Command.Execute(request);
+        var result = Operation.Execute(request);
 
         var adjacency = adjacencyLookup.Get(a, b);
 

@@ -10,7 +10,7 @@ namespace UI.Core.Brushes;
 
 public class SetBrushForTileCornerOperation(
     UpdateProjectOperation updateCurrentProjectOperation,
-    EstimateAdjacenciesFromBrushesCommand estimateAdjacenciesFromBrushesCommand)
+    EstimateAdjacenciesFromBrushesOperation estimateAdjacenciesFromBrushesOperation)
     : IAsyncOperation<SetBrushForTileCornerOperation.Request>
 {
     public record Request(Id<Project> ProjectId, TileIndex TileIndex, Corner Corner, BrushIdOrAny BrushId);
@@ -33,13 +33,13 @@ public class SetBrushForTileCornerOperation(
 
         var toUpdate = Sides.All.Select(x => (request.TileIndex, x));
 
-        EstimateAdjacenciesFromBrushesCommand.Request estimateRequest = new(project.AdjacencyLookup,
+        EstimateAdjacenciesFromBrushesOperation.Request estimateRequest = new(project.AdjacencyLookup,
             project.BrushLookup.TileBrushes)
         {
             ToNotUpdate = project.LockedSides,
             ToUpdate = toUpdate,
         };
 
-        return estimateAdjacenciesFromBrushesCommand.Execute(estimateRequest);
+        return estimateAdjacenciesFromBrushesOperation.Execute(estimateRequest);
     }
 }
