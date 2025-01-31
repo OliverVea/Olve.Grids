@@ -37,11 +37,27 @@ public class TestHelper
         }
     }
 
-    public static (TileIndex from, TileIndex to) GetTilePair()
+    public static IEnumerable<TileIndex> GetTileIndices(int count)
     {
-        var from = new TileIndex(0);
-        var to = new TileIndex(1);
+        return Enumerable
+            .Range(0, count)
+            .Select(i => new TileIndex(i));
+    }
 
-        return (from, to);
+    public static (TileIndex A, TileIndex B) GetTilePair()
+    {
+        var a = new TileIndex(0);
+        var b = new TileIndex(1);
+
+        return (a, b);
+    }
+
+    public static (TileIndex A, TileIndex B, TileIndex C) GetTileTriad()
+    {
+        var a = new TileIndex(0);
+        var b = new TileIndex(1);
+        var c = new TileIndex(2);
+
+        return (a, b, c);
     }
 }
