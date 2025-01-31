@@ -2,7 +2,7 @@
 
 namespace Olve.Grids.Brushes;
 
-[DebuggerDisplay("{ToString}")]
+[DebuggerDisplay("{ToString()}")]
 public readonly record struct BrushId(string Value) : IComparable<BrushId>
 {
     public int CompareTo(BrushId other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
