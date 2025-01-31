@@ -116,6 +116,8 @@ public static class TailwindExtensions
     public static TailwindClass Transform => new("transform");
 
 
+    public static TailwindClass Aspect(string value) => new($"aspect-[{value}]");
+
     public static TailwindClass GridCols(string value) => new($"grid-cols-[{value}]");
     public static TailwindClass GridCols(int value) => new($"grid-cols-{value}");
     public static TailwindClass GridRows(string value) => new($"grid-rows-[{value}]");
