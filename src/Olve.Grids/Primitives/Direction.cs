@@ -9,6 +9,8 @@ public enum Direction : byte
     Right = 4,
     Down = 8,
 
+    Y = Up | Down,
+    X = Left | Right,
 
     All = Up | Left | Right | Down,
 }
