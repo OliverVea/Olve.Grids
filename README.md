@@ -27,3 +27,27 @@ It handles a specific problem, i.e. generating valid variations of a tile atlas 
 * **[Demo](src/Demo)** - A CLI application showcasing the library.
 
 Please see the individual projects for more information.
+
+## Todo
+
+### `Olve.Utilities`
+
+- Build bespoke constraint solver and remove dependency to `DeBroglie`
+- Add `alias` tiles
+
+### `UI.Blazor` and `UI.Core`
+
+- Add generation using configured `TileAtlas`
+- Allow export of `SerializedTileAtlas`
+- Improve UI QOL
+
+### Other
+
+- Add description to GitHub repo
+- Rewrite [`README.md`](README.md)
+- Add XML documentation to public libraries
+- Public DocFX documentation on GitHub pages
+- Include `Meziantou.Analyzer` in `Directory.Build.props`
+- Publish CLI demo application on new releases
+- Publish UI application on new releases
+- Broaden test coverage
