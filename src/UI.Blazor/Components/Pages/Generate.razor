@@ -1,7 +1,18 @@
 ﻿@using UI.Core.Projects
+@inject NavigationService NavigationService
 
-@Project.Name
+<div class="@TW(Flex, FlexCol, MinWScreen, MinHScreen)">
+    <TitleBar Title="@Title" OnLeft="HandleBack"/>
+</div>
 
 @code {
     [Parameter, EditorRequired] public required Project Project { get; set; }
+
+    public string Title => $"Generate using {Project.Name.Value}";
+
+    public void HandleBack()
+    {
+        var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
+        NavigationService.NavigateTo(navigationTarget);
+    }
 }
