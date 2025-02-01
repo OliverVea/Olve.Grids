@@ -5,7 +5,7 @@
 - adding barebones support for generation in `project/{projectId}/generate` page
 - adding layout to generate page
 - adding title bar to generate page
-- adding `project/[projectId}/generate` page
+- adding `project/{projectId}/generate` page
 
 ### Fix
 
