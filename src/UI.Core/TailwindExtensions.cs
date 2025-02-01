@@ -77,6 +77,13 @@ public static class TailwindExtensions
 
     public static readonly TailwindClass MinHScreen = new("min-h-screen");
     public static readonly TailwindClass MinWScreen = new("min-w-screen");
+    public static readonly TailwindClass MaxHScreen = new("max-h-screen");
+    public static readonly TailwindClass MaxWScreen = new("max-w-screen");
+    
+    public static readonly TailwindClass MaxWFull = new("max-w-full");
+    public static readonly TailwindClass MaxHFull = new("max-h-full");
+    public static readonly TailwindClass MinWFull = new("min-w-full");
+    public static readonly TailwindClass MinHFull = new("min-h-full");
 
     public static readonly TailwindClass TextXs = new("text-xs");
     public static readonly TailwindClass TextSm = new("text-sm");
@@ -117,6 +124,9 @@ public static class TailwindExtensions
 
 
     public static TailwindClass Aspect(string value) => new($"aspect-[{value}]");
+    public static TailwindClass Aspect(int a, int b) => new($"aspect-{a}/{b}");
+    public static TailwindClass Basis(string value) => new($"basis-[{value}]");
+    public static TailwindClass Basis(int a, int b) => new($"basis-{a}/{b}");
 
     public static TailwindClass GridCols(string value) => new($"grid-cols-[{value}]");
     public static TailwindClass GridCols(int value) => new($"grid-cols-{value}");
@@ -161,6 +171,7 @@ public static class TailwindExtensions
     public static TailwindClass BorderY(int value) => new($"border-y-{value}");
 
     public static TailwindClass MaxW(string value) => new($"max-w-[{value}]");
+    public static TailwindClass MaxW(int a, int b) => new($"max-w-{a}/{b}");
     public static TailwindClass MaxH(string value) => new($"max-h-[{value}]");
     public static TailwindClass MinW(string value) => new($"min-w-[{value}]");
     public static TailwindClass MinH(string value) => new($"min-h-[{value}]");
@@ -175,6 +186,7 @@ public static class TailwindExtensions
     public static TailwindClass Pl(int value) => new($"pl-{value}");
     public static TailwindClass Pr(int value) => new($"pr-{value}");
     public static TailwindClass Pt(int value) => new($"pt-{value}");
+    public static TailwindClass Pt(string value) => new($"pt-[{value}]");
     public static TailwindClass Pb(int value) => new($"pb-{value}");
 
     public static TailwindClass M(int value) => new($"m-{value}");
@@ -203,6 +215,8 @@ public static class TailwindExtensions
     public static TailwindClass File(params IEnumerable<TailwindClass> tailwindClasses) =>
         new(string.Join(" ", tailwindClasses.Select(x => "file:" + x.Value)));
 
+    public static TailwindClass Before(params IEnumerable<TailwindClass> tailwindClasses) =>
+        new(string.Join(" ", tailwindClasses.Select(x => "before:" + x.Value)));
 
     public static string TW(params IEnumerable<TailwindClass> tailwindClasses)
     {
