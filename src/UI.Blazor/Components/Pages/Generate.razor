@@ -1,21 +1,52 @@
-﻿@using UI.Core.Projects
+﻿@using Olve.Grids.Brushes
+@using Olve.Grids.DeBroglie
+@using Olve.Grids.Generation
+@using Olve.Grids.IO.TileAtlasBuilder
+@using Olve.Grids.Weights
+@using UI.Core
+@using UI.Core.Logging
+@using UI.Core.Tiles
+@using UI.Core.Projects
 @inject NavigationService NavigationService
+@inject LoggingService LoggingService
+@inject GetTileInformationOperation GetTileInformationOperation
 
 <div class="@TW(Flex, FlexCol, MinWScreen, MinHScreen)">
     <TitleBar Title="@Title" OnLeft="HandleBack"/>
-    
-    <div class="@(TW(Grow, Flex, FlexRow))">
-        <div class="@TW(Grow)">
-            <!-- Brush grid -->
+
+    <div class="@TW(Flex, Grow, FlexRow)">
+        <!-- Left Side (Grid Container) -->
+        <div class="@TW(Flex, W(pct(50)), ItemsCenter, JustifyCenter)">
+            <div class="@TW(WFull, Aspect("1/1"), Grid, GridCols(8), GridRows(8), Gap(1))">
+                @for (var i = 0; i < 64; i++)
+                {
+                    <div class="@TW(border)"></div>
+                }
+            </div>
         </div>
-        <div class="@TW(Grow)">
-            <!-- Output -->
+
+        <!-- Right Side (Output) -->
+        <div class="@TW(Flex, W(pct(50)), ItemsCenter, JustifyCenter)">
+            <div class="@TW(WFull, Aspect("1/1"), Grid, GridCols(7), GridRows(7), Gap(1))">
+                @if (_output is { } output)
+                {
+                    @for (var i = 0; i < 7*7; i++)
+                    {
+                        <TileBase TileInformation="@output[i]" />
+                    }
+                }
+            </div>
         </div>
     </div>
+
+
 </div>
 
 @code {
     [Parameter, EditorRequired] public required Project Project { get; set; }
+    
+    private BrushId[] _brushes = new BrushId[64];
+    private TileInformation[]? _output = null;
 
     public string Title => $"Generate using {Project.Name.Value}";
 
@@ -23,5 +54,85 @@
     {
         var navigationTarget = new NavigationTargets.ProjectDashboard(Project.Id);
         NavigationService.NavigateTo(navigationTarget);
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        /*
+        var brushKeys = Project.Brushes.Keys.ToArray();
+        for (var i = 0; i < 64; i++)
+        {
+            _brushes[i] = brushKeys[(i) % brushKeys.Length];
+        }
+        */
+        return HandleGenerate();
+    }
+
+    public async Task HandleGenerate()
+    {
+        _output = null;
+        DeBroglieGenerator generator = new();
+
+        var weightLookup = new WeightLookup(defaultWeight: 0f);
+
+        foreach (var tileIndex in Project.ActiveTiles)
+        {
+            weightLookup.SetWeight(tileIndex, 1f);
+        }
+
+        var imageSize = Project.TileSheetImage.Image.Size;
+        
+
+        var tileAtlasBuilder = new TileAtlasBuilder()
+            .WithImageSize(new Size(imageSize.Width, imageSize.Height))
+            .WithTileSize(Project.GridConfiguration.TileSize)
+            .WithColumns(Project.GridConfiguration.Columns)
+            .WithRows(Project.GridConfiguration.Rows)
+            .WithAdjacencyLookup(Project.AdjacencyLookup)
+            .WithBrushLookup(Project.BrushLookup)
+            .WithWeightLookup(weightLookup)
+            .WithFallbackTileIndex(Project.GridConfiguration.GetTileIndex(
+                Project.GridConfiguration.Rows - 1, 
+                Project.GridConfiguration.Columns - 1));
+
+        var tileAtlas = tileAtlasBuilder.Build();
+
+        var brushGrid = new BrushGrid(new Size(8, 8), Project.Brushes.First().Key);
+        
+        for (var i = 0; i < 64; i++)
+        {
+            Position position = new(i % 8, i / 8);
+            var brush = _brushes[i];
+            brushGrid.SetBrush(position, brush);
+        }
+        
+        GenerationRequest request = new(tileAtlas, brushGrid);
+        var result = generator.Execute(request);
+
+        if (result.Result.TryPickProblems(out var problems))
+        {
+            LoggingService.Show(problems);
+            return;
+        }
+        
+        _output = new TileInformation[7*7];
+
+        for (var i = 0; i < 7*7; i++)
+        {
+            int col = i / 7, row = i % 7;
+            var tileIndex = result.Tiles[row, col];
+            GetTileInformationOperation.Request tileInformationRequest = new(Project.Id, tileIndex);
+            var tileInformationResult = await GetTileInformationOperation.ExecuteAsync(tileInformationRequest);
+            if (tileInformationResult.TryPickProblems(out problems, out var response))
+            {
+                LoggingService.Show(problems);
+                _output = null;
+                return;
+            }
+
+            _output[i] = response.TileInformation;
+        }
+        
+        StateHasChanged();
     }
 }
