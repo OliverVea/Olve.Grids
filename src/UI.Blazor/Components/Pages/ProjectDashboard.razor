@@ -8,10 +8,10 @@
 @inject NavigationService NavigationService
 @inject ProjectDashboardContainer ProjectDashboardContainer
 
-<div class="@TW(Flex, FlexCol, WFull, HFull, Top(0))">
+<div class="@TW(Flex, FlexCol, WFull, HFull, MaxHScreen, Top(0))">
     <TitleBar Title="@Project.Name.Value" OnLeft="HandleBack" IconRight="@IconDescriptor.Plus" OnRight="HandleNext"/>
 
-    <div class="@TW(Grow, WFull, OverflowYHidden, P(pct(2)), Pt(2))">
+    <div class="@TW(Grow, WFull, P(pct(2)), Pt(2), OverflowAuto, HFit)">
         <div class="@TW(Grid, GridCols($"repeat({Columns},auto)"), Gap(2))">
             @foreach (var tileInformation in GetTileInformation())
             {
