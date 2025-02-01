@@ -24,4 +24,9 @@ public abstract class NavigationTargets
     {
         public Url GetUrl() => new($"/project/{ProjectId}");
     }
+
+    public readonly record struct Generate(Id<Project> ProjectId) : INavigationTarget
+    {
+        public Url GetUrl() => new($"/project/{ProjectId}/generate");
+    }
 }

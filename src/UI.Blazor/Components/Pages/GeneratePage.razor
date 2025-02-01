@@ -1,0 +1,45 @@
+﻿@page "/project/{projectId}/generate"
+@using UI.Core.Logging
+@using UI.Core.Projects
+@using UI.Core.Projects.Operations
+@inject GetProjectOperation GetProjectOperation
+@inject LoggingService LoggingService
+@inject NavigationService NavigationService
+
+@if (_project == null)
+{
+    <span>Loading...</span>
+    return;
+}
+
+<Generate Project="_project" />
+
+@code {
+    [Parameter] public required string ProjectId { get; set; }
+    
+    private Project? _project;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        var projectIdResult = Id<Project>.TryParse(ProjectId, out var projectId);
+        if (!projectIdResult)
+        {
+            var problem = new ResultProblem("Invalid project id: '{0}'", ProjectId);
+            LoggingService.Show(problem);
+
+            var navigationTarget = new NavigationTargets.Home();
+            NavigationService.NavigateTo(navigationTarget);
+            return;
+        }
+
+        GetProjectOperation.Request getProjectRequest = new(projectId);
+        var currentProjectResult = await GetProjectOperation.ExecuteAsync(getProjectRequest);
+        if (currentProjectResult.TryPickProblems(out var problems, out _project))
+        {
+            LoggingService.Show(problems);
+
+            var navigationTarget = new NavigationTargets.ProjectDashboard(projectId);
+            NavigationService.NavigateTo(navigationTarget);
+        }
+    }
+}
