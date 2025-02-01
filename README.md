@@ -43,6 +43,8 @@ Please see the individual projects for more information.
 
 ### Other
 
+- Create algorithm to guess tile corner brush based on other tile corners
+- Fix various `TODO`s in the code
 - Add description to GitHub repo
 - Rewrite [`README.md`](README.md)
 - Add XML documentation to public libraries
