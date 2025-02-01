@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\UI.Core\UI.Core.csproj"/>
+        <ProjectReference Include="..\Olve.Grids.DeBroglie\Olve.Grids.DeBroglie.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
