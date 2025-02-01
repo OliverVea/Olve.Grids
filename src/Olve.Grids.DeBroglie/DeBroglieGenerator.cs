@@ -33,13 +33,13 @@ public class DeBroglieGenerator : IGenerator
 
         var adjacencyBuilder = new TileAtlasAdjacencyBuilder();
         var adjacencies = adjacencyBuilder.BuildAdjacencies(request.TileAtlas);
-
+        
         var model = new AdjacentModel();
         model.SetDirections(DirectionSet.Cartesian2d);
 
         foreach (var adjacency in adjacencies)
         {
-            model.AddAdjacency(adjacency.Src, adjacency.Dest, adjacency.Direction);
+            model.AddAdjacency(adjacency);
         }
 
         var tileIndices = request
