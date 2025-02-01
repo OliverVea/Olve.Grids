@@ -1,3 +1,23 @@
+## v1.5.0 (2025-02-01)
+
+### Feat
+
+- adding barebones support for generation in `project/{projectId}/generate` page
+- adding layout to generate page
+- adding title bar to generate page
+- adding `project/[projectId}/generate` page
+
+### Fix
+
+- fixing overflow of tile grid in project dashboard
+- adding `overflow-hidden` to `MainLayout`
+- ensuring that `MainLayout` cannot exceed screen
+
+### Refactor
+
+- adding `AdjacentModel.Adjacency` directly to `AdjacentModel` in `DeBroglieGenerator`
+- added additional tailwind classes
+
 ## v1.4.0 (2025-01-31)
 
 ### Feat
